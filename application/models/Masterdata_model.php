@@ -50,23 +50,42 @@ class masterdata_model extends CI_Model {
     
 
     //member
-    public function member_list()
+    public function member_list($search, $length, $start)
     {
-        $query = $this->db->query("select * from ms_member where member_active = 'Y'");
-        $result = $query->result();
-        return $result;
+        $this->db->select('*');
+        $this->db->from('ms_member');
+        if($search != null){
+            $this->db->where('member_code like "%'.$search.'%"');
+            $this->db->or_where('member_name like "%'.$search.'%"');
+        }
+        $this->db->limit($length);
+        $this->db->offset($start);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function member_list_count($search)
+    {
+        $this->db->select('count(*) as total_row');
+        $this->db->from('ms_member');
+        if($search != null){
+            $this->db->where('member_code like "%'.$search.'%"');
+            $this->db->or_where('member_name like "%'.$search.'%"');
+        }
+        $query = $this->db->get();
+        return $query;
     }
 
     public function get_member_by_id($id)
     {
-        $query = $this->db->query("select * from ms_member where member_active = 'Y' and member_id='".$id."'");
+        $query = $this->db->query("select * from ms_member where member_id='".$id."'");
         $result = $query->result();
         return $result;
     }
 
-    public function get_member_code($member_id)
+     public function get_class_by_member_id($id)
     {
-        $query = $this->db->query("select member_code, member_name from ms_member where member_id = '".$member_id."'");
+        $query = $this->db->query("select * from ms_member where member_id='".$id."'");
         $result = $query->result();
         return $result;
     }
@@ -84,13 +103,6 @@ class masterdata_model extends CI_Model {
         $this->db->where('member_id', $member_id);
         $this->db->update('ms_member');
     }
-
-    public function delete_member_expedisi($member_code)
-    {
-        $this->db->where('member_code ', $member_code);
-        $this->db->delete('ms_member_expedisi');
-    }
-
     public function save_member($data_insert)
     {
         $this->db->insert('ms_member', $data_insert);
@@ -102,6 +114,7 @@ class masterdata_model extends CI_Model {
         $result = $query->result();
         return $result;
     }
+    
 
     //end member
 

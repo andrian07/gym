@@ -24,10 +24,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
-$config['base_url']    = 'http://localhost/Gym';
-$config['header'] = "Gym/application/views/pages/header.php";
-$config['headerdetail'] = "Gym/application/views/pages/headerdetail.php";
-$config['footer'] = "Gym/application/views/pages/footer.php";
+$config['base_url']    = 'http://localhost/gym';
+$config['header'] = "gym/application/views/pages/header.php";
+$config['headerdetail'] = "gym/application/views/pages/headerdetail.php";
+$config['footer'] = "gym/application/views/pages/footer.php";
 
 /*
 |--------------------------------------------------------------------------

@@ -41,20 +41,23 @@ class Masterdata extends CI_Controller {
 		$modul = 'Member';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->add == 'Y'){
+			$screenshoot 				= $this->input->post('screenshoot');
 			$member_name 				= $this->input->post('member_name');
-			$member_dob 				= $this->input->post('member_dob');
-			$member_gender	 		= $this->input->post('member_gender');
+			$member_phone 				= $this->input->post('member_phone');
+			$member_nik 				= $this->input->post('member_nik');
+			$member_dob					= $this->input->post('member_dob');
+			$member_email	 			= $this->input->post('member_email');
 			$member_address 			= $this->input->post('member_address');
-			$member_address_phone 	= $this->input->post('member_address_phone');
-			$member_address_email 	= $this->input->post('member_address_email');
+			$member_gender 				= $this->input->post('member_gender');
 			$user_id 		   			= $_SESSION['user_id'];
+
 
 			if($member_name == null){
 				$msg = "Nama member Harus Di isi";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
 
-			if($member_address_phone == null){
+			if($member_phone == null){
 				$msg = "No Hp Harus Di isi";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
@@ -65,17 +68,40 @@ class Masterdata extends CI_Controller {
 			} else {
 				$maxCode = $maxCode[0]->member_code;
 				$last_code = substr($maxCode, -6);
-				$last_code = substr('000000' . strval(floatval($last_code) + 1), 6);
+				$last_code = substr('00000' . strval(floatval($last_code) + 1), -6);
 			}
+			if($_FILES['screenshoot']['name'] == null){
+				$new_image_name = 'default.png';
+			}else{
+				$new_image_name = $last_code.$this->generateRandomString().'.png';
+				$config['upload_path'] = './assets/member/';
+				$config['allowed_types'] = 'gif|jpg|png|jpeg|PNG';
+				$config['file_name'] = $new_image_name;
+				$this->load->library('upload', $config);
+				if (!$this->upload->do_upload('screenshoot')) 
+				{
+					$error = array('error' => $this->upload->display_errors());
+					print_r($error);
+					die();
+				} 
+				else
+				{
+					$data = array('image_metadata' => $this->upload->data());
+				}
+			}
+
 			$data_insert = array(
 				'member_code'	       		=> $last_code,
 				'member_name'	       		=> $member_name,
-				'member_phone'	   		=> $member_address_phone,
+				'member_phone'	   			=> $member_phone,
 				'member_address'	    	=> $member_address,
 				'member_dob'	       		=> $member_dob,
-				'member_gender'	    	=> $member_gender,
-				'member_email'	    	=> $member_address_email,
+				'member_gender'	    		=> $member_gender,
+				'member_nik'				=> $member_nik,
+				'member_email'	    		=> $member_email,
+				'member_image'				=> $new_image_name
 			);
+
 			$this->masterdata_model->save_member($data_insert);
 
 			$data_insert_act = array(
@@ -90,6 +116,18 @@ class Masterdata extends CI_Controller {
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
 		}	
+	}
+
+	function generateRandomString($length = 10) {
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$charactersLength = strlen($characters);
+		$randomString = '';
+
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[random_int(0, $charactersLength - 1)];
+		}
+
+		return $randomString;
 	}
 
 	public function edit_member()
@@ -143,27 +181,93 @@ class Masterdata extends CI_Controller {
 		}	
 	}
 
-	public function member(){
+	public function member()
+	{
 		$modul = 'Member';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
-			$member_list['member_list'] = $this->masterdata_model->member_list();
+			//$member_list['member_list'] = $this->masterdata_model->member_list();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($member_list, $check_auth);
-			$this->load->view('Pages/Masterdata/member', $data);
+			//$data['data'] = array_merge($member_list, $check_auth);
+			$this->load->view('Pages/Masterdata/member', $check_auth);
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
 		}	
 	}
 
-	public function detailmember(){
+	public function member_list()
+	{
+		$modul = 'Member';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$search 			= $this->input->post('search');
+			$length 			= $this->input->post('length');
+			$start 			  	= $this->input->post('start');
+
+			if($search != null){
+				$search = $search['value'];
+			}
+			$list = $this->masterdata_model->member_list($search, $length, $start)->result_array();
+			$count_list = $this->masterdata_model->member_list_count($search)->result_array();
+			$total_row = $count_list[0]['total_row'];
+			$data = array();
+			$no = $_POST['start'];
+			foreach ($list as $field) {
+
+				$detail = '<a href="'.base_url().'Masterdata/detailmember?id='.$field['member_id'].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['member_id'].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
+
+				if($check_auth[0]->edit == 'Y'){
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['member_id'].'" data-name="'.$field['member_name'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
+				}else{
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
+				}
+
+				if($field['member_active'] == 'Y'){
+					$status = '<span class="badge badge-success">Aktif</span>';
+				}else{
+					$status = '<span class="badge badge-danger">Non Aktif</span>';
+				}
+
+				$date = date_create($field['member_register']); 
+
+				//$url_image = base_url().'assets/products/'.$field['product_image'];
+				$no++;
+				$row = array();
+				$row[] = $field['member_code'];
+				$row[] = $field['member_name'];
+				$row[] = $field['member_address'];
+				$row[] = $field['member_phone'];
+				$row[] = $field['member_gender'];
+				$row[] = $status;
+				$row[] = date_format($date,"d-m-Y");
+				$row[] = $detail.$edit;
+				$data[] = $row;
+			}
+
+			$output = array(
+				"draw" => $_POST['draw'],
+				"recordsTotal" => $total_row,
+				"recordsFiltered" => $total_row,
+				"data" => $data,
+			);
+			echo json_encode($output);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+	public function detailmember()
+	{
 		$modul = 'Member';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$id = $this->input->get('id');
 			$get_member_by_id['get_member_by_id'] = $this->masterdata_model->get_member_by_id($id);
-			$this->load->view('Pages/Masterdata/member_detail', $get_member_by_id);
+			$get_class_by_member_id['get_class_by_member_id'] = $this->masterdata_model->get_class_by_member_id($id);
+			$data['data'] = array_merge($get_member_by_id, $get_class_by_member_id);
+			$this->load->view('Pages/Masterdata/member_detail', $data);
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
@@ -171,7 +275,8 @@ class Masterdata extends CI_Controller {
 	}
 
 
-	public function get_member_id(){
+	public function get_member_id()
+	{
 		$id = $this->input->post('id');
 		$get_member_by_id['get_member_by_id'] = $this->masterdata_model->get_member_by_id($id);
 		echo json_encode(['code'=>200, 'result'=>$get_member_by_id]);
@@ -198,6 +303,21 @@ class Masterdata extends CI_Controller {
 			echo json_encode(['code'=>0, 'result'=>$msg]);
 		}	
 	}
+
+	public function get_edit_member()
+	{
+		$modul = 'Member';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$id = $this->input->post('id');
+			$detail_edit_member = $this->masterdata_model->get_member_by_id($id);
+			echo json_encode(['code'=>200, 'result'=>$detail_edit_member]);die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+	
 	// end member //
 
 
@@ -224,6 +344,7 @@ class Masterdata extends CI_Controller {
 				$msg = "Nama Instruktur Harus Di isi";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
+
 
 			$coach_code = strtoupper(substr($coach_name, 0, 3));
 			$maxCode = $this->masterdata_model->last_coach_code();
