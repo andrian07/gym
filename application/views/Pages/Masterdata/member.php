@@ -33,11 +33,12 @@ require DOC_ROOT_PATH . $this->config->item('header');
                 <?php }else{ ?>
                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".bd-example-modal-xl"><span class="btn-label"><i class="fa fa-plus"></i></span> Tambah</button>
                <?php } ?>
+               
                <div class="modal fade bd-example-modal-xl" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" >
                 <div class="modal-dialog modal-xl">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Tambah Produk</h5>
+                      <h5 class="modal-title" id="exampleModalLabel">Tambah Member</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form name="save_member_form" id="save_member_form" enctype="multipart/form-data" action="<?php echo base_url(); ?>Masterdata/save_member" method="post">
@@ -137,7 +138,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                       <h5 class="modal-title" id="exampleModaledit">Edit Produk</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form name="edit_member_form" id="edit_member_form" enctype="multipart/form-data" action="<?php echo base_url(); ?>Masterdata/edit_product" method="post">
+                    <form name="edit_member_form" id="edit_member_form" enctype="multipart/form-data" action="<?php echo base_url(); ?>Masterdata/edit_member" method="post">
                       <div class="modal-body">
 
                         <div class="row">
@@ -235,7 +236,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
         </div>
         <div class="card-body">
           <div class="table-responsive">
-            <table id="product-list" class="display table table-striped table-hover">
+            <table id="member-list" class="display table table-striped table-hover">
              <thead>
               <tr>
                 <th>Kode</th>
@@ -249,7 +250,6 @@ require DOC_ROOT_PATH . $this->config->item('header');
               </tr>
             </thead>
             <tbody>
-
             </tbody>
           </table>
         </div>
@@ -272,11 +272,11 @@ require DOC_ROOT_PATH . $this->config->item('footer');
   new bootstrap.Modal(document.getElementById('exampleModaledit'), {backdrop: 'static', keyboard: false})  
   
   $(document ).ready(function() {
-    table_product_list();
+    table_member_list();
   });
 
-  function table_product_list(){
-    $('#product-list').DataTable({
+  function table_member_list(){
+    $('#member-list').DataTable({
       serverSide: true,
       search: true,
       processing: true,
@@ -395,6 +395,128 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
 // End Edit Image //
 
+  $('#edit_member_form').on('submit',(function(e) {
+    e.preventDefault();
+    var formData            = new FormData(this);
+    var member_name         = $("#member_name_edit").val();
+    var member_phone        = $("#member_phone_edit").val();
+    var member_nik          = $("#member_nik_edit").val();
+    var member_dob          = $("#member_dob_edit").val();
+    var member_email        = $("#member_email_edit").val();
+    var member_address      = $("#member_address_edit").val();
+    var member_gender       = $("#member_gender_edit").val();
+
+    if(member_name == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Nama Member',
+      })
+    }else if(member_phone == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi No HP',
+      })
+    }else if(member_nik == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi No KTP',
+      })
+    }else if(member_dob == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Tgl Lahir',
+      })
+    }else if(member_address == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Alamat',
+      })
+    }else{
+      $.ajax({
+        type:'POST',
+        url: $(this).attr('action'),
+        data:formData,
+        cache:false,
+        contentType: false,
+        processData: false,
+        success:function(data){          
+          window.location.href = "<?php echo base_url(); ?>Masterdata/member";
+          Swal.fire('Saved!', '', 'success');
+        }
+      });
+    }
+  }));
+
+  $('#save_member_form').on('submit',(function(e) {
+    e.preventDefault();
+    var formData            = new FormData(this);
+    var member_name         = $("#member_name").val();
+    var member_phone        = $("#member_phone").val();
+    var member_nik          = $("#member_nik").val();
+    var member_dob          = $("#member_dob").val();
+    var member_email        = $("#member_email").val();
+    var member_address      = $("#member_address").val();
+    var member_gender       = $("#member_gender").val();
+
+    if(member_name == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Nama Member',
+      })
+    }else if(member_phone == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi No HP',
+      })
+    }else if(member_nik == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi No KTP',
+      })
+    }else if(member_dob == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Tgl Lahir',
+      })
+    }else if(member_address == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Alamat',
+      })
+    }else{
+      $.ajax({
+        type:'POST',
+        url: $(this).attr('action'),
+        data:formData,
+        cache:false,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success:function(data){     
+          if(data.code == 0){
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: data.result,
+            })
+          }else{
+            window.location.href = "<?php echo base_url(); ?>Masterdata/member";
+            Swal.fire('Saved!', '', 'success');
+          } 
+        }
+      });
+    }
+  }));
 
   $('#exampleModaledit').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
@@ -411,7 +533,6 @@ require DOC_ROOT_PATH . $this->config->item('footer');
         if (data.code == "200"){
           document.getElementById("active-image").innerHTML = "";
           let row = data.result[0];
-          console.log(row);
           modal.find('#member_id_edit').val(row.member_id)
           modal.find('#member_code_edit').val(row.member_code)
           modal.find('#member_name_edit').val(row.member_name)

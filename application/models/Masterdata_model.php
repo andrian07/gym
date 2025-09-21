@@ -76,6 +76,27 @@ class masterdata_model extends CI_Model {
         return $query;
     }
 
+    public function check_member_nik($member_nik)
+    {
+        $query = $this->db->query("select * from ms_member where member_nik='".$member_nik."'");
+        $result = $query->result();
+        return $result;
+    }
+
+    public function check_member_phone($member_phone)
+    {
+        $query = $this->db->query("select * from ms_member where member_phone='".$member_phone."'");
+        $result = $query->result();
+        return $result;
+    }
+
+    public function check_member_email($member_email)
+    {
+        $query = $this->db->query("select * from ms_member where member_email='".$member_email."'");
+        $result = $query->result();
+        return $result;
+    }
+
     public function get_member_by_id($id)
     {
         $query = $this->db->query("select * from ms_member where member_id='".$id."'");
@@ -83,7 +104,7 @@ class masterdata_model extends CI_Model {
         return $result;
     }
 
-     public function get_class_by_member_id($id)
+    public function get_class_by_member_id($id)
     {
         $query = $this->db->query("select * from ms_member where member_id='".$id."'");
         $result = $query->result();
@@ -120,11 +141,31 @@ class masterdata_model extends CI_Model {
 
 
     //class
-    public function class_list()
+    
+    public function class_list($search, $length, $start)
     {
-        $query = $this->db->query("select * from ms_class a, schedule_class b, ms_coach c where a.class_id = b.class_id and b.coach_id = c.coach_id and class_active = 'Y'");
-        $result = $query->result();
-        return $result;
+        $this->db->select('*');
+        $this->db->from('ms_class');
+        if($search != null){
+            $this->db->where('class_code like "%'.$search.'%"');
+            $this->db->or_where('class_name like "%'.$search.'%"');
+        }
+        $this->db->limit($length);
+        $this->db->offset($start);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function class_list_count($search)
+    {
+        $this->db->select('count(*) as total_row');
+        $this->db->from('ms_class');
+        if($search != null){
+            $this->db->where('class_code like "%'.$search.'%"');
+            $this->db->or_where('class_name like "%'.$search.'%"');
+        }
+        $query = $this->db->get();
+        return $query;
     }
 
     public function get_class_by_id($id)
@@ -176,16 +217,36 @@ class masterdata_model extends CI_Model {
     //end class
 
     //coach
-    public function coach_list()
+
+    public function coach_list($search, $length, $start)
     {
-        $query = $this->db->query("select * from ms_coach where coach_active = 'Y'");
-        $result = $query->result();
-        return $result;
+        $this->db->select('*');
+        $this->db->from('ms_coach');
+        if($search != null){
+            $this->db->where('coach_code like "%'.$search.'%"');
+            $this->db->or_where('coach_name like "%'.$search.'%"');
+        }
+        $this->db->limit($length);
+        $this->db->offset($start);
+        $query = $this->db->get();
+        return $query;
+    }
+    
+    public function coach_list_count($search)
+    {
+        $this->db->select('count(*) as total_row');
+        $this->db->from('ms_coach');
+        if($search != null){
+            $this->db->where('coach_code like "%'.$search.'%"');
+            $this->db->or_where('coach_name like "%'.$search.'%"');
+        }
+        $query = $this->db->get();
+        return $query;
     }
 
     public function get_coach_by_id($id)
     {
-        $query = $this->db->query("select * from ms_coach where coach_active = 'Y' and coach_id='".$id."'");
+        $query = $this->db->query("select * from ms_coach where coach_id='".$id."'");
         $result = $query->result();
         return $result;
     }

@@ -118,11 +118,20 @@
             </li>
 
             <li class="nav-item">
+              <a href="<?php echo base_url(); ?>">
+                <i class="fas fa-user-clock"></i>
+                <p>Pendaftaran</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
               <a href="<?php echo base_url(); ?>Search">
                 <i class="fas fa-user-clock"></i>
                 <p>Absensi</p>
               </a>
             </li>
+
+
 
             <li class="nav-item">
               <a href="<?php echo base_url(); ?>Purchase">
@@ -130,72 +139,12 @@
                 <p>Pembelian Stock</p>
               </a>
             </li>
-          
-            <li class="nav-item">
-              <a data-bs-toggle="collapse" href="#sales">
-                <i class="fas fa-shopping-cart"></i>
-                <p>Penjualan</p>
-                <span class="caret"></span>
-              </a>
-              <div class="collapse" id="sales">
-                <ul class="nav nav-collapse">
-                  <li>
-                    <a href="<?php echo base_url(); ?>Sales/salesorder">
-                      <span class="sub-item">Sales Order</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="<?php echo base_url(); ?>Sales/salespage">
-                      <span class="sub-item">Penjualan</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="<?php echo base_url(); ?>Sales/revisisalespage">
-                      <span class="sub-item">Revisi Penjualan</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="<?php echo base_url(); ?>Sales/retursales">
-                      <span class="sub-item">Retur Penjualan</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
 
-            <li class="nav-item">
-              <a data-bs-toggle="collapse" href="#payment">
-                <i class="fas fa-money-bill"></i>
-                <p>Pelunasan</p>
-                <span class="caret"></span>
-              </a>
-              <div class="collapse" id="payment">
-                <ul class="nav nav-collapse">
-                  <li>
-                    <a href="<?php echo base_url(); ?>Payment/debt">
-                      <span class="sub-item">Pelunasan Hutang</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="<?php echo base_url(); ?>Payment/receivable">
-                      <span class="sub-item">Pelunasan Piutang</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
 
             <li class="nav-item">
               <a href="<?php echo base_url(); ?>Opname">
                 <i class="fas fa-box"></i>
                 <p>Stock Opname</p>
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a href="<?php echo base_url(); ?>Transferstock">
-                <i class="fas fa-exchange-alt"></i>
-                <p>Transfer Stock</p>
               </a>
             </li>
 
