@@ -214,6 +214,11 @@ class masterdata_model extends CI_Model {
         $this->db->insert('ms_class', $data_insert);
     }
 
+    public function save_schedule($data_insert)
+    {
+        $this->db->insert('schedule_class', $data_insert);
+    }
+
     public function last_class_code()
     {
         $query = $this->db->query("select class_code from ms_class order by class_id desc limit 1");

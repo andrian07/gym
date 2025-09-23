@@ -1032,10 +1032,10 @@ class Masterdata extends CI_Controller {
 				'schedule_sort'	    	=> $schedule_sort,
 			);
 
-			$this->masterdata_model->insert_schedule($data_insert);
+			$this->masterdata_model->save_schedule($data_insert);
 
 			$data_insert_act = array(
-				'activity_table_desc'	       => 'Ubah Master class '.$class_name,
+				'activity_table_desc'	       => 'Tambah Jadwal '.$schedule_day,
 				'activity_table_user'	       => $user_id,
 			);
 			$this->global_model->save($data_insert_act);
