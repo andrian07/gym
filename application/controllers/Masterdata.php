@@ -746,8 +746,10 @@ class Masterdata extends CI_Controller {
 		$modul = 'Class';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
+			$coach_list['coach_list'] = $this->global_model->coach_list();
 			$check_auth['check_auth'] = $check_auth;
-			$this->load->view('Pages/Masterdata/class', $check_auth);
+			$data['data'] = array_merge($coach_list, $check_auth);
+			$this->load->view('Pages/Masterdata/class', $data);
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
@@ -782,9 +784,9 @@ class Masterdata extends CI_Controller {
 				}
 
 				if($check_auth[0]->edit == 'Y'){
-					$schedule = '<button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['class_id'].'" data-name="'.$field['class_name'].'"><i class="fas fa-calendar-alt sizing-fa"></i></button> ';
+					$schedule = '<button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModalschedule" data-id="'.$field['class_id'].'" data-name="'.$field['class_name'].'"><i class="fas fa-calendar-alt sizing-fa"></i></button> ';
 				}else{
-					$schedule = '<button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['class_id'].'" data-name="'.$field['class_name'].'" disabled="disabled"><i class="fas fa-calendar-alt sizing-fa"></i></button> ';
+					$schedule = '<button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModalschedule" data-id="'.$field['class_id'].'" data-name="'.$field['class_name'].'" disabled="disabled"><i class="fas fa-calendar-alt sizing-fa"></i></button> ';
 				}
 
 				$no++;
@@ -841,8 +843,8 @@ class Masterdata extends CI_Controller {
 				$last_code = 'CLS'.'000001';
 			} else {
 				$maxCode = $maxCode[0]->class_code;
-				$last_code = substr($maxCode, -6);
-				$last_code = 'CLS'.substr('000000' . strval(floatval($last_code) + 1), 6);
+				$last_code = substr($maxCode, -9);
+				$last_code = 'CLS'.substr('000000' . strval(floatval($last_code) + 1), 9);
 			}
 
 			if($_FILES['screenshoot']['name'] == null){
@@ -896,9 +898,9 @@ class Masterdata extends CI_Controller {
 			$class_id   				= $this->input->post('class_id');
 			$class_code 				= $this->input->post('class_code');
 			$class_name 				= $this->input->post('class_name');
-			$class_dob 				= $this->input->post('class_dob');
+			$class_dob 					= $this->input->post('class_dob');
 			$class_gender	 			= $this->input->post('class_gender');
-			$class_address 			= $this->input->post('class_address');
+			$class_address 				= $this->input->post('class_address');
 			$class_address_phone 		= $this->input->post('class_address_phone');
 			$class_address_email 		= $this->input->post('class_address_email');
 			$user_id 		   			= $_SESSION['user_id'];
@@ -957,7 +959,8 @@ class Masterdata extends CI_Controller {
 	public function get_class_id(){
 		$id = $this->input->post('id');
 		$get_class_by_id['get_class_by_id'] = $this->masterdata_model->get_class_by_id($id);
-		echo json_encode(['code'=>200, 'result'=>$get_class_by_id]);
+		$get_class_schedule['get_class_schedule'] = $this->masterdata_model->get_class_schedule($id);
+		echo json_encode(['code'=>200, 'result'=>$get_class_by_id, 'schedule'=>$get_class_schedule]);
 	}
 
 	public function delete_class()
@@ -975,6 +978,72 @@ class Masterdata extends CI_Controller {
 			$this->global_model->save($data_insert_act);
 			$msg = "Succes Delete";
 			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+	public function add_schedule()
+	{
+		$modul = 'class';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->edit == 'Y'){
+			$class_id_schedule    	= $this->input->post('class_id_schedule');
+			$schedule_day   		= $this->input->post('schedule_day');
+			$schedule_time_start 	= $this->input->post('schedule_time_start');
+			$schedule_time_end 		= $this->input->post('schedule_time_end');
+			$schedule_coach 		= $this->input->post('schedule_coach');
+			$user_id 		   		= $_SESSION['user_id'];
+
+			if($schedule_day == null){
+				$msg = "Hari Kelas Harus Di Isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($schedule_coach == null){
+				$msg = "Instruktur Harus Di Isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($schedule_day == 'Senin'){
+				$schedule_sort = 1;
+			}else if($schedule_day == 'Selasa'){
+				$schedule_sort = 2;
+			}else if($schedule_day == 'Rabu'){
+				$schedule_sort = 3;
+			}else if($schedule_day == 'Kamis'){
+				$schedule_sort = 4;
+			}else if($schedule_day == 'Jumat'){
+				$schedule_sort = 5;
+			}else if($schedule_day == 'Sabtu'){
+				$schedule_sort = 6;
+			}else{
+				$schedule_sort = 7;
+			}
+
+			$data_insert = array(
+				'class_id'	       		=> $class_id_schedule,
+				'coach_id'	       		=> $schedule_coach,
+				'schedule_day'	    	=> $schedule_day,
+				'schedule_time_start'	=> $schedule_time_start,
+				'schedule_time_end'	   	=> $schedule_time_end,
+				'schedule_sort'	    	=> $schedule_sort,
+			);
+
+			$this->masterdata_model->insert_schedule($data_insert);
+
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Ubah Master class '.$class_name,
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+
+			$id = $class_id_schedule;
+			$get_class_by_id['get_class_by_id'] = $this->masterdata_model->get_class_by_id($id);
+			$get_class_schedule['get_class_schedule'] = $this->masterdata_model->get_class_schedule($id);
+			echo json_encode(['code'=>200, 'result'=>$get_class_by_id, 'schedule'=>$get_class_schedule]);
 			die();
 		}else{
 			$msg = "No Access";

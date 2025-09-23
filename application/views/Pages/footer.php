@@ -51,7 +51,7 @@
 <script src="<?php echo base_url(); ?>dist/js/autonumeric.js"></script>
 <script src="<?php echo base_url(); ?>dist/js/jquery-ui.js"></script>
 <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
- <script src="<?php echo base_url(); ?>dist/js/parsley.js"></script>
+<script src="<?php echo base_url(); ?>dist/js/parsley.js"></script>
 
 
 <script>
@@ -119,6 +119,19 @@
       });
     });
   });
+
+  $('body').on('shown.bs.modal', '.schedule', function() {
+    $(this).find('.js-example-basic-single').each(function() {
+      var dropdownParent = $(document.body);
+      if ($(this).parents('#exampleModalschedule').length !== 0)
+        dropdownParent = $("#exampleModalschedule");
+      $(this).select2({
+        dropdownParent: $("#exampleModalschedule")
+      // ...
+      });
+    });
+  });
+
 
   $('#reload').click(function(e){
     e.preventDefault();

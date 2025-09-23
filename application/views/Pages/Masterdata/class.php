@@ -19,7 +19,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
               </div>
               <div class="ms-md-auto py-2 py-md-0">
                 <button class="btn btn-info" id="reload"><span class="btn-label"><i class="fas fa-sync"></i></span> Reload</button>
-                <?php if($check_auth[0]->add == 'N'){ ?>
+                <?php if($data['check_auth'][0]->add == 'N'){ ?>
                   <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg" disabled="disabled"><span class="btn-label"><i class="fa fa-plus"></i></span> Tambah</button>
                 <?php }else{ ?>
                   <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg"><span class="btn-label"><i class="fa fa-plus"></i></span> Tambah</button>
@@ -44,7 +44,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                                     <i class="fa-solid fa-cloud-arrow-up"></i>
                                     <h4>upload screenshoot</h4>
                                     <p>image size must be less than <span>2MB</span></p>
-                                   
+
                                   </div>
                                   <button class="selectImage" type="button">Select Image</button>
                                 </div>
@@ -127,7 +127,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                                     <i class="fa-solid fa-cloud-arrow-up"></i>
                                     <h4>upload screenshoot</h4>
                                     <p>image size must be less than <span>2MB</span></p>
-                                     <div id="active-image"></div>
+                                    <div id="active-image"></div>
                                   </div>
                                   <button class="selectImage_edit" type="button">Select Image</button>
                                 </div>
@@ -190,6 +190,119 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   </div>
                 </div>
                 <!-- end popup edit member -->
+
+                <!-- popup Schedule member -->
+                <div class="modal fade bd-example-modal-xl schedule" id="exampleModalschedule" tabindex="-1" role="dialog" aria-labelledby="exampleModaleditLabel" >
+                  <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Set Jadwal</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row">
+                          <div class="col-md-3 border-right">
+                            <div class="form-group form-inline">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Kode Kelas</label>
+                              <div class="col-md-12 p-0">
+                                <input type="hidden" class="form-control input-full" name="class_id_schedule" id="class_id_schedule" readonly>
+                                <input type="text" class="form-control input-full" name="class_code_schedule" id="class_code_schedule" value="" readonly>
+                              </div>
+                            </div>
+
+                            <div class="form-group form-inline">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Nama Kelas</label>
+                              <div class="col-md-12 p-0">
+                                <input type="text" class="form-control input-full" name="class_name_schedule" id="class_name_schedule" placeholder="Nama Kelas" readonly>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-md-9 border-right">
+                            <div class="form-group form-inline">
+                              <div class="row">
+                                <div class="col-md-3">
+                                  <label for="inlineinput" class="col-md-3 col-form-label">Hari</label>
+                                  <div class="col-md-12 p-0">
+                                    <select class="form-control input-full js-example-basic-single" id="schedule_day" name="schedule_day">
+                                      <option value="">-- Pilih Hari --</option>
+                                      <option value="Senin">Senin</option> 
+                                      <option value="Selasa">Selasa</option> 
+                                      <option value="Rabu">Rabu</option> 
+                                      <option value="Kamis">Kamis</option> 
+                                      <option value="Jumat">Jumat</option> 
+                                      <option value="Sabtu">Sabtu</option> 
+                                      <option value="Minggu">Minggu</option> 
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-md-2">
+                                  <label for="inlineinput" class="col-md-3 col-form-label">Jam Mulai</label>
+                                  <div class="col-md-12 p-0">
+                                    <input type="time" class="form-control input-full" name="schedule_time_start" id="schedule_time_start" value="">
+                                  </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                  <label for="inlineinput" class="col-md-3 col-form-label">Jam Selesai</label>
+                                  <div class="col-md-12 p-0">
+                                    <input type="time" class="form-control input-full" name="schedule_time_end" id="schedule_time_end" value="">
+                                  </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                  <label for="inlineinput" class="col-md-3 col-form-label">Instruktur</label>
+                                  <div class="col-md-12 p-0">
+                                    <select class="form-control input-full js-example-basic-single" id="schedule_coach" name="schedule_coach">
+                                      <option value="">-- Pilih Instruktur --</option>
+                                      <?php foreach($data['coach_list'] as $row){ ?>
+                                        <option value="<?php echo $row->coach_id ?>"><?php echo $row->coach_name ?></option>
+                                      <?php } ?>
+                                    </select>
+                                  </div>
+                                </div>
+
+                                <div class="col-md-1">
+                                  <div class="form-group">
+                                    <button id="btnadd_temp" class="btn btn-md btn-primary rounded-circle float-right btn-add-temp" style="margin-top:40px;"><i class="fas fa-plus"></i></button>
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              <div class="row border-top" style="margin-top:50px;">
+                                <div class="col-md-12">
+                                  <div class="table-responsive">
+                                    <table class="display table table-striped table-hover schedule-list" style="width: 100%;">
+                                      <thead>
+                                        <tr>
+                                          <th>Hari</th>
+                                          <th>Jam</th>
+                                          <th>Instruktur</th>
+                                          <th>Aksi</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody id="schedulelistbody">
+
+                                      </tbody>
+                                    </table>
+
+                                  </div>  
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times-circle"></i> Batal</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- end popup Schedule member -->
               </div>
             </div>
           </div>
@@ -271,6 +384,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       ]
     });
   }
+
 
   /* image uplaod */
   const fileTypes = [
@@ -377,7 +491,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       dataType: "json",
       data: {id:id},
       success : function(data){
-            
+
         if (data.code == "200"){
           document.getElementById("active-image").innerHTML = "";
           let row = data.result.get_class_by_id[0];
@@ -400,7 +514,54 @@ require DOC_ROOT_PATH . $this->config->item('footer');
         }
       }
     });
+  }) 
+
+
+  $('#exampleModalschedule').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var id   = button.data('id')
+    var name = button.data('name')
+    var modal = $(this)
+    modal.find('.modal-title').text('Edit Jadwal ' + name)
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>Masterdata/get_class_id",
+      dataType: "json",
+      data: {id:id},
+      success : function(data){
+        if (data.code == "200"){
+          document.getElementById("active-image").innerHTML = "";
+          let row = data.result.get_class_by_id[0];
+          let table_row = data.schedule.get_class_schedule.length;
+          let table_row_data = data.schedule.get_class_schedule;
+          modal.find('#class_id_schedule').val(row.class_id)
+          modal.find('#class_code_schedule').val(row.class_code)
+          modal.find('#class_name_schedule').val(row.class_name)
+          load_table_schedule(table_row, table_row_data);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: data.result,
+          })
+        }
+      }
+    });
   })
+
+  function load_table_schedule(table_row, table_row_data)
+  {
+    let text = "";
+    for (let i = 0; i < table_row; i++) {
+      text += '<tr><th>'+table_row_data[i].schedule_day+'</th><th>'+convertTimeFormat(table_row_data[i].schedule_time_start)+' - '+convertTimeFormat(table_row_data[i].schedule_time_end)+'</th><th>'+table_row_data[i].coach_name+'</th><th>Aksi</th></tr>';
+    }
+    document.getElementById("schedulelistbody").innerHTML = text;
+  }
+
+  function convertTimeFormat(time) {
+    const parts = time.split(':');
+    return parts[0] + ':' + parts[2];
+  }
 
   $('#save_class_form').on('submit',(function(e) {
     e.preventDefault();
@@ -446,6 +607,39 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       });
     }
   }));
+
+  $('#btnadd_temp').click(function(e){
+    e.preventDefault();
+    var class_id_schedule      = $("#class_id_schedule").val();
+    var schedule_day           = $("#schedule_day").val();
+    var schedule_time_start    = $("#schedule_time_start").val();
+    var schedule_time_end      = $("#schedule_time_end").val();
+    var schedule_coach         = $("#schedule_coach").val();
+
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>Masterdata/add_schedule",
+      dataType: "json",
+      data: {class_id_schedule:class_id_schedule, schedule_day:schedule_day, schedule_time_start:schedule_time_start, schedule_time_end:schedule_time_end, schedule_coach:schedule_coach},
+      success : function(data){
+        if (data.code == "200"){
+          let title = 'Tambah Data';
+          let message = 'Data Berhasil Di Tambah';
+          let state = 'info';
+          notif_success(title, message, state);
+          let table_row = data.schedule.get_class_schedule.length;
+          let table_row_data = data.schedule.get_class_schedule;
+          load_table_schedule(table_row, table_row_data);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: data.result,
+          })
+        }
+      }
+    });
+  });
 
   $('#reload').click(function(e){
     e.preventDefault();

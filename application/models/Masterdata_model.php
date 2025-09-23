@@ -175,6 +175,13 @@ class masterdata_model extends CI_Model {
         return $result;
     }
 
+    public function get_class_schedule($id)
+    {
+        $query = $this->db->query("select * from schedule_class a, ms_coach b where a.coach_id = b.coach_id  and class_id='".$id."' order by schedule_sort asc, schedule_time_start asc");
+        $result = $query->result();
+        return $result;
+    }
+
     public function get_class_code($class_id)
     {
         $query = $this->db->query("select class_code, class_name from ms_class where class_id = '".$class_id."'");
@@ -217,7 +224,7 @@ class masterdata_model extends CI_Model {
     //end class
 
     //coach
-
+    
     public function coach_list($search, $length, $start)
     {
         $this->db->select('*');
