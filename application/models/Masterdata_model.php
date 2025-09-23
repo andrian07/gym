@@ -170,7 +170,7 @@ class masterdata_model extends CI_Model {
 
     public function get_class_by_id($id)
     {
-        $query = $this->db->query("select * from ms_class where class_active = 'Y' and class_id='".$id."'");
+        $query = $this->db->query("select * from ms_class where class_id='".$id."'");
         $result = $query->result();
         return $result;
     }

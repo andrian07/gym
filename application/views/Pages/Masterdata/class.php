@@ -116,7 +116,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
 
-                      <form name="save_class_form" id="save_class_form" enctype="multipart/form-data" action="<?php echo base_url(); ?>Masterdata/edit_class" method="post">
+                      <form name="edit_class_form" id="edit_class_form" enctype="multipart/form-data" action="<?php echo base_url(); ?>Masterdata/edit_class" method="post">
                         <div class="modal-body">
                           <div class="row">
                             <div class="col-md-6 border-right">
@@ -608,6 +608,51 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     }
   }));
 
+  $('#edit_class_form').on('submit',(function(e) {
+    e.preventDefault();
+    var formData              = new FormData(this);
+    var class_name            = $("#class_name_edit").val();
+    var class_desc            = $("#class_desc_edit").val();
+    var class_price           = $("#class_price_edit").val();
+    var class_attend_type     = $("#class_attend_type_edit").val();
+
+    if(class_name == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Nama Kelas',
+      })
+    }else if(class_price == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Harga Kelas',
+      })
+    }else{
+      $.ajax({
+        type:'POST',
+        url: $(this).attr('action'),
+        data:formData,
+        cache:false,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success:function(data){     
+          if(data.code == 0){
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: data.result,
+            })
+          }else{
+            window.location.href = "<?php echo base_url(); ?>Masterdata/class";
+            Swal.fire('Saved!', '', 'success');
+          } 
+        }
+      });
+    }
+  }));
+
   $('#btnadd_temp').click(function(e){
     e.preventDefault();
     var class_id_schedule      = $("#class_id_schedule").val();
@@ -630,6 +675,10 @@ require DOC_ROOT_PATH . $this->config->item('footer');
           let table_row = data.schedule.get_class_schedule.length;
           let table_row_data = data.schedule.get_class_schedule;
           load_table_schedule(table_row, table_row_data);
+          $("#schedule_day").val("null");
+          $("#schedule_time_start").val("null");
+          $("#schedule_time_end").val("null");
+          $("#schedule_coach").val("null");
         } else {
           Swal.fire({
             icon: 'error',

@@ -40,8 +40,10 @@ class Masterdata extends CI_Controller {
 		$modul = 'Member';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
+			$coach_list['coach_list'] = $this->global_model->coach_list();
 			$check_auth['check_auth'] = $check_auth;
-			$this->load->view('Pages/Masterdata/member', $check_auth);
+			$data['data'] = array_merge($check_auth, $coach_list);
+			$this->load->view('Pages/Masterdata/member', $data);
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
@@ -895,35 +897,64 @@ class Masterdata extends CI_Controller {
 		$modul = 'class';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->edit == 'Y'){
-			$class_id   				= $this->input->post('class_id');
-			$class_code 				= $this->input->post('class_code');
-			$class_name 				= $this->input->post('class_name');
-			$class_dob 					= $this->input->post('class_dob');
-			$class_gender	 			= $this->input->post('class_gender');
-			$class_address 				= $this->input->post('class_address');
-			$class_address_phone 		= $this->input->post('class_address_phone');
-			$class_address_email 		= $this->input->post('class_address_email');
+
+			$screenshoot 				= $this->input->post('screenshoot_edit');
+			$class_id   				= $this->input->post('class_id_edit');
+			$class_name 				= $this->input->post('class_name_edit');
+			$class_desc 				= $this->input->post('class_desc_edit');
+			$class_price	 			= $this->input->post('class_price_edit');
+			$class_attend_type 			= $this->input->post('class_attend_type_edit');
 			$user_id 		   			= $_SESSION['user_id'];
 
+
+			$class_price_replace = str_replace('Rp. ', '', $class_price);
+			$class_price = str_replace('.', '', $class_price_replace);
+
 			if($class_name == null){
-				$msg = "Nama class Harus Di isi";
+				$msg = "Silahkan Isi Nama Kelas";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
 
-			if($class_address_phone == null){
-				$msg = "No Hp Harus Di isi";
+			if($class_price == null){
+				$msg = "Silahkan Isi Harga Kelas";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+
+			$get_class_by_id = $this->masterdata_model->get_class_by_id($class_id);
+
+			$check_image_name = $get_class_by_id[0]->class_image;
+
+			if($_FILES['screenshoot_edit']['name'] == null){
+				$new_image_name = $get_class_by_id[0]->class_image;
+			}else{
+				if($check_image_name != $_FILES['screenshoot_edit']['name']){
+					$new_image_name = $member_code.$this->generateRandomString().'.png';
+					$config['upload_path'] = './assets/member/';
+					$config['allowed_types'] = 'gif|jpg|png|jpeg|PNG';
+					$config['file_name'] = $new_image_name;
+					$this->load->library('upload', $config);
+					if (!$this->upload->do_upload('screenshoot_edit')) 
+					{
+						$error = array('error' => $this->upload->display_errors());
+						echo json_encode(['code'=>0, 'result'=>$error]);die();
+					} 
+					else
+					{
+						$data = array('image_metadata' => $this->upload->data());
+					}
+				}else{
+					$new_image_name = $check_image_name;
+				}
 			}
 
 			$data_edit = array(
-				'class_name'	       		=> $class_name,
-				'class_dob'	       		=> $class_dob,
-				'class_gender'	    		=> $class_gender,
-				'class_address'	    	=> $class_address,
-				'class_phone'	   			=> $class_address_phone,
-				'class_email'	    		=> $class_address_email,
+				'class_name'	       	=> $class_name,
+				'class_price'	   		=> $class_price,
+				'class_attend_type'	    => $class_attend_type,
+				'class_desc'	       	=> $class_desc,
+				'class_image'	    	=> $new_image_name,
 			);
-
 			$this->masterdata_model->edit_class($data_edit, $class_id);
 
 			$data_insert_act = array(
