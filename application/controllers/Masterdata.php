@@ -417,6 +417,9 @@ class Masterdata extends CI_Controller {
 					$status = '<span class="badge badge-danger">Non Aktif</span>';
 				}
 
+
+				$share_link = '<input type="hidden" value="'.$field['coach_ref_link'].'" id="shared'.$field['coach_id'].'"><button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-id="'.$field['coach_id'].'"><i class="fas fa-link sizing-fa"></i></button> ';
+
 				$date = date_create($field['coach_register']); 
 
 				//$url_image = base_url().'assets/products/'.$field['product_image'];
@@ -429,7 +432,7 @@ class Masterdata extends CI_Controller {
 				$row[] = date_format($date,"d-m-Y");
 				$row[] = $field['coach_title'];
 				$row[] = $status;
-				$row[] = $detail.$edit;
+				$row[] = $detail.$edit.$share_link;
 				$data[] = $row;
 			}
 
