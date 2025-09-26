@@ -118,14 +118,14 @@
             </li>
 
             <li class="nav-item">
-              <a href="<?php echo base_url(); ?>">
+              <a href="<?php echo base_url(); ?>Register">
                 <i class="fas fa-user-clock"></i>
                 <p>Pendaftaran</p>
               </a>
             </li>
 
             <li class="nav-item">
-              <a href="<?php echo base_url(); ?>Search">
+              <a href="<?php echo base_url(); ?>Absence">
                 <i class="fas fa-user-clock"></i>
                 <p>Absensi</p>
               </a>

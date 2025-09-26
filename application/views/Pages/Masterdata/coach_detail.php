@@ -42,72 +42,66 @@
   <div class="card" style="padding:0;">
     <div class="d-flex align-items-left">
       <div>
-        <h3 class="fw-bold mb-3">Member Informasi</h3>
+        <h3 class="fw-bold mb-3">Instruktur Informasi</h3>
       </div>
       <div class="ms-md-auto py-2 py-md-0">
       </div>
     </div>
     <div class="card-body" style="padding:0;">
-      <?php foreach($data['get_member_by_id'] as $row){ ?>
+      <?php foreach($data['get_coach_by_id'] as $row){ ?>
         <div class="row">
           <div class="col-md-3">
-            <img src="<?php echo base_url(); ?>assets/member/<?php echo $row->member_image; ?>" style="height: 300px; width: 350px;">
+            <img src="<?php echo base_url(); ?>assets/coach/<?php echo $row->coach_image; ?>" style="height: 300px; width: 350px;">
           </div>
           <div class="col-md-9">
             <div class="table-responsive">
               <table class="table table-bordered">
                 <tbody>
                   <tr>
-                    <th scope="col" class="productinfo-text-right">Kode Member:</th>
-                    <td colspan="4"><?php echo $row->member_code; ?></td>
+                    <th scope="col" class="productinfo-text-right">Kode Instruktur / Personal Trainer:</th>
+                    <td colspan="4"><?php echo $row->coach_code; ?></td>
                   </tr>
                   <tr>
                     <th scope="col" class="productinfo-text-right">Nama:</th>
-                    <td colspan="4"><?php echo $row->member_name; ?></td>
+                    <td colspan="4"><?php echo $row->coach_name; ?></td>
                   </tr>
                   <tr>
                     <th scope="col" class="productinfo-text-right">No Hp:</th>
-                    <td colspan="4"><?php echo $row->member_phone; ?></td>
+                    <td colspan="4"><?php echo $row->coach_phone; ?></td>
                   </tr>
                   <tr>
                     <th scope="col" class="productinfo-text-right">Tgl Lahir:</th>
-                    <td colspan="4"><?php echo $row->member_dob; ?></td>
+                    <td colspan="4"><?php echo $row->coach_dob; ?></td>
                   </tr>
                   <tr>
                     <th scope="col" class="productinfo-text-right">Jensi Kelamin:</th>
-                    <td colspan="4"><?php echo $row->member_gender; ?></td>
+                    <td colspan="4"><?php echo $row->coach_gender; ?></td>
                   </tr>
                   <tr>
                     <th scope="col" class="productinfo-text-right">Alamat:</th>
-                    <td colspan="4"><?php echo $row->member_address; ?></td>
-                  </tr>
-                  <tr>
-                    <th scope="col" class="productinfo-text-right">Kontak Darurat Yang Dapat Dihubungi:</th>
-                    <td colspan="4"><?php echo $row->member_urgent_phone; ?></td>
-                  </tr>
-                  <tr>
-                    <th scope="col" class="productinfo-text-right">Hubungan:</th>
-                    <td colspan="4"><?php echo $row->member_urgent_sibiling; ?></td>
-                  </tr>
-                  <tr>
-                    <th scope="col" class="productinfo-text-right">Keterangan (alergi / penyakit bawaan /dll)::</th>
-                    <td colspan="4"><?php echo $row->member_desc; ?></td>
+                    <td colspan="4"><?php echo $row->coach_address; ?></td>
                   </tr>
                   <tr>
                     <th scope="col" class="productinfo-text-right">Status:</th>
                     <td colspan="4">
-                      <?php if($row->member_active == 'Y'){
+                      <?php if($row->coach_active == 'Y'){
                         echo '<span class="badge badge-success">Aktif</span>';
                       }else{
                         echo '<span class="badge badge-danger multi-badge">Tidak Aktif</span>';
                       } ?>
                     </td>
                   </tr>
+                  <tr>
+                    <th scope="col" class="productinfo-text-right">Spesialis / Bidang:</th>
+                    <td colspan="4"><?php echo $row->coach_title; ?></td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
+
+        <?php } ?>
         <div class="row border-top">
 
           <div class="col-md-3">
@@ -121,23 +115,23 @@
                   <tr>
                     <th>Hari</th>
                     <th>Jam</th>
-                    <th>Instruktur</th>
                     <th>Kelas</th>
                   </tr>
                 </thead>
                 <tbody id="schedulelistbody">
+                  <?php foreach($data['get_class_by_coach_id'] as $rows){ ?>
                   <tr>
-                    <th>Senin</th>
-                    <th>07:00 - 09:00</th>
-                    <th>Doni</th>
-                    <th>Zumba</th>
+                    <th><?php echo $rows->schedule_day; ?></th>
+                    <th><?php echo $rows->schedule_time_start; ?> - <?php echo $rows->schedule_time_end; ?></th>
+                    <th><?php echo $rows->class_name; ?></th>
                   </tr>
+                  <?php } ?>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-      <?php } ?>
+  
 
     </div>
   </div>

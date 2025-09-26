@@ -126,6 +126,11 @@ class Masterdata extends CI_Controller {
 			$member_email	 			= $this->input->post('member_email');
 			$member_address 			= $this->input->post('member_address');
 			$member_gender 				= $this->input->post('member_gender');
+			$member_urgent_phone	 	= $this->input->post('member_urgent_phone');
+			$member_urgent_sibiling 	= $this->input->post('member_urgent_sibiling');
+			$member_desc 				= $this->input->post('member_desc');
+
+
 			$user_id 		   			= $_SESSION['user_id'];
 
 			$check_member_nik = $this->masterdata_model->check_member_nik($member_nik);
@@ -194,6 +199,9 @@ class Masterdata extends CI_Controller {
 				'member_gender'	    		=> $member_gender,
 				'member_nik'				=> $member_nik,
 				'member_email'	    		=> $member_email,
+				'member_urgent_phone'		=> $member_urgent_phone,
+				'member_urgent_sibiling'	=> $member_urgent_sibiling,
+				'member_desc'				=> $member_desc,
 				'member_image'				=> $new_image_name
 			);
 
@@ -240,6 +248,10 @@ class Masterdata extends CI_Controller {
 			$member_email   			= $this->input->post('member_email_edit');
 			$member_address      		= $this->input->post('member_address_edit');
 			$member_gender      		= $this->input->post('member_gender_edit');
+			$member_urgent_phone	 	= $this->input->post('member_urgent_phone_edit');
+			$member_urgent_sibiling 	= $this->input->post('member_urgent_sibiling_edit');
+			$member_desc 				= $this->input->post('member_desc_edit');
+
 			$user_id 		   			= $_SESSION['user_id'];
 
 			if($member_name == null){
@@ -287,7 +299,10 @@ class Masterdata extends CI_Controller {
 				'member_gender'	    		=> $member_gender,
 				'member_nik'				=> $member_nik,
 				'member_email'	    		=> $member_email,
-				'member_image'				=> $new_image_name
+				'member_image'				=> $new_image_name,
+				'member_urgent_phone'		=> $member_urgent_phone,
+				'member_urgent_sibiling'	=> $member_urgent_sibiling,
+				'member_desc'				=> $member_desc,
 			);
 
 			$this->masterdata_model->edit_member($data_edit, $member_id);
@@ -403,7 +418,7 @@ class Masterdata extends CI_Controller {
 			$no = $_POST['start'];
 			foreach ($list as $field) {
 
-				$detail = '<a href="'.base_url().'Masterdata/detailmember?id='.$field['coach_id'].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['coach_id'].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
+				$detail = '<a href="'.base_url().'Masterdata/detailcoach?id='.$field['coach_id'].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['coach_id'].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
 
 				if($check_auth[0]->edit == 'Y'){
 					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['coach_id'].'" data-name="'.$field['coach_name'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
@@ -446,6 +461,22 @@ class Masterdata extends CI_Controller {
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+	public function detailcoach()
+	{
+		$modul = 'Coach';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$id = $this->input->get('id');
+			$get_coach_by_id['get_coach_by_id'] = $this->masterdata_model->get_coach_by_id($id);
+			$get_class_by_coach_id['get_class_by_coach_id'] = $this->masterdata_model->get_class_by_coach_id($id);
+			$data['data'] = array_merge($get_coach_by_id, $get_class_by_coach_id);
+			$this->load->view('Pages/Masterdata/coach_detail', $data);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
 		}
 	}
 
@@ -688,19 +719,6 @@ class Masterdata extends CI_Controller {
 		}	
 	}
 
-	public function detailcoach(){
-		$modul = 'Coach';
-		$check_auth = $this->check_auth($modul);
-		if($check_auth[0]->view == 'Y'){
-			$id = $this->input->get('id');
-			$get_coach_by_id['get_coach_by_id'] = $this->masterdata_model->get_coach_by_id($id);
-			$this->load->view('Pages/Masterdata/coach_detail', $get_coach_by_id);
-		}else{
-			$msg = "No Access";
-			echo json_encode(['code'=>0, 'result'=>$msg]);
-		}
-	}
-
 
 	public function get_coach_id(){
 		$id = $this->input->post('id');
@@ -800,7 +818,7 @@ class Masterdata extends CI_Controller {
 				$row[] = $field['class_name'];
 				$row[] = $field['class_desc'];
 				$row[] = 'Rp. '.number_format($field['class_price']).' / '.$field['class_attend_type'];
-				$row[] = $detail.$edit.$schedule;
+				$row[] = $edit.$schedule;
 				$data[] = $row;
 			}
 

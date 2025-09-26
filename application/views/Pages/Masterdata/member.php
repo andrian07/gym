@@ -18,7 +18,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                 <h3 class="fw-bold mb-3">Daftar Member</h3>
               </div>
               <div class="ms-md-auto py-2 py-md-0">
-                <div class="btn-group dropdown">
+                <!-- <div class="btn-group dropdown">
                   <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"><span class="btn-label"><i class="fas fa-file-excel"></i></span> Excell</button>
                   <ul class="dropdown-menu" role="menu">
                     <li>
@@ -26,7 +26,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                       <a class="dropdown-item" href="#">Import Excell</a>
                     </li>
                   </ul>
-                </div>
+                </div> -->
                 <button class="btn btn-info" id="reload"><span class="btn-label"><i class="fas fa-sync"></i></span> Reload</button>
                 <?php if($data['check_auth'][0]->add == 'N'){ ?>
                   <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".bd-example-modal-xl" disabled="disabled"><span class="btn-label"><i class="fa fa-plus"></i></span> Tambah</button>
@@ -44,7 +44,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                     <form name="save_member_form" id="save_member_form" enctype="multipart/form-data" action="<?php echo base_url(); ?>Masterdata/save_member" method="post">
                       <div class="modal-body">
                         <div class="row">
-                          <div class="col-md-4 border-right">
+                          <div class="col-md-4 border-right border-bottom">
                             <div class="form-group form-inline">
                               <div class="proof">
                                 <div class="imgArea" data-title="">
@@ -57,7 +57,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               </div>
                             </div>
                           </div>
-                          <div class="col-md-4">
+                          <div class="col-md-4 border-right border-bottom">
                             <div class="form-group form-inline">
                               <label for="inlineinput" class="col-md-3 col-form-label">Kode Member</label>
                               <div class="col-md-12 p-0">
@@ -94,7 +94,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             </div>
 
                           </div>
-                          <div class="col-md-4">
+                          <div class="col-md-4 border-bottom">
                             <div class="form-group form-inline">
                               <label for="inlineinput" class="col-md-3 col-form-label">Email</label>
                               <div class="col-md-12 p-0">
@@ -105,7 +105,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             <div class="form-group form-inline">
                               <label for="inlineinput" class="col-md-3 col-form-label">Alamat</label>
                               <div class="col-md-12 p-0">
-                                <textarea class="form-control" id="member_address" name="member_address" rows="4"></textarea>
+                                <textarea class="form-control" id="member_address" name="member_address" rows="5"></textarea>
                               </div>
                             </div>
                             <div class="form-group form-inline">
@@ -119,7 +119,34 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             </div>
 
                           </div>
+
+                          <div class="col-md-4">
+                            <div class="form-group form-inline">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Kontak Darurat Yang Dapat Dihubungi</label>
+                              <div class="col-md-12 p-0">
+                                <input type="text" class="form-control input-full" name="member_urgent_phone" id="member_urgent_phone" placeholder="Kontak Darurat">
+                              </div>
+                            </div>
+
+                            <div class="form-group form-inline">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Hubungan</label>
+                              <div class="col-md-12 p-0">
+                                <input type="text" class="form-control input-full" name="member_urgent_sibiling" id="member_urgent_sibiling" placeholder="Hubungan">
+                              </div>
+                            </div>
+                          </div>
+
+
+                          <div class="col-md-4">
+                            <div class="form-group form-inline">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Keterangan (alergi / penyakit bawaan /dll):</label>
+                              <div class="col-md-12 p-0">
+                                <textarea class="form-control" id="member_desc" name="member_desc" rows="5"></textarea>
+                              </div>
+                            </div>
+                          </div>
                         </div>
+
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times-circle"></i> Batal</button>
@@ -134,7 +161,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                 <div class="modal-dialog modal-xl" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModaledit">Edit Produk</h5>
+                      <h5 class="modal-title" id="exampleModaledit">Edit Member</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form name="edit_member_form" id="edit_member_form" enctype="multipart/form-data" action="<?php echo base_url(); ?>Masterdata/edit_member" method="post">
@@ -218,16 +245,30 @@ require DOC_ROOT_PATH . $this->config->item('header');
                                 </select>
                               </div>
                             </div>
+                          </div>
+
+                          <div class="col-md-4">
+                            <div class="form-group form-inline">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Kontak Darurat Yang Dapat Dihubungi</label>
+                              <div class="col-md-12 p-0">
+                                <input type="text" class="form-control input-full" name="member_urgent_phone_edit" id="member_urgent_phone_edit" placeholder="Kontak Darurat">
+                              </div>
+                            </div>
 
                             <div class="form-group form-inline">
-                              <label for="inlineinput" class="col-md-3 col-form-label">Referensi</label>
+                              <label for="inlineinput" class="col-md-3 col-form-label">Hubungan</label>
                               <div class="col-md-12 p-0">
-                                <select class="form-select form-control" id="class_attend_type" name="class_attend_type">
-                                  <option value="Jam">Jam</option>
-                                  <option value="Hari">Hari</option>
-                                  <option value="Bulan">Bulan</option>
-                                  <option value="Pertemuan">Pertemuan</option>
-                                </select>
+                                <input type="text" class="form-control input-full" name="member_urgent_sibiling_edit" id="member_urgent_sibiling_edit" placeholder="Hubungan">
+                              </div>
+                            </div>
+                          </div>
+
+
+                          <div class="col-md-4">
+                            <div class="form-group form-inline">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Keterangan (alergi / penyakit bawaan /dll):</label>
+                              <div class="col-md-12 p-0">
+                                <textarea class="form-control" id="member_desc_edit" name="member_desc_edit" rows="5"></textarea>
                               </div>
                             </div>
                           </div>
@@ -299,14 +340,14 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       },
       columns: 
       [
-      {data: 0},
-      {data: 1},
-      {data: 2},
-      {data: 3},
-      {data: 4},
-      {data: 5},
-      {data: 6},
-      {data: 7}
+        {data: 0},
+        {data: 1},
+        {data: 2},
+        {data: 3},
+        {data: 4},
+        {data: 5},
+        {data: 6},
+        {data: 7}
       ]
     });
   }
@@ -314,17 +355,17 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
   /* image uplaod */
   const fileTypes = [
-  "image/apng",
-  "image/bmp",
-  "image/gif",
-  "image/jpeg",
-  "image/pjpeg",
-  "image/png",
-  "image/svg+xml",
-  "image/tiff",
-  "image/webp",
-  "image/x-icon",
-  "image/avif",
+    "image/apng",
+    "image/bmp",
+    "image/gif",
+    "image/jpeg",
+    "image/pjpeg",
+    "image/png",
+    "image/svg+xml",
+    "image/tiff",
+    "image/webp",
+    "image/x-icon",
+    "image/avif",
   ];
   function validFileType(file) {
     return fileTypes.includes(file.type);
@@ -406,130 +447,130 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
 // End Edit Image //
 
-$('#edit_member_form').on('submit',(function(e) {
-  e.preventDefault();
-  var formData            = new FormData(this);
-  var member_name         = $("#member_name_edit").val();
-  var member_phone        = $("#member_phone_edit").val();
-  var member_nik          = $("#member_nik_edit").val();
-  var member_dob          = $("#member_dob_edit").val();
-  var member_email        = $("#member_email_edit").val();
-  var member_address      = $("#member_address_edit").val();
-  var member_gender       = $("#member_gender_edit").val();
+  $('#edit_member_form').on('submit',(function(e) {
+    e.preventDefault();
+    var formData            = new FormData(this);
+    var member_name         = $("#member_name_edit").val();
+    var member_phone        = $("#member_phone_edit").val();
+    var member_nik          = $("#member_nik_edit").val();
+    var member_dob          = $("#member_dob_edit").val();
+    var member_email        = $("#member_email_edit").val();
+    var member_address      = $("#member_address_edit").val();
+    var member_gender       = $("#member_gender_edit").val();
 
-  if(member_name == ''){
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Silahkan Isi Nama Member',
-    })
-  }else if(member_phone == ''){
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Silahkan Isi No HP',
-    })
-  }else if(member_nik == ''){
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Silahkan Isi No KTP',
-    })
-  }else if(member_dob == ''){
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Silahkan Isi Tgl Lahir',
-    })
-  }else if(member_address == ''){
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Silahkan Isi Alamat',
-    })
-  }else{
-    $.ajax({
-      type:'POST',
-      url: $(this).attr('action'),
-      data:formData,
-      cache:false,
-      contentType: false,
-      processData: false,
-      success:function(data){          
-        window.location.href = "<?php echo base_url(); ?>Masterdata/member";
-        Swal.fire('Saved!', '', 'success');
-      }
-    });
-  }
-}));
-
-$('#save_member_form').on('submit',(function(e) {
-  e.preventDefault();
-  var formData            = new FormData(this);
-  var member_name         = $("#member_name").val();
-  var member_phone        = $("#member_phone").val();
-  var member_nik          = $("#member_nik").val();
-  var member_dob          = $("#member_dob").val();
-  var member_email        = $("#member_email").val();
-  var member_address      = $("#member_address").val();
-  var member_gender       = $("#member_gender").val();
-
-  if(member_name == ''){
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Silahkan Isi Nama Member',
-    })
-  }else if(member_phone == ''){
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Silahkan Isi No HP',
-    })
-  }else if(member_nik == ''){
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Silahkan Isi No KTP',
-    })
-  }else if(member_dob == ''){
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Silahkan Isi Tgl Lahir',
-    })
-  }else if(member_address == ''){
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Silahkan Isi Alamat',
-    })
-  }else{
-    $.ajax({
-      type:'POST',
-      url: $(this).attr('action'),
-      data:formData,
-      cache:false,
-      contentType: false,
-      processData: false,
-      dataType: "json",
-      success:function(data){     
-        if(data.code == 0){
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: data.result,
-          })
-        }else{
+    if(member_name == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Nama Member',
+      })
+    }else if(member_phone == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi No HP',
+      })
+    }else if(member_nik == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi No KTP',
+      })
+    }else if(member_dob == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Tgl Lahir',
+      })
+    }else if(member_address == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Alamat',
+      })
+    }else{
+      $.ajax({
+        type:'POST',
+        url: $(this).attr('action'),
+        data:formData,
+        cache:false,
+        contentType: false,
+        processData: false,
+        success:function(data){          
           window.location.href = "<?php echo base_url(); ?>Masterdata/member";
           Swal.fire('Saved!', '', 'success');
-        } 
-      }
-    });
-  }
-}));
+        }
+      });
+    }
+  }));
 
-$('#exampleModaledit').on('show.bs.modal', function (event) {
+  $('#save_member_form').on('submit',(function(e) {
+    e.preventDefault();
+    var formData            = new FormData(this);
+    var member_name         = $("#member_name").val();
+    var member_phone        = $("#member_phone").val();
+    var member_nik          = $("#member_nik").val();
+    var member_dob          = $("#member_dob").val();
+    var member_email        = $("#member_email").val();
+    var member_address      = $("#member_address").val();
+    var member_gender       = $("#member_gender").val();
+
+    if(member_name == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Nama Member',
+      })
+    }else if(member_phone == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi No HP',
+      })
+    }else if(member_nik == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi No KTP',
+      })
+    }else if(member_dob == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Tgl Lahir',
+      })
+    }else if(member_address == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi Alamat',
+      })
+    }else{
+      $.ajax({
+        type:'POST',
+        url: $(this).attr('action'),
+        data:formData,
+        cache:false,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success:function(data){     
+          if(data.code == 0){
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: data.result,
+            })
+          }else{
+            window.location.href = "<?php echo base_url(); ?>Masterdata/member";
+            Swal.fire('Saved!', '', 'success');
+          } 
+        }
+      });
+    }
+  }));
+
+  $('#exampleModaledit').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var id   = button.data('id')
     var name = button.data('name')
@@ -553,6 +594,10 @@ $('#exampleModaledit').on('show.bs.modal', function (event) {
           modal.find('#member_email_edit').val(row.member_email)
           modal.find('#member_address_edit').val(row.member_address)
           modal.find('#member_gender_edit').val(row.member_gender)
+          modal.find('#member_urgent_phone_edit').val(row.member_urgent_phone)
+          modal.find('#member_urgent_sibiling_edit').val(row.member_urgent_sibiling)
+          modal.find('#member_desc_edit').val(row.member_desc)
+
           var elem = document.createElement("img");
           document.getElementById("active-image").appendChild(elem);
           elem.src = '<?php echo base_url(); ?>assets/member/'+row.member_image;
@@ -568,9 +613,9 @@ $('#exampleModaledit').on('show.bs.modal', function (event) {
   })
 
 
-$('#reload').click(function(e){
-  e.preventDefault();
-  location.reload();
-});
+  $('#reload').click(function(e){
+    e.preventDefault();
+    location.reload();
+  });
 
 </script>

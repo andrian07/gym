@@ -302,6 +302,13 @@ class masterdata_model extends CI_Model {
         return $result;
     }
 
+    public function get_class_by_coach_id($id)
+    {
+        $query = $this->db->query("select * from schedule_class a, ms_class b where a.class_id = b.class_id and coach_id = '".$id."'");
+        $result = $query->result();
+        return $result;
+    }
+
     //end coach
 
 
