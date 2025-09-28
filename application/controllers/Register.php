@@ -65,7 +65,7 @@ class Register extends CI_Controller {
 		}
 	}
 
-	public function member_list()
+	public function register_list()
 	{
 		$modul = 'Member';
 		$check_auth = $this->check_auth($modul);

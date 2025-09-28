@@ -32,10 +32,11 @@ require DOC_ROOT_PATH . $this->config->item('header');
               <table id="class-list" class="display table table-striped table-hover">
                 <thead>
                   <tr>
-                    <th>Kode</th>
-                    <th>Nama Kelas</th>
-                    <th>Keterangan</th>
-                    <th>Harga</th>
+                    <th>No Invoice</th>
+                    <th>Nama Member</th>
+                    <th>Diskon</th>
+                    <th>PPN</th>
+                    <th>Total</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
@@ -63,23 +64,23 @@ require DOC_ROOT_PATH . $this->config->item('footer');
   });
 
   function table_class_list(){
-    $('#class-list').DataTable({
+    $('#register-list').DataTable({
       serverSide: true,
       search: true,
       processing: true,
       ordering: false,
       ajax: {
-        url: '<?php echo base_url(); ?>Masterdata/class_list',
+        url: '<?php echo base_url(); ?>Register/register_list',
         type: 'POST',
         data:  {},
       },
       columns: 
       [
-        {data: 0},
-        {data: 1},
-        {data: 2},
-        {data: 3},
-        {data: 4}
+      {data: 0},
+      {data: 1},
+      {data: 2},
+      {data: 3},
+      {data: 4}
       ]
     });
   }
