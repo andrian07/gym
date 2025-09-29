@@ -10,6 +10,7 @@ class Register extends CI_Controller {
 		$this->load->helper('url');
 		$this->load->library('session');
 		$this->load->model('register_model');
+		$this->load->model('masterdata_model');
 		$this->load->model('global_model');
 		$this->load->helper(array('url', 'html'));
 	}
@@ -67,7 +68,7 @@ class Register extends CI_Controller {
 
 	public function register_list()
 	{
-		$modul = 'Member';
+		$modul = 'Register';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$search 			= $this->input->post('search');
@@ -77,39 +78,39 @@ class Register extends CI_Controller {
 			if($search != null){
 				$search = $search['value'];
 			}
-			$list = $this->masterdata_model->member_list($search, $length, $start)->result_array();
-			$count_list = $this->masterdata_model->member_list_count($search)->result_array();
+			$list = $this->register_model->register_list($search, $length, $start)->result_array();
+			$count_list = $this->register_model->register_list_count($search)->result_array();
 			$total_row = $count_list[0]['total_row'];
 			$data = array();
 			$no = $_POST['start'];
 			foreach ($list as $field) {
 
-				$detail = '<a href="'.base_url().'Masterdata/detailmember?id='.$field['member_id'].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['member_id'].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
+				$detail = '<a href="'.base_url().'Masterdata/detailmember?id='.$field['transaction_register_id '].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['transaction_register_id '].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
 
 				if($check_auth[0]->edit == 'Y'){
-					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['member_id'].'" data-name="'.$field['member_name'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['transaction_register_id '].'" data-name="'.$field['transaction_register_inv'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
 				}else{
 					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
 				}
 
-				if($field['member_active'] == 'Y'){
-					$status = '<span class="badge badge-success">Aktif</span>';
+				if($field['transaction_register_status'] == 'Success'){
+					$status = '<span class="badge badge-success">Success</span>';
 				}else{
-					$status = '<span class="badge badge-danger">Non Aktif</span>';
+					$status = '<span class="badge badge-danger">Cancel</span>';
 				}
 
-				$date = date_create($field['member_register']); 
+				$date = date_create($field['transaction_register_date']); 
 
 				//$url_image = base_url().'assets/products/'.$field['product_image'];
 				$no++;
 				$row = array();
-				$row[] = $field['member_code'];
+				$row[] = $field['transaction_register_inv'];
 				$row[] = $field['member_name'];
-				$row[] = $field['member_address'];
-				$row[] = $field['member_phone'];
-				$row[] = $field['member_gender'];
-				$row[] = $status;
 				$row[] = date_format($date,"d-m-Y");
+				$row[] = 'Rp. '.number_format($field['transaction_register_discount']);
+				$row[] = 'Rp. '.number_format($field['transaction_register_ppn']);
+				$row[] = 'Rp. '.number_format($field['transaction_register_total']);
+				$row[] = $status;
 				$row[] = $detail.$edit;
 				$data[] = $row;
 			}
@@ -129,7 +130,162 @@ class Register extends CI_Controller {
 
 	public function save_register()
 	{
-		print_r($_POST);die();
+		$modul = 'Register';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$member_name 				= $this->input->post('member_name');
+			$member_phone 				= $this->input->post('member_phone');
+			$member_nik 				= $this->input->post('member_nik');
+			$member_dob 				= $this->input->post('member_dob');
+			$member_email				= $this->input->post('member_email');
+			$member_address	 			= $this->input->post('member_address');
+			$member_gender 				= $this->input->post('member_gender');
+			$member_urgent_phone 		= $this->input->post('member_urgent_phone');
+			$member_nik	 				= $this->input->post('member_nik');
+			$member_urgent_name 		= $this->input->post('member_urgent_name');
+			$member_urgent_sibiling 	= $this->input->post('member_urgent_sibiling');
+			$member_desc 				= $this->input->post('member_desc');
+			$parq_q1 					= $this->input->post('parq_q1');
+			$parq_q2 					= $this->input->post('parq_q2');
+			$parq_q3 					= $this->input->post('parq_q3');
+			$parq_q4 					= $this->input->post('parq_q4');
+			$parq_q5					= $this->input->post('parq_q5');
+			$parq_q6	 				= $this->input->post('parq_q6');
+			$crfe_w_1 					= $this->input->post('crfe_w_1');
+			$crfe_w_2 					= $this->input->post('crfe_w_2');
+			$crfe_w_3	 				= $this->input->post('crfe_w_3');
+			$crfe_w_3_desc 				= $this->input->post('crfe_w_3_desc');
+			$crfe_w_4 					= $this->input->post('crfe_w_4');
+			$crfe_w_5 					= $this->input->post('crfe_w_5');
+			$crfe_r_1 					= $this->input->post('crfe_r_1');
+			$crfe_r_1_desc 				= $this->input->post('crfe_r_1_desc');
+			$crfe_r_2 					= $this->input->post('crfe_r_2');
+			$crfe_r_2_desc				= $this->input->post('crfe_r_2_desc');
+			$crfe_m_1	 				= $this->input->post('crfe_m_1');
+			$crfe_w_1 					= $this->input->post('crfe_w_1');
+			$crfe_m_1_desc 				= $this->input->post('crfe_m_1_desc');
+			$crfe_m_2	 				= $this->input->post('crfe_m_2');
+			$crfe_m_2_desc 				= $this->input->post('crfe_m_2_desc');
+			$crfe_m_3 					= $this->input->post('crfe_m_3');
+			$crfe_m_3_desc 				= $this->input->post('crfe_m_3_desc');
+			$crfe_m_4 					= $this->input->post('crfe_m_4');
+			$crfe_m_4_desc	 			= $this->input->post('crfe_m_4_desc');
+			$user_id 		   			= $_SESSION['user_id'];
+
+			$check_member_nik = $this->masterdata_model->check_member_nik($member_nik);
+			if($member_nik == null){
+				$msg = "Nik Harus Di Isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+			if($check_member_nik != null){
+				$msg = "Nik Sudah Di Gunakan";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			$check_member_phone = $this->masterdata_model->check_member_phone($member_phone);
+			if($member_phone == null){
+				$msg = "No HP Harus Di Isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+			if($check_member_phone != null){
+				$msg = "No Hp Sudah Di Gunakan";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+
+			$check_member_email = $this->masterdata_model->check_member_email($member_email);
+			if($member_email == null){
+				$msg = "Email Harus Di Isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+			if($check_member_email != null){
+				$msg = "Email Sudah Di Gunakan";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($member_name == null){
+				$msg = "Nama member Harus Di isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($member_phone == null){
+				$msg = "No Hp Harus Di isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($parq_q1 == null || $parq_q2 == null || $parq_q3 == null || $parq_q4 == null || $parq_q5 == null || $parq_q6 == null || $crfe_w_1 == null || $crfe_w_2 == null || $crfe_w_3 == null || $crfe_w_4 == null || $crfe_w_5 == null || $crfe_r_1 == null || $crfe_r_2 == null || $crfe_m_1 == null || $crfe_m_2 == null || $crfe_m_3 == null || $crfe_m_4 == null){
+				$msg = "Silahkan Lengkapi Kuisioner Terlebih Dahulu";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			$maxCode = $this->masterdata_model->last_member_code();
+			if ($maxCode == NULL) {
+				$last_code = '000001';
+			} else {
+				$maxCode = $maxCode[0]->member_code;
+				$last_code = substr($maxCode, -6);
+				$last_code = substr('00000' . strval(floatval($last_code) + 1), -6);
+			}
+
+			$data_insert = array(
+				'member_code'	       		=> $last_code,
+				'member_name'	       		=> $member_name,
+				'member_phone'	   			=> $member_phone,
+				'member_address'	    	=> $member_address,
+				'member_dob'	       		=> $member_dob,
+				'member_gender'	    		=> $member_gender,
+				'member_nik'				=> $member_nik,
+				'member_email'	    		=> $member_email,
+				'member_urgent_name'		=> $member_urgent_name,
+				'member_urgent_phone'		=> $member_urgent_phone,
+				'member_urgent_sibiling'	=> $member_urgent_sibiling,
+				'member_desc'				=> $member_desc
+			);
+
+			$save_member = $this->masterdata_model->save_member($data_insert);
+
+			$data_insert_kuisioner = array(
+				'member_id'				=> $save_member,
+				'parq_q1'	       		=> $parq_q1,
+				'parq_q2'	       		=> $parq_q2,
+				'parq_q3'	   			=> $parq_q3,
+				'parq_q4'	    		=> $parq_q4,
+				'parq_q5'	       		=> $parq_q5,
+				'parq_q6'	    		=> $parq_q6,
+				'crfe_w_1'				=> $crfe_w_1,
+				'crfe_w_2'	    		=> $crfe_w_2,
+				'crfe_w_3'				=> $crfe_w_3,
+				'crfe_w_3_desc'			=> $crfe_w_3_desc,
+				'crfe_w_4'				=> $crfe_w_4,
+				'crfe_w_5'				=> $crfe_w_5,
+				'crfe_r_1'				=> $crfe_r_1,
+				'crfe_r_1_desc'	    	=> $crfe_r_1_desc,
+				'crfe_r_2'				=> $crfe_r_2,
+				'crfe_r_2_desc'			=> $crfe_r_2_desc,
+				'crfe_m_1'				=> $crfe_m_1,
+				'crfe_m_1_desc'			=> $crfe_m_1_desc,
+				'crfe_m_2'				=> $crfe_m_2,
+				'crfe_m_2_desc'	    	=> $crfe_m_2_desc,
+				'crfe_m_3'				=> $crfe_m_3,
+				'crfe_m_3_desc'			=> $crfe_m_3_desc,
+				'crfe_m_4'				=> $crfe_m_4,
+				'crfe_m_4_desc'			=> $crfe_m_4_desc
+			);
+
+			$this->register_model->save_member_kuisioner($data_insert_kuisioner);
+
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Tambah Pendaftaran Member Baru',
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Input";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
 	}
 	
 	// end member //

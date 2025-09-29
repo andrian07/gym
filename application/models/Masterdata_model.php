@@ -124,9 +124,14 @@ class masterdata_model extends CI_Model {
         $this->db->where('member_id', $member_id);
         $this->db->update('ms_member');
     }
+    
     public function save_member($data_insert)
     {
+        $this->db->trans_start();
         $this->db->insert('ms_member', $data_insert);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return  $insert_id;
     }
 
     public function last_member_code()

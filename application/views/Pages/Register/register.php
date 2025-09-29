@@ -29,14 +29,16 @@ require DOC_ROOT_PATH . $this->config->item('header');
           </div>
           <div class="card-body">
             <div class="table-responsive">
-              <table id="class-list" class="display table table-striped table-hover">
+              <table id="register-list" class="display table table-striped table-hover">
                 <thead>
                   <tr>
                     <th>No Invoice</th>
                     <th>Nama Member</th>
+                    <th>Tanggal</th>
                     <th>Diskon</th>
                     <th>PPN</th>
                     <th>Total</th>
+                    <th>Status</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
@@ -60,10 +62,10 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 <script>
 
   $(document ).ready(function() {
-    table_class_list();
+    table_register_list();
   });
 
-  function table_class_list(){
+  function table_register_list(){
     $('#register-list').DataTable({
       serverSide: true,
       search: true,
@@ -80,7 +82,10 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       {data: 1},
       {data: 2},
       {data: 3},
-      {data: 4}
+      {data: 4},
+      {data: 5},
+      {data: 6},
+      {data: 7}
       ]
     });
   }
