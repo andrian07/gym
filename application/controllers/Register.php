@@ -41,9 +41,10 @@ class Register extends CI_Controller {
 		$modul = 'Register';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
+			$class_list['class_list'] = $this->global_model->class_list();
 			$coach_list['coach_list'] = $this->global_model->coach_list();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($check_auth, $coach_list);
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list);
 			$this->load->view('Pages/Register/register', $data);
 		}else{
 			$msg = "No Access";
@@ -56,9 +57,11 @@ class Register extends CI_Controller {
 		$modul = 'Register';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->add == 'Y'){
+			$class_list['class_list'] = $this->global_model->class_list();
 			$coach_list['coach_list'] = $this->global_model->coach_list();
+			$promo_list['promo_list'] = $this->global_model->promo_list();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($check_auth, $coach_list);
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list);
 			$this->load->view('Pages/Register/addregister', $data);
 		}else{
 			$msg = "No Access";
