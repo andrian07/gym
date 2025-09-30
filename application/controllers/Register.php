@@ -290,6 +290,22 @@ class Register extends CI_Controller {
 			echo json_encode(['code'=>0, 'result'=>$msg]);
 		}	
 	}
+
+	public function select_class()
+	{
+		$class_package = $this->input->post('class_package');
+		$select_class_package = $this->global_model->select_class($class_package);
+		echo json_encode(['code'=>200, 'result'=>$select_class_package]);
+		die();
+	}
+
+	public function select_promo()
+	{
+		$promo_id = $this->input->post('promo_id');
+		$select_promo = $this->global_model->select_promo($promo_id);
+		echo json_encode(['code'=>200, 'result'=>$select_promo]);
+		die();
+	}
 	
 	// end member //
 

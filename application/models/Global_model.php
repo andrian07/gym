@@ -31,6 +31,19 @@ class global_model extends CI_Model {
         return $result;
     }
 
+    public function select_class($class_package){
+        $query = $this->db->query("select * from ms_class where class_id  = '".$class_package."'");
+        $result = $query->result();
+        return $result;
+    }
+
+    public function select_promo($promo_id)
+    {
+        $query = $this->db->query("select * from ms_promo where ms_promo_id = '".$promo_id."' and ms_promo_active = 'Y'");
+        $result = $query->result();
+        return $result;
+    }
+
 }
 
 ?>
