@@ -470,7 +470,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
 
         <div class="card" id="step2">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="card-header">
                 <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Register Kelas</div>
               </div>
@@ -479,7 +479,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   <div class="col-md-12">
                     <div class="form-group form-inline">
                       <label for="inlineinput" class="col-md-3 col-form-label">Kelas:</label>
-                      <div class="col-md-8 p-0">
+                      <div class="col-md-12 p-0">
                         <select class="form-control input-full js-example-basic-single" id="class_package" name="class_package" onchange="select_class()">
                           <option value="">-- Pilih Supplier --</option>
                           <?php foreach ($data['class_list'] as $row) { ?>
@@ -491,20 +491,20 @@ require DOC_ROOT_PATH . $this->config->item('header');
 
                     <div class="form-group form-inline">
                       <label for="inlineinput" class="col-md-3 col-form-label">Harga Sesi/Bulan/Tahun:</label>
-                      <div class="col-md-8 p-0">
+                      <div class="col-md-12 p-0">
                         <input type="text" class="form-control input-full" name="class_price" id="class_price" placeholder="Harga" value="0" readonly>
                       </div>
                     </div>
 
                     <div class="form-group form-inline">
                       <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                           <label for="inlineinput" class="col-md-3 col-form-label">Jumlah Sesi:</label>
                           <div class="col-md-12 p-0">
                             <input type="text" class="form-control input-full" name="class_session" id="class_session" value="1">
                           </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                           <label for="inlineinput" class="col-md-3 col-form-label">Tahun/Bulan/Sesi:</label>
                           <div class="col-md-12 p-0">
                             <select class="form-control input-full" id="class_session_unit" name="class_session_unit">
@@ -517,29 +517,16 @@ require DOC_ROOT_PATH . $this->config->item('header');
                       </div>
                     </div>
 
-
-                    <div class="form-group form-inline">
-                      <label for="inlineinput" class="col-md-3 col-form-label">Paket Promo:</label>
-                      <div class="col-md-8 p-0">
-                        <select class="form-control input-full js-example-basic-single" id="class_package_promo" name="class_package_promo">
-                          <option value="">-- Pilih Paket --</option>
-                          <?php foreach ($data['promo_list'] as $row) { ?>
-                            <option value="<?php echo $row->ms_promo_id; ?>"><?php echo $row->ms_pormo_name; ?> ( Potongan <?php echo $row->ms_pormo_discount; ?> % )</option>  
-                          <?php } ?>
-                        </select>
-                      </div>
-                    </div>
-
                     <div class="form-group form-inline">
                       <label for="inlineinput" class="col-md-3 col-form-label">Total Kelas:</label>
-                      <div class="col-md-8 p-0">
+                      <div class="col-md-12 p-0">
                         <input type="text" class="form-control input-full" name="class_total" id="class_total" placeholder="Harga" value="0" readonly>
                       </div>
                     </div>
 
                     <div class="form-group form-inline">
                       <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-12">
                           <label for="inlineinput" class="col-md-3 col-form-label">Periode Mulai:</label>
                           <div class="col-md-12 p-0">
                             <input type="date" class="form-control input-full" name="class_sessions" id="class_sessions" value="2026-01-01" readonly>
@@ -550,7 +537,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
 
                     <div class="form-group form-inline">
                       <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-12">
                           <label for="inlineinput" class="col-md-3 col-form-label">Periode Akhir:</label>
                           <div class="col-md-12 p-0">
                             <input type="date" class="form-control input-full" name="class_sessions" id="class_sessions" value="2026-01-01" readonly>
@@ -565,7 +552,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
               </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="card-header">
                 <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Personal Trainer</div>
               </div>
@@ -574,14 +561,14 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   <div class="col-md-12">
                     <div class="form-group form-inline">
                       <label for="inlineinput" class="col-md-3 col-form-label">Nama Personal Traine:</label>
-                      <div class="col-md-8 p-0">
+                      <div class="col-md-12 p-0">
                         <input type="text" class="form-control input-full" name="PT" id="PT" placeholder="Kelas">
                       </div>
                     </div>
 
                     <div class="form-group form-inline">
                       <label for="inlineinput" class="col-md-3 col-form-label">Harga / Pertemuan:</label>
-                      <div class="col-md-8 p-0">
+                      <div class="col-md-12 p-0">
                         <input type="text" class="form-control input-full" name="coach_price" id="coach_price" placeholder="Harga" value="0" readonly>
                       </div>
                     </div>
@@ -591,62 +578,77 @@ require DOC_ROOT_PATH . $this->config->item('header');
               </div>
             </div>
 
-            <div class="col-md-12">
-              <div class="card-header">
 
+            <div class="col-md-4">
+              <div class="card-header">
+                <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Harga & Diskon</div>
               </div>
               <div class="card-body">
                 <div class="row"> 
-                  <div class="col-md-6"></div>
 
-                  <div class="col-md-6">
-                    <div class="form-group form-inline">
-                      <div class ="row">
-                        <div class="col-md-6"><label for="inlineinput" class="col-md-12 col-form-label text-right">Sub Total:</label></div>
-                        <div class="col-md-6">
-                          <div class="col-md-12 p-0">
-                            <input type="text" class="form-control input-full" name="sub_total" id="sub_total" value="0" readonly>
-                          </div>
+
+                  <div class="form-group form-inline">
+                    <label for="inlineinput" class="col-md-3 col-form-label">Paket Promo:</label>
+                    <div class="col-md-12 p-0">
+                      <select class="form-control input-full js-example-basic-single" id="class_package_promo" name="class_package_promo">
+                        <option value="">-- Pilih Paket --</option>
+                        <?php foreach ($data['promo_list'] as $row) { ?>
+                          <option value="<?php echo $row->ms_promo_id; ?>"><?php echo $row->ms_pormo_name; ?> ( Potongan <?php echo $row->ms_pormo_discount; ?> % )</option>  
+                        <?php } ?>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group form-inline">
+                    <div class ="row">
+                      <div class="col-md-4"><label for="inlineinput" class="col-md-12 col-form-label text-right">Sub Total:</label></div>
+                      <div class="col-md-8">
+                        <div class="col-md-12 p-0">
+                          <input type="text" class="form-control input-full" name="sub_total" id="sub_total" value="0" readonly>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div class="form-group form-inline">
-                      <div class ="row">
-                        <div class="col-md-6"><label for="inlineinput" class="col-md-12 col-form-label text-right">Diskon:</label></div>
-                        <div class="col-md-6">
-                          <div class="col-md-12 p-0">
-                            <input type="text" class="form-control input-full" name="discount" id="discount" value="0" readonly>
-                          </div>
+                  <div class="form-group form-inline">
+                    <div class ="row">
+                      <div class="col-md-4"><label for="inlineinput" class="col-md-12 col-form-label text-right">Diskon:</label></div>
+                      <div class="col-md-8">
+                        <div class="col-md-12 p-0">
+                          <input type="text" class="form-control input-full" name="discount" id="discount" value="0" readonly>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div class="form-group form-inline">
-                      <div class ="row">
-                        <div class="col-md-6"><label for="inlineinput" class="col-md-12 col-form-label text-right">PPN:</label></div>
-                        <div class="col-md-6">
-                          <div class="col-md-12 p-0">
-                            <input type="text" class="form-control input-full" name="ppn" id="ppn" value="0" readonly>
-                          </div>
+                  <div class="form-group form-inline">
+                    <div class ="row">
+                      <div class="col-md-4"><label for="inlineinput" class="col-md-12 col-form-label text-right">PPN:</label></div>
+                      <div class="col-md-8">
+                        <div class="col-md-12 p-0">
+                          <input type="text" class="form-control input-full" name="ppn" id="ppn" value="0" readonly>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div class="form-group form-inline">
-                      <div class ="row">
-                        <div class="col-md-6"><label for="inlineinput" class="col-md-12 col-form-label text-right">Total:</label></div>
-                        <div class="col-md-6">
-                          <div class="col-md-12 p-0">
-                            <input type="text" class="form-control input-full" name="total" id="total" value="0" readonly>
-                          </div>
+                  <div class="form-group form-inline">
+                    <div class ="row">
+                      <div class="col-md-4"><label for="inlineinput" class="col-md-12 col-form-label text-right">Total:</label></div>
+                      <div class="col-md-8">
+                        <div class="col-md-12 p-0">
+                          <input type="text" class="form-control input-full" name="total" id="total" value="0" readonly>
                         </div>
                       </div>
                     </div>
-
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div class="col-md-12">
+
+
               <div class="card-action" style="text-align: right;">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times-circle"></i> Batal</button>
                 <button id="btn_save_class" class="btn btn-primary" ><i class="fas fa-save"></i> Simpan</button>
