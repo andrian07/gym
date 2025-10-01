@@ -36,7 +36,6 @@ require DOC_ROOT_PATH . $this->config->item('header');
                     <th>Nama Member</th>
                     <th>Tanggal</th>
                     <th>Diskon</th>
-                    <th>PPN</th>
                     <th>Total</th>
                     <th>Status</th>
                     <th>Aksi</th>
@@ -84,8 +83,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       {data: 3},
       {data: 4},
       {data: 5},
-      {data: 6},
-      {data: 7}
+      {data: 6}
       ]
     });
   }

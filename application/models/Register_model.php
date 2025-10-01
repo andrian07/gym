@@ -39,6 +39,31 @@ class register_model extends CI_Model {
         return  $insert_id;
     }
 
+    public function save_register($data_insert)
+    {
+        $this->db->trans_start();
+        $this->db->insert('transaction_register', $data_insert);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return  $insert_id;
+    }
+
+    public function save_register_detail($data_insert_detail)
+    {
+        $this->db->trans_start();
+        $this->db->insert('transaction_register_detail', $data_insert_detail);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return  $insert_id;
+    }
+
+    public function last_register()
+    {
+        $query = $this->db->query("select transaction_register_inv from transaction_register order by transaction_register_id  desc limit 1");
+        $result = $query->result();
+        return $result;
+    }
+
 }
 
 ?>

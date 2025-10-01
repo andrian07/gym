@@ -470,18 +470,22 @@ require DOC_ROOT_PATH . $this->config->item('header');
 
         <div class="card" id="step2">
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12"> 
               <div class="card-header">
                 <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Register Kelas</div>
               </div>
+            </div>
+            <div class="col-md-4">
               <div class="card-body">
                 <div class="row"> 
                   <div class="col-md-12">
                     <div class="form-group form-inline">
                       <label for="inlineinput" class="col-md-3 col-form-label">Kelas:</label>
                       <div class="col-md-12 p-0">
+
+                        <input type="hidden" class="form-control input-full" name="member_id" id="member_id" readonly>
                         <select class="form-control input-full js-example-basic-single" id="class_package" name="class_package" onchange="select_class()">
-                          <option value="">-- Pilih Supplier --</option>
+                          <option value="">-- Pilih Kelas --</option>
                           <?php foreach ($data['class_list'] as $row) { ?>
                             <option value="<?php echo $row->class_id; ?>"><?php echo $row->class_name; ?></option>  
                           <?php } ?>
@@ -523,69 +527,48 @@ require DOC_ROOT_PATH . $this->config->item('header');
                         <input type="text" class="form-control input-full" name="class_total" id="class_total" placeholder="Harga" value="0" readonly>
                       </div>
                     </div>
-
-                    <div class="form-group form-inline">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Periode Mulai:</label>
-                          <div class="col-md-12 p-0">
-                            <input type="date" class="form-control input-full" name="class_sessions" id="class_sessions" value="2026-01-01" readonly>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group form-inline">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Periode Akhir:</label>
-                          <div class="col-md-12 p-0">
-                            <input type="date" class="form-control input-full" name="class_sessions" id="class_sessions" value="2026-01-01" readonly>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="col-md-4">
-              <div class="card-header">
-                <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Personal Trainer</div>
-              </div>
               <div class="card-body">
                 <div class="row"> 
-                  <div class="col-md-12">
-                    <div class="form-group form-inline">
-                      <label for="inlineinput" class="col-md-3 col-form-label">Nama Personal Traine:</label>
-                      <div class="col-md-12 p-0">
-                        <input type="text" class="form-control input-full" name="PT" id="PT" placeholder="Kelas">
-                      </div>
-                    </div>
 
-                    <div class="form-group form-inline">
-                      <label for="inlineinput" class="col-md-3 col-form-label">Harga / Pertemuan:</label>
-                      <div class="col-md-12 p-0">
-                        <input type="text" class="form-control input-full" name="coach_price" id="coach_price" placeholder="Harga" value="0" readonly>
-                      </div>
+                  <div class="form-group form-inline">
+                    <label for="inlineinput" class="col-md-3 col-form-label">Nama Personal Traine:</label>
+                    <div class="col-md-12 p-0">
+                      <select class="form-control input-full js-example-basic-single" id="PT" name="PT">
+                        <option value="">-- Pilih Instruktur --</option>
+                        <?php foreach ($data['coach_list'] as $row) { ?>
+                          <option value="<?php echo $row->coach_id; ?>"><?php echo $row->coach_name; ?></option>  
+                        <?php } ?>
+                      </select>
                     </div>
-
                   </div>
-                </div>
-              </div>
-            </div>
 
+                  <div class="form-group form-inline">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Periode Mulai:</label>
+                        <div class="col-md-12 p-0">
+                          <input type="date" class="form-control input-full" name="class_sessions_start" id="class_sessions_start" value="2026-01-01" readonly>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-            <div class="col-md-4">
-              <div class="card-header">
-                <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Harga & Diskon</div>
-              </div>
-              <div class="card-body">
-                <div class="row"> 
-
+                  <div class="form-group form-inline">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Periode Akhir:</label>
+                        <div class="col-md-12 p-0">
+                          <input type="date" class="form-control input-full" name="class_sessions_end" id="class_sessions_end" value="2027-01-01" readonly>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
                   <div class="form-group form-inline">
                     <label for="inlineinput" class="col-md-3 col-form-label">Paket Promo:</label>
@@ -598,19 +581,15 @@ require DOC_ROOT_PATH . $this->config->item('header');
                       </select>
                     </div>
                   </div>
-                  
-                  <div class="form-group form-inline">
-                    <div class ="row">
-                      <div class="col-md-4"><label for="inlineinput" class="col-md-12 col-form-label text-right">Sub Total:</label></div>
-                      <div class="col-md-8">
-                        <div class="col-md-12 p-0">
-                          <input type="text" class="form-control input-full" name="sub_total" id="sub_total" value="0" readonly>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                </div>
+              </div>
+            </div>
 
-                  <div class="form-group form-inline">
+
+            <div class="col-md-4">
+              <div class="card-body">
+                <div class="row"> 
+                  <div class="form-group form-inline" style="margin-top:35px;">
                     <div class ="row">
                       <div class="col-md-4"><label for="inlineinput" class="col-md-12 col-form-label text-right">Diskon:</label></div>
                       <div class="col-md-8">
@@ -621,18 +600,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                     </div>
                   </div>
 
-                  <div class="form-group form-inline">
-                    <div class ="row">
-                      <div class="col-md-4"><label for="inlineinput" class="col-md-12 col-form-label text-right">PPN:</label></div>
-                      <div class="col-md-8">
-                        <div class="col-md-12 p-0">
-                          <input type="text" class="form-control input-full" name="ppn" id="ppn" value="0" readonly>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="form-group form-inline">
+                  <div class="form-group form-inline" style="margin-top:3px;">
                     <div class ="row">
                       <div class="col-md-4"><label for="inlineinput" class="col-md-12 col-form-label text-right">Total:</label></div>
                       <div class="col-md-8">
@@ -673,7 +641,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
 
   $(document ).ready(function() {
-    //$('#step2').hide();
+    $('#step2').hide();
   });
 
 
@@ -700,31 +668,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     digitGroupSeparator : '.',
   });
 
-  let coach_price = new AutoNumeric('#coach_price', {
-    currencySymbol : 'Rp. ',
-    decimalCharacter : ',',
-    decimalPlaces: 0,
-    decimalPlacesShownOnFocus: 0,
-    digitGroupSeparator : '.',
-  });
-
-  let sub_total = new AutoNumeric('#sub_total', {
-    currencySymbol : 'Rp. ',
-    decimalCharacter : ',',
-    decimalPlaces: 0,
-    decimalPlacesShownOnFocus: 0,
-    digitGroupSeparator : '.',
-  });
-
   let discount = new AutoNumeric('#discount', {
-    currencySymbol : 'Rp. ',
-    decimalCharacter : ',',
-    decimalPlaces: 0,
-    decimalPlacesShownOnFocus: 0,
-    digitGroupSeparator : '.',
-  });
-
-  let ppn = new AutoNumeric('#ppn', {
     currencySymbol : 'Rp. ',
     decimalCharacter : ',',
     decimalPlaces: 0,
@@ -811,6 +755,13 @@ require DOC_ROOT_PATH . $this->config->item('footer');
         if (data.code == "200"){  
           class_price.set(data.result[0].class_price);
           class_total.set(data.result[0].class_price * class_session_val);
+          total.set(data.result[0].class_price * class_session_val);
+          class_session.set(1);
+          $('#class_session_unit').val("Tahun");
+          $('#class_sessions_start').val("2026-01-01");
+          $('#class_package_promo').val("");
+          $('#class_package_promo').trigger('change');
+          discount.set(0);
         }
       }
     });
@@ -819,7 +770,29 @@ require DOC_ROOT_PATH . $this->config->item('footer');
   $('#class_session').on('input', function() {
     var class_session_val         = class_session.get();
     var class_price_val           = class_price.get();
-    class_total.set(class_session_val * class_price_val);
+    var class_session_unit        = $('#class_session_unit').val();
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>register/cal_date",
+      dataType: "json",
+      data: {class_session_val:class_session_val, class_session_unit:class_session_unit},
+      success : function(data){
+        if (data.code == "200"){
+          $('#class_sessions_end').val(data.result);
+          class_total.set(class_session_val * class_price_val);
+          total.set(class_session_val * class_price_val);
+          discount.set(0);
+          $('#class_package_promo').val("");
+          $('#class_package_promo').trigger('change');
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: data.result,
+          })
+        }
+      }
+    });
   });
 
 
@@ -832,8 +805,14 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       data: {promo_id:promo_id},
       success : function(data){
         if (data.code == "200"){
-          let total_discount = data.result[0].ms_pormo_discount / 100 * class_price.get() * class_session.get();
-          class_total.set(class_price.get() * class_session.get() - total_discount);
+          if(data.result.length == 0){
+            promo_count = 0;
+          }else{
+            promo_count = data.result[0].ms_pormo_discount
+          }
+          let total_discount = promo_count / 100 * class_price.get() * class_session.get();
+          total.set(class_price.get() * class_session.get() - total_discount);
+          discount.set(total_discount);
         } else {
           Swal.fire({
             icon: 'error',
@@ -899,7 +878,8 @@ require DOC_ROOT_PATH . $this->config->item('footer');
           let state = 'info';
           notif_success(title, message, state);
           $('#step1').hide();
-          $('#step2').slideUp();
+          $('#step2').show();
+          $("#member_id").val(data.member);
         } else {
           Swal.fire({
             icon: 'error',
@@ -910,6 +890,45 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       }
     });
   });
+
+
+$('#btn_save_class').click(function(e){
+  e.preventDefault();
+  var member_id             = $("#member_id").val();
+  var class_package         = $("#class_package").val();
+  var class_price_val       = class_price.get();
+  var class_session_val     = class_session.get();
+  var class_session_unit    = $("#class_session_unit").val();
+  var class_total_val       = class_total.get();
+  var PT                    = $("#PT").val();
+  var class_sessions_start  = $("#class_sessions_start").val();
+  var class_sessions_end    = $("#class_sessions_end").val();
+  var class_package_promo   = $("#class_package_promo").val();
+  var discount_val          = discount.get();
+  var total_val             = total.get();
+
+  $.ajax({
+    type: "POST",
+    url: "<?php echo base_url(); ?>register/save_transaction",
+    dataType: "json",
+    data: {member_id:member_id, class_package:class_package, class_price_val:class_price_val, class_session_val:class_session_val, class_session_unit:class_session_unit, class_total_val:class_total_val, PT:PT, class_sessions_start:class_sessions_start, class_sessions_end:class_sessions_end, class_package_promo:class_package_promo, discount_val:discount_val, total_val:total_val},
+    success : function(data){
+      if (data.code == "200"){
+        let title = 'Tambah Data';
+        let message = 'Data Berhasil Di Tambah';
+        let state = 'info';
+        notif_success(title, message, state);
+        window.location.href = "<?php echo base_url(); ?>/Register/registerclass";
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: data.result,
+        })
+      }
+    }
+  });
+});
 
 
 

@@ -88,10 +88,10 @@ class Register extends CI_Controller {
 			$no = $_POST['start'];
 			foreach ($list as $field) {
 
-				$detail = '<a href="'.base_url().'Masterdata/detailmember?id='.$field['transaction_register_id '].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['transaction_register_id '].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
+				$detail = '<a href="'.base_url().'Masterdata/detailmember?id='.$field['transaction_register_id'].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
 
 				if($check_auth[0]->edit == 'Y'){
-					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['transaction_register_id '].'" data-name="'.$field['transaction_register_inv'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['transaction_register_id'].'" data-name="'.$field['transaction_register_inv'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
 				}else{
 					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
 				}
@@ -111,7 +111,6 @@ class Register extends CI_Controller {
 				$row[] = $field['member_name'];
 				$row[] = date_format($date,"d-m-Y");
 				$row[] = 'Rp. '.number_format($field['transaction_register_discount']);
-				$row[] = 'Rp. '.number_format($field['transaction_register_ppn']);
 				$row[] = 'Rp. '.number_format($field['transaction_register_total']);
 				$row[] = $status;
 				$row[] = $detail.$edit;
@@ -283,7 +282,7 @@ class Register extends CI_Controller {
 			);
 			$this->global_model->save($data_insert_act);
 			$msg = "Succes Input";
-			echo json_encode(['code'=>200, 'result'=>$msg]);
+			echo json_encode(['code'=>200, 'result'=>$msg, 'member'=>$save_member]);
 			die();
 		}else{
 			$msg = "No Access";
@@ -306,7 +305,97 @@ class Register extends CI_Controller {
 		echo json_encode(['code'=>200, 'result'=>$select_promo]);
 		die();
 	}
+
+	public function cal_date()
+	{	
+		$class_session_val = $this->input->post('class_session_val');
+		$class_session_unit = $this->input->post('class_session_unit');
+		if($class_session_unit == 'Tahun'){
+			$Date = "2026-01-01";
+			$end_date = date('Y-m-d', strtotime($Date. ' + '.$class_session_val.' year'));
+		}else if($class_session_unit == 'Bulan'){
+			$Date = "2026-01-01";
+			$end_date = date('Y-m-d', strtotime($Date. ' + '.$class_session_val.' month'));
+		}else{
+			$Date = "2026-01-01";
+			$end_date = date('Y-m-d', strtotime($Date. ' + '.$class_session_val.' day'));
+		}
+		echo json_encode(['code'=>200, 'result'=>$end_date]);
+		die();
+	}
 	
+	public function save_transaction()
+	{
+		$modul = 'Register';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$member_id 				= $this->input->post('member_id');
+			$class_package 			= $this->input->post('class_package');
+			$class_price_val 		= $this->input->post('class_price_val');
+			$class_session_val 		= $this->input->post('class_session_val');
+			$class_session_unit 	= $this->input->post('class_session_unit');
+			$class_total_val        = $this->input->post('class_total_val');
+			$PT						= $this->input->post('PT');
+			$class_sessions_start 	= $this->input->post('class_sessions_start');
+			$class_sessions_end 	= $this->input->post('class_sessions_end');
+			$class_package_promo	= $this->input->post('class_package_promo');
+			$discount_val 			= $this->input->post('discount_val');
+			$total_val 				= $this->input->post('total_val');
+			$user_id 		   		= $_SESSION['user_id'];
+
+			if($total_val == 0){
+				$msg = "Transaksi Harus Di Isi Terlebih Dahulu";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			$maxCode  = $this->register_model->last_register();
+			$inv_code = 'P/'.date("d/m/Y").'/';
+			if ($maxCode == NULL) {
+				$last_code = $inv_code.'000001';
+			} else {
+				$maxCode   = $maxCode[0]->transaction_register_inv;
+				$last_code = substr($maxCode, -6);
+				$last_code = $inv_code.substr('000000' . strval(floatval($last_code) + 1), -6);
+			}
+
+			$data_insert = array(
+				'transaction_register_inv'	    => $last_code,
+				'member_id'	       				=> $member_id,
+				'transaction_register_discount'	=> $discount_val,
+				'transaction_register_total'	=> $total_val,
+				'transaction_user_id'			=> $user_id
+			);
+
+			$save_register = $this->register_model->save_register($data_insert);
+
+			$data_insert_detail = array(
+				'transaction_register_id'			=> $save_register,
+				'class_id'	       					=> $class_package,
+				'class_price'	       				=> $class_price_val,
+				'transaction_register_session'	   	=> $class_session_val,
+				'transaction_register_session_unit'	=> $class_session_unit,
+				'transaction_register_subtotal'	    => $class_total_val,
+				'transaction_register_coach_id'	   	=> $PT,
+				'transaction_register_start_date'	=> $class_sessions_start,
+				'transaction_register_end_date'	    => $class_sessions_end,
+				'transaction_register_promo_id'		=> $class_package_promo
+			);
+
+			$this->register_model->save_register_detail($data_insert_detail);
+
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Tambah Pendaftaran Member Baru',
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Input";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
 	// end member //
 
 }	
