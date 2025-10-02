@@ -104,6 +104,13 @@ class masterdata_model extends CI_Model {
         return $result;
     }
 
+    public function get_member_detail_by_id($id)
+    {
+        $query = $this->db->query("select * from ms_member where member_id='".$id."'");
+        $result = $query->result();
+        return $result;
+    }
+
     public function get_class_by_member_id($id)
     {
         $query = $this->db->query("select * from ms_member where member_id='".$id."'");

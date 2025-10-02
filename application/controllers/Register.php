@@ -88,13 +88,16 @@ class Register extends CI_Controller {
 			$no = $_POST['start'];
 			foreach ($list as $field) {
 
-				$detail = '<a href="'.base_url().'Masterdata/detailmember?id='.$field['transaction_register_id'].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
+				$detail = '<a href="'.base_url().'Register/detailtransaction?id='.$field['transaction_register_id'].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
 
 				if($check_auth[0]->edit == 'Y'){
 					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['transaction_register_id'].'" data-name="'.$field['transaction_register_inv'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
 				}else{
 					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
 				}
+
+				$print = '<a href="'.base_url().'Register/print_nota?id='.$field['transaction_register_id'].'"><button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'" title="Print"><i class="fas fa-copy sizing-fa"></i></button></a> ';
+
 
 				if($field['transaction_register_status'] == 'Success'){
 					$status = '<span class="badge badge-success">Success</span>';
@@ -113,7 +116,7 @@ class Register extends CI_Controller {
 				$row[] = 'Rp. '.number_format($field['transaction_register_discount']);
 				$row[] = 'Rp. '.number_format($field['transaction_register_total']);
 				$row[] = $status;
-				$row[] = $detail.$edit;
+				$row[] = $detail.$edit.$print;
 				$data[] = $row;
 			}
 
@@ -396,7 +399,16 @@ class Register extends CI_Controller {
 			echo json_encode(['code'=>0, 'result'=>$msg]);
 		}	
 	}
-	// end member //
+
+	public function print_nota()
+	{
+		$transaction_register_id  = $this->input->get('id');
+		$get_register['get_register'] = $this->register_model->get_register($transaction_register_id);
+		$get_detail_register['get_detail_register'] = $this->register_model->get_detail_register($transaction_register_id);
+		$data['data'] = array_merge($get_register, $get_detail_register);
+		$this->load->view('Pages/Register/print', $data);
+	}
+	// end register //
 
 }	
 

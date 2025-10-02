@@ -64,6 +64,21 @@ class register_model extends CI_Model {
         return $result;
     }
 
+    public function get_register($transaction_register_id)
+    {
+        $query = $this->db->query("select * from transaction_register a, ms_member c where a.member_id = c.member_id and a.transaction_register_id = '".$transaction_register_id."'");
+        $result = $query->result();
+        return $result;
+    }
+
+    public function get_detail_register($transaction_register_id)
+    {
+         
+        $query = $this->db->query("select * from transaction_register_detail join ms_class on transaction_register_detail.class_id = ms_class.class_id left join ms_coach on transaction_register_detail.transaction_register_coach_id = ms_coach.coach_id and transaction_register_id = '".$transaction_register_id."';");
+        $result = $query->result();
+        return $result;
+    }
+
 }
 
 ?>

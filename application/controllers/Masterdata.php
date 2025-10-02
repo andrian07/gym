@@ -77,6 +77,9 @@ class Masterdata extends CI_Controller {
 					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
 				}
 
+				$parq = '<a href="'.base_url().'Masterdata/detail_qusioner?id='.$field['member_id'].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-id="'.$field['member_id'].'" title="PARQ"><i class="fas fa-copy sizing-fa"></i></button></a> ';
+
+
 				if($field['member_active'] == 'Y'){
 					$status = '<span class="badge badge-success">Aktif</span>';
 				}else{
@@ -95,7 +98,7 @@ class Masterdata extends CI_Controller {
 				$row[] = $field['member_gender'];
 				$row[] = $status;
 				$row[] = date_format($date,"d-m-Y");
-				$row[] = $detail.$edit;
+				$row[] = $detail.$edit.$parq;
 				$data[] = $row;
 			}
 
@@ -338,6 +341,22 @@ class Masterdata extends CI_Controller {
 		}
 	}
 
+
+	public function detail_qusioner()
+	{
+		$modul = 'Member';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$id = $this->input->get('id');
+			$get_member_detail_by_id['get_member_detail_by_id'] = $this->masterdata_model->get_member_detail_by_id($id);
+			$get_class_by_member_id['get_class_by_member_id'] = $this->masterdata_model->get_class_by_member_id($id);
+			$data['data'] = array_merge($get_member_detail_by_id, $get_class_by_member_id);
+			$this->load->view('Pages/Masterdata/quisioner_detail', $data);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}
+	}
 
 	public function get_member_id()
 	{
