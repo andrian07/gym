@@ -344,13 +344,14 @@ class Masterdata extends CI_Controller {
 
 	public function detail_qusioner()
 	{
+
 		$modul = 'Member';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$id = $this->input->get('id');
 			$get_member_detail_by_id['get_member_detail_by_id'] = $this->masterdata_model->get_member_detail_by_id($id);
-			$get_class_by_member_id['get_class_by_member_id'] = $this->masterdata_model->get_class_by_member_id($id);
-			$data['data'] = array_merge($get_member_detail_by_id, $get_class_by_member_id);
+			$get_quisioner_member_by_id['get_quisioner_member_by_id'] = $this->masterdata_model->get_quisioner_member_by_id($id);
+			$data['data'] = array_merge($get_member_detail_by_id, $get_quisioner_member_by_id);
 			$this->load->view('Pages/Masterdata/quisioner_detail', $data);
 		}else{
 			$msg = "No Access";

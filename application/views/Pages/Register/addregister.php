@@ -416,8 +416,8 @@ require DOC_ROOT_PATH . $this->config->item('header');
 
 
                 <div class="form-group row">
-                  <label for="noinvoice" class="col-sm-9 col-form-label">
-                  3.) Pernahkah dokter mendiagnosis Anda menderita penyakit kronis, seperti penyakit jantung, hipertensi, kolesterol tinggi, atau diabetes? (Jika YA, jelaskan)</label>
+                  <label for="noinvoice" class="col-sm-9   col-form-label">
+                  3.) Pernahkah dokter mendiagnosis Anda menderita penyakit kronis, seperti penyakit jantung, <br />hipertensi, kolesterol tinggi, atau diabetes? (Jika YA, jelaskan)</label>
                   <div class="col-sm-2">
                     <div class="d-flex">
                       <div class="form-check">

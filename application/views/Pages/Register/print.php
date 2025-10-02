@@ -4,8 +4,18 @@ require DOC_ROOT_PATH . $this->config->item('header');
 ?>
 </div>
 <style type="text/css">
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  .card .card-invoice{
+    size: A4;
+  }
   @media print {
     body {
+      margin: 0;
+      padding: 0;
       visibility: hidden;
     }
     #section-to-print {
@@ -13,7 +23,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
       position: absolute;
       left: 0;
       top: 0;
-      margin: 0;
+      margin-left: -250px;
     }
   }
 </style>
@@ -152,19 +162,19 @@ require DOC_ROOT_PATH . $this->config->item('header');
                       <div class="price"><?php echo 'Rp. '.number_format($rowse->transaction_register_total ) ?></div>
                     </div>
                   <?php } ?>
-                  </div>
-                  <div class="separator-solid"></div>
-                  
-                  </div>
-                  </div>
-                  </div>
-                  </div>
-                  </div>
-                  </div>
-                  </div>
-                  </div>
+                </div>
+                <div class="separator-solid"></div>
 
-                  <?php 
-                  require DOC_ROOT_PATH . $this->config->item('footer');
-                  ?>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php 
+require DOC_ROOT_PATH . $this->config->item('footer');
+?>
 
