@@ -1031,6 +1031,7 @@ class Masterdata extends CI_Controller {
 	public function get_class_id(){
 		$id = $this->input->post('id');
 		$get_class_by_id['get_class_by_id'] = $this->masterdata_model->get_class_by_id($id);
+
 		$get_class_schedule['get_class_schedule'] = $this->masterdata_model->get_class_schedule($id);
 		echo json_encode(['code'=>200, 'result'=>$get_class_by_id, 'schedule'=>$get_class_schedule]);
 	}
@@ -1055,6 +1056,32 @@ class Masterdata extends CI_Controller {
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
 		}	
+	}
+
+	public function delete_schedule()
+	{
+		$modul = 'Class';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->delete == 'Y'){
+			$schedule_id  	= $this->input->post('id');
+			$class_id  		= $this->input->post('class_id');
+			$user_id 		= $_SESSION['user_id'];
+			$this->masterdata_model->delete_schedule($schedule_id);
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Hapus Jadwal Kelas',
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Delete";
+			$id = $class_id;
+			$get_class_by_id['get_class_by_id'] = $this->masterdata_model->get_class_by_id($id);
+			$get_class_schedule['get_class_schedule'] = $this->masterdata_model->get_class_schedule($id);
+			echo json_encode(['code'=>200, 'result'=>$get_class_by_id, 'schedule'=>$get_class_schedule]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}
 	}
 
 	public function add_schedule()
@@ -1125,7 +1152,74 @@ class Masterdata extends CI_Controller {
 	// end class //
 
 
+	// start promo //
 
+	public function promo(){
+		$modul = 'Promo';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$check_auth['check_auth'] = $check_auth;
+			$this->load->view('Pages/Masterdata/promo', $check_auth);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+
+	public function promo_list()
+	{
+		$modul = 'Class';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$search 			= $this->input->post('search');
+			$length 			= $this->input->post('length');
+			$start 			  	= $this->input->post('start');
+
+			if($search != null){
+				$search = $search['value'];
+			}
+			$list = $this->masterdata_model->promo_list($search, $length, $start)->result_array();
+			$count_list = $this->masterdata_model->promo_list_count($search)->result_array();
+			$total_row = $count_list[0]['total_row'];
+			$data = array();
+			$no = $_POST['start'];
+			foreach ($list as $field) {
+
+				if($check_auth[0]->edit == 'Y'){
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['ms_promo_id'].'" data-name="'.$field['ms_pormo_name'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
+				}else{
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
+				}
+				$no++;
+				$row = array();
+				$row[] = $field['ms_pormo_name'];
+				$row[] = $field['ms_pormo_discount'].'%';
+				$row[] = $edit;
+				$data[] = $row;
+			}
+
+			$output = array(
+				"draw" => $_POST['draw'],
+				"recordsTotal" => $total_row,
+				"recordsFiltered" => $total_row,
+				"data" => $data,
+			);
+			echo json_encode($output);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+	public function get_promo_id()
+	{
+		$id = $this->input->post('id');
+		$get_promo_id['get_promo_id'] = $this->masterdata_model->get_promo_id($id);
+		echo json_encode(['code'=>200, 'result'=>$get_promo_id]);
+	}
+
+	// end promo //
 
 
 }	

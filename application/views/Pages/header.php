@@ -108,6 +108,11 @@
                       <span class="sub-item">Kelas</span>
                     </a>
                   </li>
+                   <li>
+                    <a href="<?php echo base_url(); ?>Masterdata/promo">
+                      <span class="sub-item">Promo</span>
+                    </a>
+                  </li>
                   <li>
                     <a href="<?php echo base_url(); ?>Masterdata/product">
                       <span class="sub-item">Produk</span>

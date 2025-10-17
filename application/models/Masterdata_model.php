@@ -196,7 +196,7 @@ class masterdata_model extends CI_Model {
 
     public function get_class_schedule($id)
     {
-        $query = $this->db->query("select * from schedule_class a, ms_coach b where a.coach_id = b.coach_id  and class_id='".$id."' order by schedule_sort asc, schedule_time_start asc");
+        $query = $this->db->query("select * from schedule_class a, ms_coach b where a.coach_id = b.coach_id  and class_id='".$id."' and schedule_active = 'Y' order by schedule_sort asc, schedule_time_start asc");
         $result = $query->result();
         return $result;
     }
@@ -211,8 +211,15 @@ class masterdata_model extends CI_Model {
     public function delete_class($class_id)
     {
         $this->db->set('is_active', 'N');
-        $this->db->where('class_id ', $class_id);
+        $this->db->where('class_id', $class_id);
         $this->db->update('ms_class');
+    }
+
+    public function delete_schedule($schedule_id)
+    {
+        $this->db->set('schedule_active', 'N');
+        $this->db->where('schedule_class_id', $schedule_id);
+        $this->db->update('schedule_class');
     }
 
     public function edit_class($data_edit, $class_id)
@@ -330,8 +337,39 @@ class masterdata_model extends CI_Model {
 
     //end coach
 
+    //start promo
 
+    public function promo_list($search, $length, $start)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_promo');
+        if($search != null){
+            $this->db->where('ms_pormo_name like "%'.$search.'%"');
+        }
+        $this->db->limit($length);
+        $this->db->offset($start);
+        $query = $this->db->get();
+        return $query;
+    }
+    
+    public function promo_list_count($search)
+    {
+        $this->db->select('count(*) as total_row');
+        $this->db->from('ms_promo');
+        if($search != null){
+            $this->db->where('ms_pormo_name like "%'.$search.'%"');
+        }
+        $query = $this->db->get();
+        return $query;
+    }
 
+    public function get_promo_id($id)
+    {
+        $query = $this->db->query("select * from ms_promo where ms_promo_id ='".$id."'");
+        $result = $query->result();
+        return $result;
+    }
+    //end promo
 
     
 }

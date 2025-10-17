@@ -553,9 +553,40 @@ require DOC_ROOT_PATH . $this->config->item('footer');
   {
     let text = "";
     for (let i = 0; i < table_row; i++) {
-      text += '<tr><th>'+table_row_data[i].schedule_day+'</th><th>'+convertTimeFormat(table_row_data[i].schedule_time_start)+' - '+convertTimeFormat(table_row_data[i].schedule_time_end)+'</th><th>'+table_row_data[i].coach_name+'</th><th>Aksi</th></tr>';
+      text += '<tr><th>'+table_row_data[i].schedule_day+'</th><th>'+convertTimeFormat(table_row_data[i].schedule_time_start)+' - '+convertTimeFormat(table_row_data[i].schedule_time_end)+'</th><th>'+table_row_data[i].coach_name+'</th><th><button type="button" class="btn btn-icon btn-danger delete btn-sm mb-2-btn" onclick="delete_schedule('+table_row_data[i].schedule_class_id +', '+table_row_data[i].class_id +')"><i class="fas fa-trash-alt sizing-fa"></i></button></th></tr>';
     }
     document.getElementById("schedulelistbody").innerHTML = text;
+  }
+
+  function delete_schedule(id, class_id)
+  {
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>Masterdata/delete_schedule",
+      dataType: "json",
+      data: {id:id, class_id:class_id},
+      success : function(data){
+        if (data.code == "200"){
+          let title = 'Tambah Data';
+          let message = 'Data Berhasil Di Hapus';
+          let state = 'info';
+          notif_success(title, message, state);
+          let table_row = data.schedule.get_class_schedule.length;
+          let table_row_data = data.schedule.get_class_schedule;
+          load_table_schedule(table_row, table_row_data);
+          $("#schedule_day").val("null");
+          $("#schedule_time_start").val("null");
+          $("#schedule_time_end").val("null");
+          $("#schedule_coach").val("null");
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: data.result,
+          })
+        }
+      }
+    });
   }
 
   function convertTimeFormat(time) {
