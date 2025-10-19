@@ -15,7 +15,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
           <div class="card-header">
             <div class="d-flex align-items-left">
               <div>
-                <h3 class="fw-bold mb-3">Daftar Instruktur / PT</h3>
+                <h3 class="fw-bold mb-3">Personal Training</h3>
               </div>
               <div class="ms-md-auto py-2 py-md-0">
                 <button class="btn btn-info" id="reload"><span class="btn-label"><i class="fas fa-sync"></i></span> Reload</button>
@@ -29,7 +29,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                 <div class="modal-dialog modal-xl">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Tambah Instruktur / PT</h5>
+                      <h5 class="modal-title" id="exampleModalLabel">Tambah Personal Training</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form name="save_coach_form" id="save_coach_form" enctype="multipart/form-data" action="<?php echo base_url(); ?>Masterdata/save_coach" method="post">
@@ -50,16 +50,17 @@ require DOC_ROOT_PATH . $this->config->item('header');
                           </div>
                           <div class="col-md-4">
                             <div class="form-group form-inline">
-                              <label for="inlineinput" class="col-md-3 col-form-label">Kode Instruktur</label>
+                              <label for="inlineinput" class="col-md-3 col-form-label">Kode Personal Training</label>
                               <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="coach_code" id="coach_code" value="Auto" readonly>
+                                <input type="text" class="form-control input-full" name="coach_code" id="coach_code" placeholder="Kode Personal Training">
+                                <input type="hidden" class="form-control input-full" name="coach_code" id="coach_type" value="PT">
                               </div>
                             </div>
 
                             <div class="form-group form-inline">
                               <label for="inlineinput" class="col-md-3 col-form-label">Nama</label>
                               <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="coach_name" id="coach_name" placeholder="Nama Instruktur">
+                                <input type="text" class="form-control input-full" name="coach_name" id="coach_name" placeholder="Nama Personal Training">
                               </div>
                             </div>
 
@@ -119,16 +120,10 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             </div>
 
                             <div class="form-group form-inline">
-                              <label for="inlineinput" class="col-md-3 col-form-label">Gaji Pokok</label>
+                              <label for="inlineinput" class="col-md-3 col-form-label">Fee / Sesi</label>
                               <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="coach_salary" id="coach_salary" placeholder="Gaji Pokok" value="0">
-                              </div>
-                            </div>
-
-                            <div class="form-group form-inline">
-                              <label for="inlineinput" class="col-md-3 col-form-label">Extra Charge</label>
-                              <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="coach_extra_charge" id="coach_extra_charge" placeholder="Extra Charge" value="0">
+                                <input type="text" class="form-control input-full" name="coach_salary" id="coach_salary" placeholder=">Fee / Sesi" value="0">
+                                <input type="hidden" class="form-control input-full" name="coach_extra_charge" id="coach_extra_charge" placeholder="Extra Charge" value="0">
                               </div>
                             </div>
 
@@ -170,7 +165,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                           </div>
                           <div class="col-md-4">
                             <div class="form-group form-inline">
-                              <label for="inlineinput" class="col-md-3 col-form-label">Kode Instruktur</label>
+                              <label for="inlineinput" class="col-md-3 col-form-label">Kode Personal Training</label>
                               <div class="col-md-12 p-0">
                                 <input type="hidden" class="form-control input-full" name="coach_id_edit" id="coach_id_edit">
                                 <input type="text" class="form-control input-full" name="coach_code_edit" id="coach_code_edit" value="Auto" readonly>
@@ -180,7 +175,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             <div class="form-group form-inline">
                               <label for="inlineinput" class="col-md-3 col-form-label">Nama</label>
                               <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="coach_name_edit" id="coach_name_edit" placeholder="Nama Member">
+                                <input type="text" class="form-control input-full" name="coach_name_edit" id="coach_name_edit" placeholder="Nama Personal Training">
                               </div>
                             </div>
 
@@ -240,16 +235,10 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             </div>
 
                             <div class="form-group form-inline">
-                              <label for="inlineinput" class="col-md-3 col-form-label">Gaji Pokok</label>
+                              <label for="inlineinput" class="col-md-3 col-form-label">Fee / Sesi</label>
                               <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="coach_salary_edit" id="coach_salary_edit" placeholder="Gaji Pokok">
-                              </div>
-                            </div>
-
-                            <div class="form-group form-inline">
-                              <label for="inlineinput" class="col-md-3 col-form-label">Extra Charge</label>
-                              <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="coach_extra_charge_edit" id="coach_extra_charge_edit" placeholder="Extra Charge">
+                                <input type="text" class="form-control input-full" name="coach_salary_edit" id="coach_salary_edit" placeholder="Fee / Sesi">
+                                <input type="hidden" class="form-control input-full" name="coach_extra_charge_edit" id="coach_extra_charge_edit" placeholder="Extra Charge">
                               </div>
                             </div>
 
@@ -350,7 +339,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       ajax: {
         url: '<?php echo base_url(); ?>Masterdata/coach_list',
         type: 'POST',
-        data:  {},
+        data:  {type:'PT'},
       },
       columns: 
       [
@@ -479,7 +468,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Silahkan Isi Nama Instruktur / PT',
+        text: 'Silahkan Isi Nama Personal Training',
       })
     }else if(coach_phone == ''){
       Swal.fire({
@@ -534,7 +523,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
               text: data.result,
             })
           }else{
-            window.location.href = "<?php echo base_url(); ?>Masterdata/coach";
+            window.location.href = "<?php echo base_url(); ?>Masterdata/personaltraining";
             Swal.fire('Saved!', '', 'success');
           } 
         }
@@ -560,7 +549,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Silahkan Isi Nama Instruktur / PT',
+        text: 'Silahkan Isi Nama Personal Training',
       })
     }else if(coach_phone == ''){
       Swal.fire({
@@ -615,7 +604,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
               text: data.result,
             })
           }else{
-            window.location.href = "<?php echo base_url(); ?>Masterdata/coach";
+            window.location.href = "<?php echo base_url(); ?>Masterdata/personaltraining";
             Swal.fire('Saved!', '', 'success');
           } 
         }
@@ -628,7 +617,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     var id   = button.data('id')
     var name = button.data('name')
     var modal = $(this)
-    modal.find('.modal-title').text('Edit Instruktur ' + name)
+    modal.find('.modal-title').text('Edit Personal Training ' + name)
     $.ajax({
       type: "POST",
       url: "<?php echo base_url(); ?>Masterdata/get_edit_coach",

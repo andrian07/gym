@@ -256,10 +256,11 @@ class masterdata_model extends CI_Model {
 
     //coach
     
-    public function coach_list($search, $length, $start)
+    public function coach_list($search, $length, $start, $type)
     {
         $this->db->select('*');
         $this->db->from('ms_coach');
+        $this->db->where('coach_type', $type);
         if($search != null){
             $this->db->where('coach_code like "%'.$search.'%"');
             $this->db->or_where('coach_name like "%'.$search.'%"');
@@ -270,10 +271,11 @@ class masterdata_model extends CI_Model {
         return $query;
     }
     
-    public function coach_list_count($search)
+    public function coach_list_count($search, $type)
     {
         $this->db->select('count(*) as total_row');
         $this->db->from('ms_coach');
+        $this->db->where('coach_type', $type);
         if($search != null){
             $this->db->where('coach_code like "%'.$search.'%"');
             $this->db->or_where('coach_name like "%'.$search.'%"');
@@ -335,14 +337,27 @@ class masterdata_model extends CI_Model {
         return $result;
     }
 
+    public function check_coach_code($coach_code)
+    {
+        $query = $this->db->query("select * from ms_coach where coach_code = '".$coach_code."'");
+        $result = $query->result();
+        return $result;
+    }
+
     //end coach
 
     //start promo
+
+    public function save_promo($data_insert)
+    {
+        $this->db->insert('ms_promo', $data_insert);
+    }
 
     public function promo_list($search, $length, $start)
     {
         $this->db->select('*');
         $this->db->from('ms_promo');
+        $this->db->where('ms_promo_active', 'Y');
         if($search != null){
             $this->db->where('ms_pormo_name like "%'.$search.'%"');
         }
@@ -351,11 +366,12 @@ class masterdata_model extends CI_Model {
         $query = $this->db->get();
         return $query;
     }
-    
+
     public function promo_list_count($search)
     {
         $this->db->select('count(*) as total_row');
         $this->db->from('ms_promo');
+        $this->db->where('ms_promo_active', 'Y');
         if($search != null){
             $this->db->where('ms_pormo_name like "%'.$search.'%"');
         }
@@ -369,9 +385,22 @@ class masterdata_model extends CI_Model {
         $result = $query->result();
         return $result;
     }
+
+    public function delete_promo($promo_id){
+        $this->db->set('ms_promo_active', 'N');
+        $this->db->where('ms_promo_id', $promo_id);
+        $this->db->update('ms_promo');
+    }
+
+    public function edit_promo($data_edit, $promo_id)
+    {
+        $this->db->set($data_edit);
+        $this->db->where('ms_promo_id', $promo_id);
+        $this->db->update('ms_promo');
+    }
     //end promo
 
-    
+
 }
 
 ?>

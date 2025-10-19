@@ -407,12 +407,24 @@ class Masterdata extends CI_Controller {
 
 	// coach //
 
-	public function coach(){
+	public function personaltraining(){
 		$modul = 'Coach';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$check_auth['check_auth'] = $check_auth;
-			$this->load->view('Pages/Masterdata/coach', $check_auth);
+			$this->load->view('Pages/Masterdata/pt', $check_auth);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+	public function instruktur(){
+		$modul = 'Coach';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$check_auth['check_auth'] = $check_auth;
+			$this->load->view('Pages/Masterdata/instruktur', $check_auth);
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
@@ -424,6 +436,7 @@ class Masterdata extends CI_Controller {
 		$modul = 'Coach';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
+			$type 				= $this->input->post('type');
 			$search 			= $this->input->post('search');
 			$length 			= $this->input->post('length');
 			$start 			  	= $this->input->post('start');
@@ -431,8 +444,8 @@ class Masterdata extends CI_Controller {
 			if($search != null){
 				$search = $search['value'];
 			}
-			$list = $this->masterdata_model->coach_list($search, $length, $start)->result_array();
-			$count_list = $this->masterdata_model->coach_list_count($search)->result_array();
+			$list = $this->masterdata_model->coach_list($search, $length, $start, $type)->result_array();
+			$count_list = $this->masterdata_model->coach_list_count($search, $type)->result_array();
 			$total_row = $count_list[0]['total_row'];
 			$data = array();
 			$no = $_POST['start'];
@@ -507,6 +520,7 @@ class Masterdata extends CI_Controller {
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->add == 'Y'){
 			$screenshoot 		= $this->input->post('screenshoot');
+			$coach_code 		= $this->input->post('coach_code');
 			$coach_name 		= $this->input->post('coach_name');
 			$coach_phone 		= $this->input->post('coach_phone');
 			$coach_email	 	= $this->input->post('coach_email');
@@ -515,6 +529,7 @@ class Masterdata extends CI_Controller {
 			$coach_gender 		= $this->input->post('coach_gender');
 			$coach_address 		= $this->input->post('coach_address');
 			$coach_title 		= $this->input->post('coach_title');
+			$coach_type 		= $this->input->post('coach_type');
 			$coach_salary 		= $this->input->post('coach_salary');
 			$coach_extra_charge = $this->input->post('coach_extra_charge');
 			$user_id 		   	= $_SESSION['user_id'];
@@ -526,6 +541,13 @@ class Masterdata extends CI_Controller {
 			$coach_extra_charge_replace = str_replace('Rp. ', '', $coach_extra_charge);
 			$coach_extra_charge = str_replace('.', '', $coach_extra_charge_replace);
 
+			$check_code = $this->masterdata_model->check_coach_code($coach_code);
+			
+
+			if($check_code != null){
+				$msg = "Kode Instruktur / PT Sudah Di gunakan";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
 
 			if($coach_name == null){
 				$msg = "Nama Instruktur Harus Di isi";
@@ -562,20 +584,11 @@ class Masterdata extends CI_Controller {
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
 
-			$coach_code = strtoupper(substr($coach_name, 0, 3));
-			$maxCode = $this->masterdata_model->last_coach_code();
-			if ($maxCode == NULL) {
-				$last_code = $coach_code.'00001';
-			} else {
-				$maxCode = $maxCode[0]->coach_code;
-				$last_code = substr($maxCode, -5);
-				$last_code = $coach_code.substr('00000' . strval(floatval($last_code) + 1), -5);
-			}
 
 			if($_FILES['screenshoot']['name'] == null){
 				$new_image_name = 'default.png';
 			}else{
-				$new_image_name = $last_code.$this->generateRandomString().'.png';
+				$new_image_name = $coach_code.$this->generateRandomString().'.png';
 				$config['upload_path'] = './assets/coach/';
 				$config['allowed_types'] = 'gif|jpg|png|jpeg|PNG';
 				$config['file_name'] = $new_image_name;
@@ -592,7 +605,7 @@ class Masterdata extends CI_Controller {
 			}
 
 			$data_insert = array(
-				'coach_code'	    	=> $last_code,
+				'coach_code'	    	=> $coach_code,
 				'coach_name'	    	=> $coach_name,
 				'coach_phone'	   		=> $coach_phone,
 				'coach_email'			=> $coach_email,
@@ -600,6 +613,8 @@ class Masterdata extends CI_Controller {
 				'coach_identity'	   	=> $coach_identity,
 				'coach_gender'	   		=> $coach_gender,
 				'coach_title'	   		=> $coach_title,
+				'coach_type'			=> $coach_type,
+				'coach_dob'				=> $coach_dob,
 				'coach_salary'	    	=> $coach_salary,
 				'coach_extra_charge'	=> $coach_extra_charge,
 				'coach_image'	   		=> $new_image_name
@@ -627,6 +642,7 @@ class Masterdata extends CI_Controller {
 		if($check_auth[0]->edit == 'Y'){
 
 			$screenshoot 		= $this->input->post('screenshoot');
+			$coach_code   		= $this->input->post('coach_code_edit');
 			$coach_id   		= $this->input->post('coach_id_edit');
 			$coach_name 		= $this->input->post('coach_name_edit');
 			$coach_phone 		= $this->input->post('coach_phone_edit');
@@ -691,8 +707,8 @@ class Masterdata extends CI_Controller {
 				$new_image_name = $get_coach_by_id[0]->coach_image;
 			}else{
 				if($check_image_name != $_FILES['screenshoot_edit']['name']){
-					$new_image_name = $member_code.$this->generateRandomString().'.png';
-					$config['upload_path'] = './assets/member/';
+					$new_image_name = $coach_code.$this->generateRandomString().'.png';
+					$config['upload_path'] = './assets/coach/';
 					$config['allowed_types'] = 'gif|jpg|png|jpeg|PNG';
 					$config['file_name'] = $new_image_name;
 					$this->load->library('upload', $config);
@@ -719,6 +735,7 @@ class Masterdata extends CI_Controller {
 				'coach_gender'	   		=> $coach_gender,
 				'coach_title'	   		=> $coach_title,
 				'coach_salary'	    	=> $coach_salary,
+				'coach_dob'				=> $coach_dob,
 				'coach_extra_charge'	=> $coach_extra_charge,
 				'coach_image'	   		=> $new_image_name
 			);
@@ -1169,7 +1186,7 @@ class Masterdata extends CI_Controller {
 
 	public function promo_list()
 	{
-		$modul = 'Class';
+		$modul = 'Promo';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$search 			= $this->input->post('search');
@@ -1191,11 +1208,35 @@ class Masterdata extends CI_Controller {
 				}else{
 					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
 				}
+
+				if($check_auth[0]->delete == 'Y'){
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_promo_id'].'" data-name="'.$field['ms_pormo_name'].'" onclick="delete_promo('.$field['ms_promo_id'].')"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+				}else{
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_promo_id'].'" data-name="'.$field['ms_pormo_name'].'" disabled="disabled"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+				}
+
+				if($field['ms_promo_pt'] == 'Y'){
+					$promo_pt = '<span class="badge badge-success">Include</span>';
+				}else{
+					$promo_pt = '<span class="badge badge-danger">Non Include</span>';
+				}
+
+				if($field['ms_promo_class'] == 'Y'){
+					$promo_kelas = '<span class="badge badge-success">Include</span>';
+				}else{
+					$promo_kelas = '<span class="badge badge-danger">Non Include</span>';
+				}
+
 				$no++;
 				$row = array();
 				$row[] = $field['ms_pormo_name'];
 				$row[] = $field['ms_pormo_discount'].'%';
-				$row[] = $edit;
+				$row[] = $promo_pt;
+				$row[] = $field['ms_promo_pt_sesi'].' Sesi';
+				$row[] = $promo_kelas;
+				$row[] = $field['ms_promo_class_month'].' Bulan';
+				$row[] = $field['ms_promo_category'];
+				$row[] = $edit.$delete;
 				$data[] = $row;
 			}
 
@@ -1211,6 +1252,121 @@ class Masterdata extends CI_Controller {
 			echo json_encode(['code'=>0, 'result'=>$msg]);die();
 		}
 	}
+
+	public function save_promo()
+	{
+		$modul = 'Promo';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+
+			$promo_name 				= $this->input->post('promo_name');
+			$promo_disc_val 			= $this->input->post('promo_disc_val');
+			$promo_pt 					= $this->input->post('promo_pt');
+			$pt_session_unit 			= $this->input->post('pt_session_unit');
+			$promo_kelas 				= $this->input->post('promo_kelas');
+			$class_session_unit 		= $this->input->post('class_session_unit');
+			$promo_category 			= $this->input->post('promo_category');
+			$user_id 		   			= $_SESSION['user_id'];
+			
+			if($promo_name == null){
+				$msg = "Silahkan Isi Nama Promo";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			$data_insert = array(
+				'ms_pormo_name'	       	=> $promo_name,
+				'ms_promo_pt'	       	=> $promo_pt,
+				'ms_promo_pt_sesi'	   	=> $pt_session_unit,
+				'ms_promo_class'	    => $promo_kelas,
+				'ms_promo_class_month'	=> $class_session_unit,
+				'ms_pormo_discount'	   	=> $promo_disc_val,
+				'ms_promo_category'		=> $promo_category,
+			);
+
+			$this->masterdata_model->save_promo($data_insert);
+
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Tambah Promo',
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Input";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+	public function delete_promo()
+	{
+		$modul = 'Promo';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->delete == 'Y'){
+			$promo_id  	= $this->input->post('id');
+			$user_id 	= $_SESSION['user_id'];
+			$this->masterdata_model->delete_promo($promo_id);
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Hapus Master Promo '.$promo_id,
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Delete";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+	public function edit_promo()
+	{
+		$modul = 'Promo';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->edit == 'Y'){
+			$promo_id 					= $this->input->post('promo_id_edit');
+			$promo_name 				= $this->input->post('promo_name');
+			$promo_disc_val 			= $this->input->post('promo_disc_val');
+			$promo_pt 					= $this->input->post('promo_pt');
+			$pt_session_unit 			= $this->input->post('pt_session_unit');
+			$promo_kelas 				= $this->input->post('promo_kelas');
+			$class_session_unit 		= $this->input->post('class_session_unit');
+			$promo_category 			= $this->input->post('promo_category');
+			$user_id 		   			= $_SESSION['user_id'];
+			
+			if($promo_name == null){
+				$msg = "Silahkan Isi Nama Promo";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			$data_edit = array(
+				'ms_pormo_name'	       	=> $promo_name,
+				'ms_promo_pt'	       	=> $promo_pt,
+				'ms_promo_pt_sesi'	   	=> $pt_session_unit,
+				'ms_promo_class'	    => $promo_kelas,
+				'ms_promo_class_month'	=> $class_session_unit,
+				'ms_pormo_discount'	   	=> $promo_disc_val,
+				'ms_promo_category'		=> $promo_category
+			);
+
+			$this->masterdata_model->edit_promo($data_edit, $promo_id);
+
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Edit Promo '.$promo_name,
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Input";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
 
 	public function get_promo_id()
 	{

@@ -69,6 +69,23 @@ class Register extends CI_Controller {
 		}
 	}
 
+	public function addregisterpayment()
+	{
+		$modul = 'Register';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$class_list['class_list'] = $this->global_model->class_list();
+			$coach_list['coach_list'] = $this->global_model->coach_list();
+			$promo_list['promo_list'] = $this->global_model->promo_list();
+			$check_auth['check_auth'] = $check_auth;
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list);
+			$this->load->view('Pages/Register/registerpayment', $data);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}
+	}
+
 	public function register_list()
 	{
 		$modul = 'Register';
@@ -138,6 +155,7 @@ class Register extends CI_Controller {
 		$modul = 'Register';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->add == 'Y'){
+			//$member_code 				= $this->input->post('member_code');
 			$member_name 				= $this->input->post('member_name');
 			$member_phone 				= $this->input->post('member_phone');
 			$member_nik 				= $this->input->post('member_nik');
@@ -156,7 +174,7 @@ class Register extends CI_Controller {
 			$parq_q4 					= $this->input->post('parq_q4');
 			$parq_q5					= $this->input->post('parq_q5');
 			$parq_q6	 				= $this->input->post('parq_q6');
-			$crfe_w_1 					= $this->input->post('crfe_w_1');
+			/*$crfe_w_1 					= $this->input->post('crfe_w_1');
 			$crfe_w_2 					= $this->input->post('crfe_w_2');
 			$crfe_w_3	 				= $this->input->post('crfe_w_3');
 			$crfe_w_3_desc 				= $this->input->post('crfe_w_3_desc');
@@ -174,7 +192,7 @@ class Register extends CI_Controller {
 			$crfe_m_3 					= $this->input->post('crfe_m_3');
 			$crfe_m_3_desc 				= $this->input->post('crfe_m_3_desc');
 			$crfe_m_4 					= $this->input->post('crfe_m_4');
-			$crfe_m_4_desc	 			= $this->input->post('crfe_m_4_desc');
+			$crfe_m_4_desc	 			= $this->input->post('crfe_m_4_desc');*/
 			$user_id 		   			= $_SESSION['user_id'];
 
 			$check_member_nik = $this->masterdata_model->check_member_nik($member_nik);
@@ -218,11 +236,12 @@ class Register extends CI_Controller {
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
 
-			if($parq_q1 == null || $parq_q2 == null || $parq_q3 == null || $parq_q4 == null || $parq_q5 == null || $parq_q6 == null || $crfe_w_1 == null || $crfe_w_2 == null || $crfe_w_3 == null || $crfe_w_4 == null || $crfe_w_5 == null || $crfe_r_1 == null || $crfe_r_2 == null || $crfe_m_1 == null || $crfe_m_2 == null || $crfe_m_3 == null || $crfe_m_4 == null){
+			if($parq_q1 == null || $parq_q2 == null || $parq_q3 == null || $parq_q4 == null || $parq_q5 == null || $parq_q6 == null){
 				$msg = "Silahkan Lengkapi Kuisioner Terlebih Dahulu";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
 
+		
 			$maxCode = $this->masterdata_model->last_member_code();
 			if ($maxCode == NULL) {
 				$last_code = '000001';
@@ -257,7 +276,7 @@ class Register extends CI_Controller {
 				'parq_q4'	    		=> $parq_q4,
 				'parq_q5'	       		=> $parq_q5,
 				'parq_q6'	    		=> $parq_q6,
-				'crfe_w_1'				=> $crfe_w_1,
+				/*'crfe_w_1'				=> $crfe_w_1,
 				'crfe_w_2'	    		=> $crfe_w_2,
 				'crfe_w_3'				=> $crfe_w_3,
 				'crfe_w_3_desc'			=> $crfe_w_3_desc,
@@ -274,7 +293,7 @@ class Register extends CI_Controller {
 				'crfe_m_3'				=> $crfe_m_3,
 				'crfe_m_3_desc'			=> $crfe_m_3_desc,
 				'crfe_m_4'				=> $crfe_m_4,
-				'crfe_m_4_desc'			=> $crfe_m_4_desc
+				'crfe_m_4_desc'			=> $crfe_m_4_desc*/
 			);
 
 			$this->register_model->save_member_kuisioner($data_insert_kuisioner);

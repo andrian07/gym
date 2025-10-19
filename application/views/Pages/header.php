@@ -46,7 +46,7 @@
 
 </head>
 <body>
-  <div class="wrapper sidebar_minimize">
+  <div class="wrapper">
     <!-- Sidebar -->
     <div class="sidebar sidebar-style-2" data-background-color="dark">
       <div class="sidebar-logo">
@@ -91,7 +91,7 @@
                 <p>Master Data</p>
                 <span class="caret"></span>
               </a>
-              <div class="collapse" id="master">
+              <div class="collapse show" id="master">
                 <ul class="nav nav-collapse">
                   <li>
                     <a href="<?php echo base_url(); ?>Masterdata/member">
@@ -99,8 +99,13 @@
                     </a>
                   </li>
                   <li>
-                    <a href="<?php echo base_url(); ?>Masterdata/coach">
-                      <span class="sub-item">Instruktur / PT</span>
+                    <a href="<?php echo base_url(); ?>Masterdata/personaltraining">
+                      <span class="sub-item">Personal Training</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="<?php echo base_url(); ?>Masterdata/instruktur">
+                      <span class="sub-item">Instruktur </span>
                     </a>
                   </li>
                   <li>
