@@ -49,7 +49,6 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             </select>
                           </div>
                         </div>
-
                         <div class="form-group form-inline">
                           <label for="inlineinput" class="col-md-3 col-form-label">Personal Training:</label>
                           <div class="col-md-12 p-0">
@@ -175,7 +174,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
 
             <div class="col-md-3"> 
               <div class="card-header">
-                <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Personal Training (Optional)</div>
+                <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Personal Training</div>
               </div>
               <div class="row">
                 <div class="col-md-12">
@@ -756,7 +755,44 @@ require DOC_ROOT_PATH . $this->config->item('footer');
   });
 
   $('#pt_package').on('change', function() {
-     $('#PT').prop('disabled', false);
+      if(this.value == 'Ya'){
+        $('#PT').prop('disabled', false);
+        $('#class_price').prop('disabled', false);
+        $('#pt_session_unit').prop('disabled', false);
+      }else{
+        $('#PT').prop('disabled', true);
+        $('#PT').val("");
+        $('#PT').trigger('change');
+        $('#class_price').prop('disabled', true);
+        class_price.set(0);
+        $('#pt_session_unit').prop('disabled', true);
+        $('#pt_session_unit').val("");
+        $('#pt_session_unit').trigger('change');
+      }
+  });
+
+  $('#class_package_promo').on('change', function() {
+    var id = this.value;
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>register/get_promo_info",
+      dataType: "json",
+      data: {id:id},
+      success : function(data){
+        if (data.code == "200"){
+          let data = data.result.get_promo_info[0];
+          if(data.ms_promo_category == 'GYM'){
+
+          }
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Data Tidak Di Temukan',
+          })
+        }
+      }
+    });
   });
 
   $('#btn_save').click(function(e){

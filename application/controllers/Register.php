@@ -427,6 +427,13 @@ class Register extends CI_Controller {
 		$data['data'] = array_merge($get_register, $get_detail_register);
 		$this->load->view('Pages/Register/print', $data);
 	}
+
+	public function get_promo_info()
+	{
+		$promo_id = $this->input->post('id');
+		$get_promo_info['get_promo_info'] = $this->register_model->get_promo_info($promo_id)->result_array();
+		echo json_encode(['code'=>200, 'result'=>$get_promo_info]);
+	}
 	// end register //
 
 }	
