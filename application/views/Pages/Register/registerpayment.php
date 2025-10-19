@@ -208,6 +208,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               <label for="inlineinput" class="col-md-3 col-form-label">Jumlah Sesi:</label>
                               <div class="col-md-12 p-0">
                                 <select class="form-control input-full" id="pt_session_unit" name="pt_session_unit">
+                                  <option value="">-- Pilih Sesi --</option>
                                   <option value="8">8 Sesi</option>
                                   <option value="12">12 Sesi</option>
                                   <option value="24">24 Sesi</option>
@@ -754,11 +755,9 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     }
   });
 
-
-
-  
-
-
+  $('#pt_package').on('change', function() {
+     $('#PT').prop('disabled', false);
+  });
 
   $('#btn_save').click(function(e){
     e.preventDefault();
