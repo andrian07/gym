@@ -842,7 +842,11 @@ class Masterdata extends CI_Controller {
 				}else{
 					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
 				}
-
+				if($check_auth[0]->delete == 'Y'){
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['class_id'].'" data-name="'.$field['class_name'].'" onclick="delete_class('.$field['class_id'].')"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+				}else{
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['class_id'].'" data-name="'.$field['class_name'].'" disabled="disabled"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+				}
 				if($check_auth[0]->edit == 'Y'){
 					$schedule = '<button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModalschedule" data-id="'.$field['class_id'].'" data-name="'.$field['class_name'].'"><i class="fas fa-calendar-alt sizing-fa"></i></button> ';
 				}else{
@@ -855,7 +859,7 @@ class Masterdata extends CI_Controller {
 				$row[] = $field['class_name'];
 				$row[] = $field['class_desc'];
 				$row[] = 'Rp. '.number_format($field['class_price']).' / '.$field['class_attend_type'];
-				$row[] = $edit.$schedule;
+				$row[] = $edit.$delete.$schedule;
 				$data[] = $row;
 			}
 
@@ -1176,7 +1180,9 @@ class Masterdata extends CI_Controller {
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$check_auth['check_auth'] = $check_auth;
-			$this->load->view('Pages/Masterdata/promo', $check_auth);
+			$list_pt_package['list_pt_package'] = $this->global_model->pt_package();
+			$data['data'] = array_merge($check_auth, $list_pt_package);
+			$this->load->view('Pages/Masterdata/promo', $data);
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
@@ -1215,6 +1221,12 @@ class Masterdata extends CI_Controller {
 					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_promo_id'].'" data-name="'.$field['ms_pormo_name'].'" disabled="disabled"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
 				}
 
+				if($field['ms_promo_member'] == 'Y'){
+					$promo_member = '<span class="badge badge-success">Include</span>';
+				}else{
+					$promo_member = '<span class="badge badge-danger">Non Include</span>';
+				}
+
 				if($field['ms_promo_pt'] == 'Y'){
 					$promo_pt = '<span class="badge badge-success">Include</span>';
 				}else{
@@ -1231,6 +1243,8 @@ class Masterdata extends CI_Controller {
 				$row = array();
 				$row[] = $field['ms_pormo_name'];
 				$row[] = $field['ms_pormo_discount'].'%';
+				$row[] = $promo_member;
+				$row[] = $field['ms_promo_member_month'].' Bulan';
 				$row[] = $promo_pt;
 				$row[] = $field['ms_promo_pt_sesi'].' Sesi';
 				$row[] = $promo_kelas;
@@ -1261,6 +1275,8 @@ class Masterdata extends CI_Controller {
 
 			$promo_name 				= $this->input->post('promo_name');
 			$promo_disc_val 			= $this->input->post('promo_disc_val');
+			$promo_member 				= $this->input->post('promo_member');
+			$member_session_unit 		= $this->input->post('member_session_unit');
 			$promo_pt 					= $this->input->post('promo_pt');
 			$pt_session_unit 			= $this->input->post('pt_session_unit');
 			$promo_kelas 				= $this->input->post('promo_kelas');
@@ -1273,8 +1289,23 @@ class Masterdata extends CI_Controller {
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
 
+			if($promo_member == 'Y' && $promo_kelas == 'N' ){
+				$promo_category = 'GYM';
+			}
+
+			if($promo_member == 'N' && $promo_kelas == 'Y' ){
+				$promo_category = 'Kelas';
+			}
+
+			if($promo_member == 'Y' && $promo_kelas == 'Y' ){
+				$promo_category = 'GYM & Kelas';
+			}
+
+
 			$data_insert = array(
 				'ms_pormo_name'	       	=> $promo_name,
+				'ms_promo_member'	    => $promo_member,
+				'ms_promo_member_month'	=> $member_session_unit,
 				'ms_promo_pt'	       	=> $promo_pt,
 				'ms_promo_pt_sesi'	   	=> $pt_session_unit,
 				'ms_promo_class'	    => $promo_kelas,
@@ -1328,6 +1359,8 @@ class Masterdata extends CI_Controller {
 		if($check_auth[0]->edit == 'Y'){
 			$promo_id 					= $this->input->post('promo_id_edit');
 			$promo_name 				= $this->input->post('promo_name');
+			$promo_member 				= $this->input->post('promo_member');
+			$member_session_unit 		= $this->input->post('member_session_unit');
 			$promo_disc_val 			= $this->input->post('promo_disc_val');
 			$promo_pt 					= $this->input->post('promo_pt');
 			$pt_session_unit 			= $this->input->post('pt_session_unit');
@@ -1341,8 +1374,22 @@ class Masterdata extends CI_Controller {
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
 
+			if($promo_member == 'Y' && $promo_kelas == 'N' ){
+				$promo_category = 'GYM';
+			}
+
+			if($promo_member == 'N' && $promo_kelas == 'Y' ){
+				$promo_category = 'Kelas';
+			}
+
+			if($promo_member == 'Y' && $promo_kelas == 'Y' ){
+				$promo_category = 'GYM & Kelas';
+			}
+
 			$data_edit = array(
 				'ms_pormo_name'	       	=> $promo_name,
+				'ms_promo_member'	    => $promo_member,
+				'ms_promo_member_month'	=> $member_session_unit,
 				'ms_promo_pt'	       	=> $promo_pt,
 				'ms_promo_pt_sesi'	   	=> $pt_session_unit,
 				'ms_promo_class'	    => $promo_kelas,

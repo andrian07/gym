@@ -25,6 +25,13 @@ class global_model extends CI_Model {
         return $result;
     }
 
+    public function pt_list()
+    {
+        $query = $this->db->query("select * from ms_coach where coach_type = 'PT' and coach_active = 'Y'");
+        $result = $query->result();
+        return $result;
+    }
+
     public function promo_list(){
         $query = $this->db->query("select * from ms_promo where ms_promo_active = 'Y'");
         $result = $query->result();
@@ -40,6 +47,13 @@ class global_model extends CI_Model {
     public function select_promo($promo_id)
     {
         $query = $this->db->query("select * from ms_promo where ms_promo_id = '".$promo_id."' and ms_promo_active = 'Y'");
+        $result = $query->result();
+        return $result;
+    }
+
+    public function pt_package()
+    {
+        $query = $this->db->query("select * from ms_pt_package where ms_pt_package_active = 'Y'");
         $result = $query->result();
         return $result;
     }

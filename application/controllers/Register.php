@@ -43,8 +43,9 @@ class Register extends CI_Controller {
 		if($check_auth[0]->view == 'Y'){
 			$class_list['class_list'] = $this->global_model->class_list();
 			$coach_list['coach_list'] = $this->global_model->coach_list();
+			$pt_list['pt_list'] = $this->global_model->pt_list();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($check_auth, $coach_list, $class_list);
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $pt_list);
 			$this->load->view('Pages/Register/register', $data);
 		}else{
 			$msg = "No Access";
@@ -60,8 +61,9 @@ class Register extends CI_Controller {
 			$class_list['class_list'] = $this->global_model->class_list();
 			$coach_list['coach_list'] = $this->global_model->coach_list();
 			$promo_list['promo_list'] = $this->global_model->promo_list();
+			$pt_list['pt_list'] = $this->global_model->pt_list();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list);
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list, $pt_list);
 			$this->load->view('Pages/Register/addregister', $data);
 		}else{
 			$msg = "No Access";
@@ -77,8 +79,10 @@ class Register extends CI_Controller {
 			$class_list['class_list'] = $this->global_model->class_list();
 			$coach_list['coach_list'] = $this->global_model->coach_list();
 			$promo_list['promo_list'] = $this->global_model->promo_list();
+			$pt_list['pt_list'] = $this->global_model->pt_list();
+			$pt_package['pt_package'] = $this->global_model->pt_package();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list);
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list, $pt_list, $pt_package);
 			$this->load->view('Pages/Register/registerpayment', $data);
 		}else{
 			$msg = "No Access";
@@ -241,7 +245,7 @@ class Register extends CI_Controller {
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
 
-		
+
 			$maxCode = $this->masterdata_model->last_member_code();
 			if ($maxCode == NULL) {
 				$last_code = '000001';
@@ -433,6 +437,34 @@ class Register extends CI_Controller {
 		$promo_id = $this->input->post('id');
 		$get_promo_info['get_promo_info'] = $this->register_model->get_promo_info($promo_id)->result_array();
 		echo json_encode(['code'=>200, 'result'=>$get_promo_info]);
+	}
+
+	public function get_member_info()
+	{
+		$member_id = $this->input->post('id');
+		$get_member_info['get_member_info'] = $this->register_model->get_member_info($member_id)->result_array();
+		echo json_encode(['code'=>200, 'result'=>$get_member_info]);
+	}
+
+	public function get_class_info()
+	{
+		$class_id = $this->input->post('id');
+		$get_class_info['get_class_info'] = $this->register_model->get_class_info($class_id)->result_array();
+		echo json_encode(['code'=>200, 'result'=>$get_class_info]);
+	}
+
+	public function get_pt_info()
+	{
+		$pt_id = $this->input->post('id');
+		$get_pt_info['get_pt_info'] = $this->register_model->get_pt_info($pt_id)->result_array();
+		echo json_encode(['code'=>200, 'result'=>$get_pt_info]);
+	}
+
+	public function get_pt_info_month()
+	{
+		$package_sesion = $this->input->post('id');
+		$get_pt_info_month['get_pt_info_month'] = $this->register_model->get_pt_info_month($package_sesion)->result_array();
+		echo json_encode(['code'=>200, 'result'=>$get_pt_info_month]);
 	}
 	// end register //
 

@@ -19,7 +19,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
               </div>
               <div class="ms-md-auto py-2 py-md-0">
                 <button class="btn btn-info" id="reload"><span class="btn-label"><i class="fas fa-sync"></i></span> Reload</button>
-                <?php if($check_auth[0]->add == 'N'){ ?>
+                <?php if($data['check_auth'][0]->add == 'N'){ ?>
                   <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg" disabled="disabled"><span class="btn-label"><i class="fa fa-plus"></i></span> Tambah</button>
                 <?php }else{ ?>
                   <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg"><span class="btn-label"><i class="fa fa-plus"></i></span> Tambah</button>
@@ -46,6 +46,37 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             <div class="row">
                               <div class="col-md-3">
                                 <div class="form-group form-inline">
+                                  <label for="inlineinput" class="col-md-3 col-form-label">Include Member(GYM)</label>
+                                  <div class="d-flex">
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="radio" name="includemember" id="includemember1" value="Y">
+                                      <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="radio" name="includemember" id="includemember2" value="N" checked="">
+                                      <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-9">
+                                <div class="form-group form-inline">
+                                  <label for="inlineinput" class="col-md-3 col-form-label">Jumlah Bulan</label>
+                                  <div class="col-md-12 p-0">
+                                    <select class="form-control input-full" id="member_session_unit" name="member_session_unit">
+                                      <option value="">-- Pilih Bulan --</option>
+                                      <option value="3">3 Bulan</option>
+                                      <option value="6">6 Bulan</option>
+                                      <option value="12">12 Bulan</option>
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-3">
+                                <div class="form-group form-inline">
                                   <label for="inlineinput" class="col-md-3 col-form-label">Include PT</label>
                                   <div class="d-flex">
                                     <div class="form-check">
@@ -65,9 +96,9 @@ require DOC_ROOT_PATH . $this->config->item('header');
                                   <div class="col-md-12 p-0">
                                     <select class="form-control input-full" id="pt_session_unit" name="pt_session_unit">
                                       <option value="">-- Pilih Sesi --</option>
-                                      <option value="8">8 Sesi</option>
-                                      <option value="12">12 Sesi</option>
-                                      <option value="24">24 Sesi</option>
+                                      <?php foreach ($data['list_pt_package'] as $row) { ?>
+                                        <option value="<?php echo $row->ms_pt_package_session; ?>"><?php echo $row->ms_pt_package_session; ?> Sesi</option>  
+                                      <?php } ?>
                                     </select>
                                   </div>
                                 </div>
@@ -106,7 +137,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               </div>
                             </div>
 
-                            <div class="form-group form-inline">
+                            <div class="form-group form-inline" style="display: none;">
                               <label for="inlineinput" class="col-md-3 col-form-label">Kategori</label>
                               <div class="col-md-12 p-0">
                                 <select class="form-control input-full" id="promo_category" name="promo_category">
@@ -142,7 +173,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit Kelas</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Edit Promo</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
@@ -153,6 +184,36 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               <div class="col-md-12 p-0">
                                 <input type="hidden" class="form-control input-full" name="promo_id_edit" id="promo_id_edit">
                                 <input type="text" class="form-control input-full" name="promo_name_edit" id="promo_name_edit" placeholder="Nama Promo">
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-3">
+                                <div class="form-group form-inline">
+                                  <label for="inlineinput" class="col-md-3 col-form-label">Include Member(GYM)</label>
+                                  <div class="d-flex">
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="radio" name="includemember_edit" id="includemember1_edit" value="Y">
+                                      <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
+                                    </div>
+                                    <div class="form-check">
+                                      <input class="form-check-input" type="radio" name="includemember_edit" id="includemember2_edit" value="N" checked="">
+                                      <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-9">
+                                <div class="form-group form-inline">
+                                  <label for="inlineinput" class="col-md-3 col-form-label">Jumlah Bulan</label>
+                                  <div class="col-md-12 p-0">
+                                    <select class="form-control input-full" id="member_session_unit_edit" name="member_session_unit_edit">
+                                      <option value="">-- Pilih Bulan --</option>
+                                      <option value="3">3 Bulan</option>
+                                      <option value="6">6 Bulan</option>
+                                      <option value="12">12 Bulan</option>
+                                    </select>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                             <div class="row">
@@ -218,7 +279,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               </div>
                             </div>
 
-                            <div class="form-group form-inline">
+                            <div class="form-group form-inline" style="display: none;">
                               <label for="inlineinput" class="col-md-3 col-form-label">Kategori</label>
                               <div class="col-md-12 p-0">
                                 <select class="form-control input-full" id="promo_category_edit" name="promo_category_edit">
@@ -257,6 +318,8 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   <tr>
                     <th>Nama Promo</th>
                     <th>Diskon</th>
+                    <th>Include Member</th>
+                    <th>Jumlah Bulan (GYM)</th>
                     <th>Include PT</th>
                     <th>Jumlah Sesi (PT)</th>
                     <th>Include Kelas</th>
@@ -310,9 +373,25 @@ require DOC_ROOT_PATH . $this->config->item('footer');
   $(document ).ready(function() {
     $('#pt_session_unit').prop('disabled', true);
     $('#class_session_unit').prop('disabled', true);
+    $('#member_session_unit').prop('disabled', true);
     $('#pt_session_unit_edit').prop('disabled', true);
     $('#class_session_unit_edit').prop('disabled', true);
+    $('#member_session_unit_edit').prop('disabled', true);
     table_class_list();
+  });
+
+
+
+  $("input[name='includemember']").on("click",function()
+  { 
+    var val = this.value;
+    if(val == 'Y'){
+      $('#member_session_unit').prop('disabled', false);
+    }else{
+      $('#member_session_unit').prop('disabled', true);
+      $("#member_session_unit").val("");
+      $('#member_session_unit').trigger('change');
+    }
   });
 
   $("input[name='includept']").on("click",function()
@@ -336,6 +415,18 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       $('#class_session_unit').prop('disabled', true);
       $("#class_session_unit").val("");
       $('#class_session_unit').trigger('change');
+    }
+  });
+
+  $("input[name='includemember_edit']").on("click",function()
+  { 
+    var val = this.value;
+    if(val == 'Y'){
+      $('#member_session_unit_edit').prop('disabled', false);
+    }else{
+      $('#member_session_unit_edit').prop('disabled', true);
+      $("#member_session_unit_edit").val("");
+      $('#member_session_unit_edit').trigger('change');
     }
   });
 
@@ -383,7 +474,9 @@ require DOC_ROOT_PATH . $this->config->item('footer');
         {data: 4},
         {data: 5},
         {data: 6},
-        {data: 7}
+        {data: 7},
+        {data: 8},
+        {data: 9}
       ]
     });
   }
@@ -393,7 +486,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     var id   = button.data('id')
     var name = button.data('name')
     var modal = $(this)
-    modal.find('.modal-title').text('Edit Instruktur ' + name)
+    modal.find('.modal-title').text('Edit Promo ' + name)
     $.ajax({
       type: "POST",
       url: "<?php echo base_url(); ?>Masterdata/get_promo_id",
@@ -404,6 +497,13 @@ require DOC_ROOT_PATH . $this->config->item('footer');
           let row = data.result.get_promo_id[0];
           modal.find('#promo_id_edit').val(row.ms_promo_id)
           modal.find('#promo_name_edit').val(row.ms_pormo_name)
+
+          if(row.ms_promo_member == 'Y'){
+            modal.find('#includemember1_edit').prop("checked", true);
+            modal.find('#member_session_unit_edit').prop('disabled', false);
+          }
+          modal.find('#member_session_unit_edit').val(row.ms_promo_member_month)
+
           if(row.ms_promo_pt == 'Y'){
             modal.find('#includept1_edit').prop("checked", true);
             modal.find('#pt_session_unit_edit').prop('disabled', false);
@@ -430,114 +530,117 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
   function delete_promo(id)
   {
-
-   Swal.fire({
-    title: 'Konfirmasi?',
-    text: "Apakah Anda Yakin Menghapus Data Promo ?",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Hapus'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      $.ajax({
-        type: "POST",
-        url: "<?php echo base_url(); ?>Masterdata/delete_promo",
-        dataType: "json",
-        data: {id:id},
-        success : function(data){
-          if (data.code == "200"){
-            let title = 'Hapus Promo';
-            let message = 'Berhasil Hapus Promo';
-            let state = 'info';
-            notif_success(title, message, state);
-            $('#promo-list').DataTable().ajax.reload();
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: data.msg,
-            })
+    Swal.fire({
+      title: 'Konfirmasi?',
+      text: "Apakah Anda Yakin Menghapus Data Promo ?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Hapus'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          type: "POST",
+          url: "<?php echo base_url(); ?>Masterdata/delete_promo",
+          dataType: "json",
+          data: {id:id},
+          success : function(data){
+            if (data.code == "200"){
+              let title = 'Hapus Promo';
+              let message = 'Berhasil Hapus Promo';
+              let state = 'info';
+              notif_success(title, message, state);
+              $('#promo-list').DataTable().ajax.reload();
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.msg,
+              })
+            }
           }
+        });
+      }
+    })
+  }
+
+  $('#save').click(function(e){
+    e.preventDefault();
+    var promo_name             = $("#promo_name").val();
+    var promo_disc_val         = promo_disc.get();
+    var promo_member           = $("input[name='includemember']:checked").val();
+    var member_session_unit    = $("#member_session_unit").val();
+    var promo_pt               = $("input[name='includept']:checked").val();
+    var pt_session_unit        = $("#pt_session_unit").val();
+    var promo_kelas            = $("input[name='includekelas']:checked").val();
+    var class_session_unit     = $("#class_session_unit").val();
+    var promo_category         = $("#promo_category").val();
+
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>Masterdata/save_promo",
+      dataType: "json",
+      data: {promo_name:promo_name, promo_disc_val:promo_disc_val, promo_member:promo_member, member_session_unit:member_session_unit, promo_pt:promo_pt, pt_session_unit:pt_session_unit, promo_kelas:promo_kelas, class_session_unit:class_session_unit, promo_category:promo_category},
+      success : function(data){
+        if (data.code == "200"){
+          let title = 'Tambah Data';
+          let message = 'Data Berhasil Di Tambah';
+          let state = 'info';
+          notif_success(title, message, state);
+          $('#promo-list').DataTable().ajax.reload();
+          $("#myModal").modal("hide");
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: data.result,
+          })
         }
-      });
-    }
-  })
-}
-
-$('#save').click(function(e){
-  e.preventDefault();
-  var promo_name             = $("#promo_name").val();
-  var promo_disc_val         = promo_disc.get();
-  var promo_pt               = $("input[name='includept']:checked").val();
-  var pt_session_unit        = $("#pt_session_unit").val();
-  var promo_kelas            = $("input[name='includekelas']:checked").val();
-  var class_session_unit     = $("#class_session_unit").val();
-  var promo_category         = $("#promo_category").val();
-
-  $.ajax({
-    type: "POST",
-    url: "<?php echo base_url(); ?>Masterdata/save_promo",
-    dataType: "json",
-    data: {promo_name:promo_name, promo_disc_val:promo_disc_val, promo_pt:promo_pt, pt_session_unit:pt_session_unit, promo_kelas:promo_kelas, class_session_unit:class_session_unit, promo_category:promo_category},
-    success : function(data){
-      if (data.code == "200"){
-        let title = 'Tambah Data';
-        let message = 'Data Berhasil Di Tambah';
-        let state = 'info';
-        notif_success(title, message, state);
-        $('#promo-list').DataTable().ajax.reload();
-        $("#myModal").modal("hide");
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: data.result,
-        })
       }
-    }
+    });
   });
-});
 
 
-$('#edit').click(function(e){
-  e.preventDefault();
-  var promo_id_edit          = $("#promo_id_edit").val();
-  var promo_name             = $("#promo_name_edit").val();
-  var promo_disc_val         = promo_disc_edit.get();
-  var promo_pt               = $("input[name='includept_edit']:checked").val();
-  var pt_session_unit        = $("#pt_session_unit_edit").val();
-  var promo_kelas            = $("input[name='includekelas_edit']:checked").val();
-  var class_session_unit     = $("#class_session_unit_edit").val();
-  var promo_category         = $("#promo_category_edit").val();
+  $('#edit').click(function(e){
+    e.preventDefault();
+    var promo_id_edit          = $("#promo_id_edit").val();
+    var promo_name             = $("#promo_name_edit").val();
+    var promo_disc_val         = promo_disc_edit.get();
+    var promo_member           = $("input[name='includemember_edit']:checked").val();
+    var member_session_unit    = $("#member_session_unit_edit").val();
+    var promo_pt               = $("input[name='includept_edit']:checked").val();
+    var pt_session_unit        = $("#pt_session_unit_edit").val();
+    var promo_kelas            = $("input[name='includekelas_edit']:checked").val();
+    var class_session_unit     = $("#class_session_unit_edit").val();
+    var promo_category         = $("#promo_category_edit").val();
 
-  $.ajax({
-    type: "POST",
-    url: "<?php echo base_url(); ?>Masterdata/edit_promo",
-    dataType: "json",
-    data: {promo_id_edit:promo_id_edit, promo_name:promo_name, promo_disc_val:promo_disc_val, promo_pt:promo_pt, pt_session_unit:pt_session_unit, promo_kelas:promo_kelas, class_session_unit:class_session_unit, promo_category:promo_category},
-    success : function(data){
-      if (data.code == "200"){
-        let title = 'Edit Data';
-        let message = 'Data Berhasil Di Edit';
-        let state = 'info';
-        notif_success(title, message, state);
-        $('#promo-list').DataTable().ajax.reload();
-        $("#exampleModaledit").modal("hide");
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: data.result,
-        })
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>Masterdata/edit_promo",
+      dataType: "json",
+      data: {promo_id_edit:promo_id_edit, promo_name:promo_name, promo_disc_val:promo_disc_val, promo_member:promo_member, member_session_unit:member_session_unit, promo_pt:promo_pt, pt_session_unit:pt_session_unit, promo_kelas:promo_kelas, class_session_unit:class_session_unit, promo_category:promo_category},
+      success : function(data){
+        if (data.code == "200"){
+          let title = 'Edit Data';
+          let message = 'Data Berhasil Di Edit';
+          let state = 'info';
+          notif_success(title, message, state);
+          $('#promo-list').DataTable().ajax.reload();
+          $("#exampleModaledit").modal("hide");
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: data.result,
+          })
+        }
       }
-    }
+    });
   });
-});
 
-$('#reload').click(function(e){
-  e.preventDefault();
-  location.reload();
-});
+  $('#reload').click(function(e){
+    e.preventDefault();
+    location.reload();
+  });
 </script>

@@ -290,7 +290,6 @@ require DOC_ROOT_PATH . $this->config->item('header');
                                   </div>  
                                 </div>
                               </div>
-
                             </div>
                           </div>
                         </div>
@@ -587,6 +586,43 @@ require DOC_ROOT_PATH . $this->config->item('footer');
         }
       }
     });
+  }
+
+  function delete_class(id)
+  {
+    Swal.fire({
+      title: 'Konfirmasi?',
+      text: "Apakah Anda Yakin Menghapus Data Kelas ?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Hapus'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          type: "POST",
+          url: "<?php echo base_url(); ?>Masterdata/delete_class",
+          dataType: "json",
+          data: {id:id},
+          success : function(data){
+            if (data.code == "200"){
+              let title = 'Hapus Kelas';
+              let message = 'Berhasil Hapus Kelas';
+              let state = 'info';
+              notif_success(title, message, state);
+              $('#class-list').DataTable().ajax.reload();
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.msg,
+              })
+            }
+          }
+        });
+      }
+    })
   }
 
   function convertTimeFormat(time) {

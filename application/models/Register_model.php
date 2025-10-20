@@ -87,6 +87,42 @@ class register_model extends CI_Model {
         return $query;
     }
 
+    public function get_member_info($member_id)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_member');
+        $this->db->where('member_id', $member_id);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function get_class_info($class_id)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_class');
+        $this->db->where('class_id', $class_id);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function get_pt_info($pt_id)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_coach');
+        $this->db->where('coach_id ', $pt_id);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function get_pt_info_month($package_sesion)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_pt_package');
+        $this->db->where('ms_pt_package_session ', $package_sesion);
+        $query = $this->db->get();
+        return $query;
+    }
+
 }
 
 ?>

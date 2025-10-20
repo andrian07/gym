@@ -165,6 +165,7 @@ class masterdata_model extends CI_Model {
     {
         $this->db->select('*');
         $this->db->from('ms_class');
+        $this->db->where('class_active', 'Y');
         if($search != null){
             $this->db->where('class_code like "%'.$search.'%"');
             $this->db->or_where('class_name like "%'.$search.'%"');
@@ -179,6 +180,7 @@ class masterdata_model extends CI_Model {
     {
         $this->db->select('count(*) as total_row');
         $this->db->from('ms_class');
+        $this->db->where('class_active', 'Y');
         if($search != null){
             $this->db->where('class_code like "%'.$search.'%"');
             $this->db->or_where('class_name like "%'.$search.'%"');
@@ -210,7 +212,7 @@ class masterdata_model extends CI_Model {
 
     public function delete_class($class_id)
     {
-        $this->db->set('is_active', 'N');
+        $this->db->set('class_active', 'N');
         $this->db->where('class_id', $class_id);
         $this->db->update('ms_class');
     }
