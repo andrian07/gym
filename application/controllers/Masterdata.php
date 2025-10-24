@@ -129,8 +129,10 @@ class Masterdata extends CI_Controller {
 			$member_email	 			= $this->input->post('member_email');
 			$member_address 			= $this->input->post('member_address');
 			$member_gender 				= $this->input->post('member_gender');
+			$member_urgent_name			= $this->input->post('member_urgent_name');
 			$member_urgent_phone	 	= $this->input->post('member_urgent_phone');
 			$member_urgent_sibiling 	= $this->input->post('member_urgent_sibiling');
+			$member_info_join 			= $this->input->post('member_info_join');
 			$member_desc 				= $this->input->post('member_desc');
 
 
@@ -202,8 +204,10 @@ class Masterdata extends CI_Controller {
 				'member_gender'	    		=> $member_gender,
 				'member_nik'				=> $member_nik,
 				'member_email'	    		=> $member_email,
+				'member_urgent_name'		=> $member_urgent_name,
 				'member_urgent_phone'		=> $member_urgent_phone,
 				'member_urgent_sibiling'	=> $member_urgent_sibiling,
+				'member_info_join'			=> $member_info_join,
 				'member_desc'				=> $member_desc,
 				'member_image'				=> $new_image_name
 			);
@@ -251,8 +255,10 @@ class Masterdata extends CI_Controller {
 			$member_email   			= $this->input->post('member_email_edit');
 			$member_address      		= $this->input->post('member_address_edit');
 			$member_gender      		= $this->input->post('member_gender_edit');
+			$member_urgent_name			= $this->input->post('member_urgent_name_edit');
 			$member_urgent_phone	 	= $this->input->post('member_urgent_phone_edit');
 			$member_urgent_sibiling 	= $this->input->post('member_urgent_sibiling_edit');
+			$member_info_join 			= $this->input->post('member_info_join_edit');
 			$member_desc 				= $this->input->post('member_desc_edit');
 
 			$user_id 		   			= $_SESSION['user_id'];
@@ -303,8 +309,10 @@ class Masterdata extends CI_Controller {
 				'member_nik'				=> $member_nik,
 				'member_email'	    		=> $member_email,
 				'member_image'				=> $new_image_name,
+				'member_urgent_name'		=> $member_urgent_name,
 				'member_urgent_phone'		=> $member_urgent_phone,
 				'member_urgent_sibiling'	=> $member_urgent_sibiling,
+				'member_info_join'			=> $member_info_join,
 				'member_desc'				=> $member_desc,
 			);
 
@@ -351,7 +359,8 @@ class Masterdata extends CI_Controller {
 			$id = $this->input->get('id');
 			$get_member_detail_by_id['get_member_detail_by_id'] = $this->masterdata_model->get_member_detail_by_id($id);
 			$get_quisioner_member_by_id['get_quisioner_member_by_id'] = $this->masterdata_model->get_quisioner_member_by_id($id);
-			$data['data'] = array_merge($get_member_detail_by_id, $get_quisioner_member_by_id);
+			$get_quisioner_member2_by_id['get_quisioner_member2_by_id'] = $this->masterdata_model->get_quisioner_member2_by_id($id);
+			$data['data'] = array_merge($get_member_detail_by_id, $get_quisioner_member_by_id, $get_quisioner_member2_by_id);
 			$this->load->view('Pages/Masterdata/quisioner_detail', $data);
 		}else{
 			$msg = "No Access";
@@ -858,7 +867,8 @@ class Masterdata extends CI_Controller {
 				$row[] = $field['class_code'];
 				$row[] = $field['class_name'];
 				$row[] = $field['class_desc'];
-				$row[] = 'Rp. '.number_format($field['class_price']).' / '.$field['class_attend_type'];
+				$row[] = 'Rp. '.number_format($field['class_price_day']).' / Hari';
+				$row[] = 'Rp. '.number_format($field['class_price']).' / Bulan';
 				$row[] = $edit.$delete.$schedule;
 				$data[] = $row;
 			}
@@ -885,9 +895,13 @@ class Masterdata extends CI_Controller {
 			$screenshoot 				= $this->input->post('screenshoot');
 			$class_name 				= $this->input->post('class_name');
 			$class_desc 				= $this->input->post('class_desc');
+			$class_price_day	 		= $this->input->post('class_price_day');
 			$class_price	 			= $this->input->post('class_price');
 			$class_attend_type 			= $this->input->post('class_attend_type');
 			$user_id 		   			= $_SESSION['user_id'];
+
+			$class_price_day_replace = str_replace('Rp. ', '', $class_price_day);
+			$class_price_day = str_replace('.', '', $class_price_day_replace);
 
 			$class_price_replace = str_replace('Rp. ', '', $class_price);
 			$class_price = str_replace('.', '', $class_price_replace);
@@ -907,9 +921,9 @@ class Masterdata extends CI_Controller {
 				$last_code = 'CLS'.'000001';
 			} else {
 				$maxCode = $maxCode[0]->class_code;
-				$last_code = substr($maxCode, -9);
-				$last_code = 'CLS'.substr('000000' . strval(floatval($last_code) + 1), 9);
-			}
+				$last_code = substr($maxCode, -6);
+				$last_code = 'CLS'.substr('000000' . strval(floatval($last_code) + 1), -6);
+			}		
 
 			if($_FILES['screenshoot']['name'] == null){
 				$new_image_name = 'default.png';
@@ -933,6 +947,7 @@ class Masterdata extends CI_Controller {
 			$data_insert = array(
 				'class_code'	       	=> $last_code,
 				'class_name'	       	=> $class_name,
+				'class_price_day' 		=> $class_price_day,
 				'class_price'	   		=> $class_price,
 				'class_attend_type'	    => $class_attend_type,
 				'class_desc'	       	=> $class_desc,
@@ -964,10 +979,14 @@ class Masterdata extends CI_Controller {
 			$class_id   				= $this->input->post('class_id_edit');
 			$class_name 				= $this->input->post('class_name_edit');
 			$class_desc 				= $this->input->post('class_desc_edit');
+			$class_price_day	 		= $this->input->post('class_price_day_edit');
 			$class_price	 			= $this->input->post('class_price_edit');
 			$class_attend_type 			= $this->input->post('class_attend_type_edit');
 			$user_id 		   			= $_SESSION['user_id'];
 
+
+			$class_price_day_replace = str_replace('Rp. ', '', $class_price_day);
+			$class_price_day = str_replace('.', '', $class_price_day_replace);
 
 			$class_price_replace = str_replace('Rp. ', '', $class_price);
 			$class_price = str_replace('.', '', $class_price_replace);
@@ -1012,6 +1031,7 @@ class Masterdata extends CI_Controller {
 
 			$data_edit = array(
 				'class_name'	       	=> $class_name,
+				'class_price_day'  		=> $class_price_day, 
 				'class_price'	   		=> $class_price,
 				'class_attend_type'	    => $class_attend_type,
 				'class_desc'	       	=> $class_desc,

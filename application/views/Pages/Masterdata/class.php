@@ -74,13 +74,22 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               </div>
 
                               <div class="form-group form-inline">
-                                <label for="inlineinput" class="col-md-3 col-form-label">Harga Kelas</label>
+                                <label for="inlineinput" class="col-md-3 col-form-label">Harga Kelas / Hari</label>
                                 <div class="col-md-12 p-0">
-                                  <input type="text" class="form-control input-full" name="class_price" id="class_price" placeholder="Harga Kelas" value="0">
+                                  <input type="text" class="form-control input-full" name="class_price_day" id="class_price_day" placeholder="Harga Kelas / Hari" value="0">
                                 </div>
                               </div>
 
                               <div class="form-group form-inline">
+                                <label for="inlineinput" class="col-md-3 col-form-label">Harga Kelas / Bulan</label>
+                                <div class="col-md-12 p-0">
+                                  <input type="text" class="form-control input-full" name="class_price" id="class_price" placeholder="Harga Kelas / Bulan" value="0">
+                                </div>
+                              </div>
+
+                              
+
+                              <div class="form-group form-inline" style="display:none;">
                                 <label for="inlineinput" class="col-md-3 col-form-label">Jenis Absensi</label>
                                 <div class="col-md-12 p-0">
                                   <select class="form-select form-control" id="class_attend_type" name="class_attend_type">
@@ -158,13 +167,20 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               </div>
 
                               <div class="form-group form-inline">
-                                <label for="inlineinput" class="col-md-3 col-form-label">Harga Kelas</label>
+                                <label for="inlineinput" class="col-md-3 col-form-label">Harga Kelas / Hari</label>
                                 <div class="col-md-12 p-0">
-                                  <input type="text" class="form-control input-full" name="class_price_edit" id="class_price_edit" placeholder="Harga Kelas" value="0">
+                                  <input type="text" class="form-control input-full" name="class_price_day_edit" id="class_price_day_edit" placeholder="Harga Kelas / Hari" value="0">
                                 </div>
                               </div>
 
                               <div class="form-group form-inline">
+                                <label for="inlineinput" class="col-md-3 col-form-label">Harga Kelas / Bulan</label>
+                                <div class="col-md-12 p-0">
+                                  <input type="text" class="form-control input-full" name="class_price_edit" id="class_price_edit" placeholder="Harga Kelas / Bulan" value="0">
+                                </div>
+                              </div>
+
+                              <div class="form-group form-inline" style="display:none;">
                                 <label for="inlineinput" class="col-md-3 col-form-label">Jenis Absensi</label>
                                 <div class="col-md-12 p-0">
                                   <select class="form-select form-control" id="class_attend_type_edit" name="class_attend_type_edit">
@@ -313,7 +329,8 @@ require DOC_ROOT_PATH . $this->config->item('header');
                     <th>Kode</th>
                     <th>Nama Kelas</th>
                     <th>Keterangan</th>
-                    <th>Harga</th>
+                    <th>Harga / Hari</th>
+                    <th>Harga / Bulan</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
@@ -358,6 +375,22 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     digitGroupSeparator : '.',
   });
 
+  let class_price_day = new AutoNumeric('#class_price_day', {
+    currencySymbol : 'Rp. ',
+    decimalCharacter : ',',
+    decimalPlaces: 0,
+    decimalPlacesShownOnFocus: 0,
+    digitGroupSeparator : '.',
+  });
+
+  let class_price_day_edit = new AutoNumeric('#class_price_day_edit', {
+    currencySymbol : 'Rp. ',
+    decimalCharacter : ',',
+    decimalPlaces: 0,
+    decimalPlacesShownOnFocus: 0,
+    digitGroupSeparator : '.',
+  });
+
   $(document ).ready(function() {
     table_class_list();
   });
@@ -379,7 +412,8 @@ require DOC_ROOT_PATH . $this->config->item('footer');
         {data: 1},
         {data: 2},
         {data: 3},
-        {data: 4}
+        {data: 4},
+        {data: 5}
       ]
     });
   }
@@ -499,6 +533,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
           modal.find('#class_code_edit').val(row.class_code)
           modal.find('#class_name_edit').val(row.class_name)
           modal.find('#class_desc_edit').val(row.class_desc)
+          class_price_day_edit.set(row.class_price_day)
           class_price_edit.set(row.class_price)
           modal.find('#class_attend_type_edit').val(row.class_attend_type)
           var elem = document.createElement("img");
@@ -680,6 +715,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     var formData              = new FormData(this);
     var class_name            = $("#class_name_edit").val();
     var class_desc            = $("#class_desc_edit").val();
+    var class_price_day       = $("#class_price_day_edit").val();
     var class_price           = $("#class_price_edit").val();
     var class_attend_type     = $("#class_attend_type_edit").val();
 

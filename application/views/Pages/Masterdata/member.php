@@ -122,6 +122,13 @@ require DOC_ROOT_PATH . $this->config->item('header');
 
                           <div class="col-md-4">
                             <div class="form-group form-inline">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Nama Kontak Darurat</label>
+                              <div class="col-md-12 p-0">
+                                <input type="text" class="form-control input-full" name="member_urgent_name" id="member_urgent_name" placeholder="Nama Kontak Darurat">
+                              </div>
+                            </div>
+
+                            <div class="form-group form-inline">
                               <label for="inlineinput" class="col-md-3 col-form-label">Kontak Darurat Yang Dapat Dihubungi</label>
                               <div class="col-md-12 p-0">
                                 <input type="text" class="form-control input-full" name="member_urgent_phone" id="member_urgent_phone" placeholder="Kontak Darurat">
@@ -132,6 +139,15 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               <label for="inlineinput" class="col-md-3 col-form-label">Hubungan</label>
                               <div class="col-md-12 p-0">
                                 <input type="text" class="form-control input-full" name="member_urgent_sibiling" id="member_urgent_sibiling" placeholder="Hubungan">
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-md-4">
+                            <div class="form-group form-inline">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Informasi Dari:</label>
+                              <div class="col-md-12 p-0">
+                                <textarea class="form-control" id="member_info_join" name="member_info_join" rows="5" placeholder="CTH: Teman/Sosmed/dll"></textarea>
                               </div>
                             </div>
                           </div>
@@ -248,66 +264,90 @@ require DOC_ROOT_PATH . $this->config->item('header');
                           </div>
 
                           <div class="col-md-4">
-                            <div class="form-group form-inline">
-                              <label for="inlineinput" class="col-md-3 col-form-label">Kontak Darurat Yang Dapat Dihubungi</label>
-                              <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="member_urgent_phone_edit" id="member_urgent_phone_edit" placeholder="Kontak Darurat">
-                              </div>
-                            </div>
-
-                            <div class="form-group form-inline">
-                              <label for="inlineinput" class="col-md-3 col-form-label">Hubungan</label>
-                              <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="member_urgent_sibiling_edit" id="member_urgent_sibiling_edit" placeholder="Hubungan">
-                              </div>
+                           <div class="form-group form-inline">
+                            <label for="inlineinput" class="col-md-3 col-form-label">Nama Kontak Darurat</label>
+                            <div class="col-md-12 p-0">
+                              <input type="text" class="form-control input-full" name="member_urgent_name_edit" id="member_urgent_name_edit" placeholder="Nama Kontak Darurat">
                             </div>
                           </div>
 
-
-                          <div class="col-md-4">
-                            <div class="form-group form-inline">
-                              <label for="inlineinput" class="col-md-3 col-form-label">Keterangan (alergi / penyakit bawaan /dll):</label>
-                              <div class="col-md-12 p-0">
-                                <textarea class="form-control" id="member_desc_edit" name="member_desc_edit" rows="5"></textarea>
-                              </div>
+                          <div class="form-group form-inline">
+                            <label for="inlineinput" class="col-md-3 col-form-label">Kontak Darurat Yang Dapat Dihubungi</label>
+                            <div class="col-md-12 p-0">
+                              <input type="text" class="form-control input-full" name="member_urgent_phone_edit" id="member_urgent_phone_edit" placeholder="Kontak Darurat">
                             </div>
                           </div>
 
+                          <div class="form-group form-inline">
+                            <label for="inlineinput" class="col-md-3 col-form-label">Hubungan</label>
+                            <div class="col-md-12 p-0">
+                              <input type="text" class="form-control input-full" name="member_urgent_sibiling_edit" id="member_urgent_sibiling_edit" placeholder="Hubungan">
+                            </div>
+                          </div>
                         </div>
+
+                        <div class="col-md-4">
+                          <div class="form-group form-inline">
+                            <label for="inlineinput" class="col-md-3 col-form-label">Informasi Dari:</label>
+                            <div class="col-md-12 p-0">
+                              <textarea class="form-control" id="member_info_join_edit" name="member_info_join_edit" rows="5" placeholder="CTH: Teman/Sosmed/dll"></textarea>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <div class="form-group form-inline">
+                            <label for="inlineinput" class="col-md-3 col-form-label">Keterangan (alergi / penyakit bawaan /dll):</label>
+                            <div class="col-md-12 p-0">
+                              <textarea class="form-control" id="member_desc_edit" name="member_desc_edit" rows="5"></textarea>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <div class="form-group form-inline">
+                            <label for="inlineinput" class="col-md-3 col-form-label">Keterangan (alergi / penyakit bawaan /dll):</label>
+                            <div class="col-md-12 p-0">
+                              <textarea class="form-control" id="member_desc_edit" name="member_desc_edit" rows="5"></textarea>
+                            </div>
+                          </div>
+                        </div>
+
                       </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times-circle"></i> Batal</button>
-                        <button type="submit" class="btn btn-primary" ><i class="fas fa-save"></i> Simpan</button>
-                      </div>
-                    </form>
-                  </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times-circle"></i> Batal</button>
+                      <button type="submit" class="btn btn-primary" ><i class="fas fa-save"></i> Simpan</button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table id="member-list" class="display table table-striped table-hover">
-             <thead>
-              <tr>
-                <th>Kode</th>
-                <th>Nama</th>
-                <th>Alamat</th>
-                <th>Telp</th>
-                <th>Gender</th>
-                <th>Status</th>
-                <th>Tanggal Join</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table id="member-list" class="display table table-striped table-hover">
+           <thead>
+            <tr>
+              <th>Kode</th>
+              <th>Nama</th>
+              <th>Alamat</th>
+              <th>Telp</th>
+              <th>Gender</th>
+              <th>Status</th>
+              <th>Tanggal Join</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
+</div>
 </div>
 </div>
 </div>
@@ -594,6 +634,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
           modal.find('#member_email_edit').val(row.member_email)
           modal.find('#member_address_edit').val(row.member_address)
           modal.find('#member_gender_edit').val(row.member_gender)
+          modal.find('#member_urgent_name_edit').val(row.member_urgent_name)
           modal.find('#member_urgent_phone_edit').val(row.member_urgent_phone)
           modal.find('#member_urgent_sibiling_edit').val(row.member_urgent_sibiling)
           modal.find('#member_desc_edit').val(row.member_desc)

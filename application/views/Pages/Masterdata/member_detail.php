@@ -57,6 +57,7 @@
             <div class="table-responsive">
               <table class="table table-bordered">
                 <tbody>
+                
                   <tr>
                     <th scope="col" class="productinfo-text-right">Kode Member:</th>
                     <td colspan="4"><?php echo $row->member_code; ?></td>
