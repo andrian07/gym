@@ -270,6 +270,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       }
     });
   }); 
+  
 
   $('#save').click(function(e){
     e.preventDefault();

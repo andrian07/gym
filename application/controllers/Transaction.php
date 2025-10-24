@@ -62,7 +62,95 @@ class Transaction extends CI_Controller {
 		$modul = 'Transactiondaily';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->add == 'Y'){
-			
+			if($check_auth[0]->add == 'Y'){
+				$member_name 				= $this->input->post('member_name');
+				$member_phone 				= $this->input->post('member_phone');
+				$member_address 			= $this->input->post('member_address');
+				$member_info_join 			= $this->input->post('ellunainfo');
+				$schedule_class_id  		= $this->input->post('schedule_class_id');
+				$class_price_val 			= $this->input->post('class_price_val');
+				$payment 					= $this->input->post('payment');
+				$user_id 		   			= $_SESSION['user_id'];
+
+				
+
+				$check_member_phone = $this->masterdata_model->check_member_phone($member_phone);
+				if($check_member_phone != null){
+					$msg = "No Hp Sudah Di Gunakan";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
+
+				if($member_name == null){
+					$msg = "Nama Harus Di isi";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
+
+				if($member_phone == null){
+					$msg = "No Hp Harus Di isi";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
+
+				if($schedule_class_id == null){
+					$msg = "Kelas Harus di Pilih Harus Di isi";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
+
+				if($payment == null){
+					$msg = "Pembayaran di Pilih Harus Di isi";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
+
+				$maxCode = $this->masterdata_model->last_member_code();
+				if ($maxCode == NULL) {
+					$last_code = '000001';
+				} else {
+					$maxCode = $maxCode[0]->member_code;
+					$last_code = substr($maxCode, -6);
+					$last_code = substr('00000' . strval(floatval($last_code) + 1), -6);
+				}
+
+				$data_insert = array(
+					'member_code'	       		=> $last_code,
+					'member_name'	       		=> $member_name,
+					'member_phone'	   			=> $member_phone,
+					'member_address'	    	=> $member_address,
+					'member_info_join'			=> $member_info_join
+				);
+
+				$insert_member = $this->masterdata_model->save_member($data_insert);
+
+
+				$data_insert_schedule_member = array(
+					'member_id'	       			=> $insert_member,
+					'schedule_class_id'	       	=> $schedule_class_id
+				);
+
+				$this->masterdata_model->save_schedule_member($data_insert_schedule_member);
+
+				
+				$data_insert_transaction = array(
+					'member_code'	       		=> $last_code,
+					'member_name'	       		=> $member_name,
+					'member_phone'	   			=> $member_phone,
+					'member_address'	    	=> $member_address,
+					'member_info_join'			=> $member_info_join
+				);
+
+				$insert_member = $this->masterdata_model->save_member($data_insert_transaction);
+
+
+				$data_insert_act = array(
+					'activity_table_desc'	       => 'Tambah Pendaftaran Kelas Harian Member: '.$last_code,
+					'activity_table_user'	       => $user_id,
+				);
+				$this->global_model->save($data_insert_act);
+				$msg = "Succes Input";
+				echo json_encode(['code'=>200, 'result'=>$msg]);
+				die();
+			}else{
+				$msg = "No Access";
+				echo json_encode(['code'=>0, 'result'=>$msg]);
+			}	
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);

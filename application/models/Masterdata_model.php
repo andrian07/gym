@@ -118,7 +118,7 @@ class masterdata_model extends CI_Model {
         return $result;
     }
 
-     public function get_quisioner_member2_by_id($id)
+    public function get_quisioner_member2_by_id($id)
     {
         $query = $this->db->query("select * from ms_member_question2 where member_id='".$id."'");
         $result = $query->result();
@@ -157,17 +157,26 @@ class masterdata_model extends CI_Model {
 
     public function last_member_code()
     {
-        $query = $this->db->query("select member_code from ms_member order by member_id desc limit 1");
+        $query = $this->db->query("select member_code from ms_member where member_type = 'Normal' order by member_id desc limit 1");
         $result = $query->result();
         return $result;
     }
     
 
+    public function save_schedule_member($data_insert_schedule_member)
+    {
+        $this->db->trans_start();
+        $this->db->insert('member_class', $data_insert_schedule_member);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return  $insert_id;
+    }
+
     //end member
 
 
     //class
-    
+
     public function class_list($search, $length, $start)
     {
         $this->db->select('*');
@@ -264,7 +273,7 @@ class masterdata_model extends CI_Model {
     //end class
 
     //coach
-    
+
     public function coach_list($search, $length, $start, $type)
     {
         $this->db->select('*');
@@ -279,7 +288,7 @@ class masterdata_model extends CI_Model {
         $query = $this->db->get();
         return $query;
     }
-    
+
     public function coach_list_count($search, $type)
     {
         $this->db->select('count(*) as total_row');
