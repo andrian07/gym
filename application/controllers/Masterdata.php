@@ -12,6 +12,7 @@ class Masterdata extends CI_Controller {
 		$this->load->model('masterdata_model');
 		$this->load->model('global_model');
 		$this->load->helper(array('url', 'html'));
+		date_default_timezone_set('Asia/Jakarta');
 	}
 
 	public function index(){

@@ -13,6 +13,7 @@ class Register extends CI_Controller {
 		$this->load->model('masterdata_model');
 		$this->load->model('global_model');
 		$this->load->helper(array('url', 'html'));
+		date_default_timezone_set('Asia/Jakarta');
 	}
 
 	public function index(){
@@ -375,7 +376,7 @@ class Register extends CI_Controller {
 			}
 
 			$maxCode  = $this->register_model->last_register();
-			$inv_code = 'P/'.date("d/m/Y").'/';
+			$inv_code = 'TRX/'.date("d/m/Y").'/';
 			if ($maxCode == NULL) {
 				$last_code = $inv_code.'000001';
 			} else {

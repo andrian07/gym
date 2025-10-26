@@ -9,9 +9,12 @@ class Transaction extends CI_Controller {
 		parent::__construct();
 		$this->load->helper('url');
 		$this->load->library('session');
+		$this->load->model('masterdata_model');
+		$this->load->model('register_model');
 		$this->load->model('transaction_model');
 		$this->load->model('global_model');
 		$this->load->helper(array('url', 'html'));
+		date_default_timezone_set('Asia/Jakarta');
 	}
 
 	public function index()
@@ -50,11 +53,45 @@ class Transaction extends CI_Controller {
 		}
 	}
 
+	public function get_hari(){
+		$hari = date("l");
+		if($hari == 'Sunday'){
+			$cari_hari = 'Minggu'; 
+		}
+		if($hari == 'Monday'){
+			$cari_hari = 'Senin'; 
+		}
+		if($hari == 'Tuesday'){
+			$cari_hari = 'Selasa'; 
+		}
+		if($hari == 'Wednesday'){
+			$cari_hari = 'Rabu'; 
+		}
+		if($hari == 'Thursday'){
+			$cari_hari = 'Kamis'; 
+		}
+		if($hari == 'Friday'){
+			$cari_hari = 'Jumat'; 
+		}
+		if($hari == 'Saturday'){
+			$cari_hari = 'Sabtu'; 
+		}
+		return $cari_hari;
+	}
+
 	public function get_class_info()
 	{
 		$schedule_class_id = $this->input->post('id');
 		$get_schedule_class_info['get_schedule_class_info'] = $this->global_model->get_schedule_class_info($schedule_class_id);
 		echo json_encode(['code'=>200, 'result'=>$get_schedule_class_info]);
+	}
+
+	public function get_class_schedule()
+	{
+		$class_name = $this->input->post('class_name');
+		$hari = $this->get_hari();
+		$get_class_schedule['get_class_schedule'] = $this->global_model->get_class_schedule($class_name, $hari);
+		echo json_encode(['code'=>200, 'result'=>$get_class_schedule]);
 	}
 
 	public function daily_save()
@@ -66,6 +103,7 @@ class Transaction extends CI_Controller {
 				$member_name 				= $this->input->post('member_name');
 				$member_phone 				= $this->input->post('member_phone');
 				$member_address 			= $this->input->post('member_address');
+				$member_gender 				= $this->input->post('member_gender');
 				$member_info_join 			= $this->input->post('ellunainfo');
 				$schedule_class_id  		= $this->input->post('schedule_class_id');
 				$class_price_val 			= $this->input->post('class_price_val');
@@ -114,30 +152,42 @@ class Transaction extends CI_Controller {
 					'member_name'	       		=> $member_name,
 					'member_phone'	   			=> $member_phone,
 					'member_address'	    	=> $member_address,
+					'member_gender'				=> $member_gender,
 					'member_info_join'			=> $member_info_join
 				);
 
 				$insert_member = $this->masterdata_model->save_member($data_insert);
 
 
-				$data_insert_schedule_member = array(
-					'member_id'	       			=> $insert_member,
+				$get_class_id = $this->transaction_model->get_class_id($schedule_class_id);
+
+				$maxCode  = $this->register_model->last_register();
+				$inv_code = 'TRX/'.date("d/m/Y").'/';
+				if ($maxCode == NULL) {
+					$last_code = $inv_code.'000001';
+				} else {
+					$maxCode   = $maxCode[0]->transaction_register_inv;
+					$last_code = substr($maxCode, -6);
+					$last_code = $inv_code.substr('000000' . strval(floatval($last_code) + 1), -6);
+				}
+
+				$data_insert_register = array(
+					'transaction_register_inv'	    => $last_code,
+					'member_id'	       				=> $insert_member,
+					'transaction_type_member'	   	=> 'Kelas Only',
+					'transaction_class'	    		=> 'Y',
+					'transaction_class_id'			=> $get_class_id[0]->class_id
+				);
+
+				$save_transaction = $this->transaction_model->save_transaction($data_insert_register);
+
+
+				$insert_transaction_register_daily = array(
+					'transaction_register_id '	=> $save_transaction,
 					'schedule_class_id'	       	=> $schedule_class_id
 				);
 
-				$this->masterdata_model->save_schedule_member($data_insert_schedule_member);
-
-				
-				$data_insert_transaction = array(
-					'member_code'	       		=> $last_code,
-					'member_name'	       		=> $member_name,
-					'member_phone'	   			=> $member_phone,
-					'member_address'	    	=> $member_address,
-					'member_info_join'			=> $member_info_join
-				);
-
-				$insert_member = $this->masterdata_model->save_member($data_insert_transaction);
-
+				$this->transaction_model->save_transaction_daily($insert_transaction_register_daily);
 
 				$data_insert_act = array(
 					'activity_table_desc'	       => 'Tambah Pendaftaran Kelas Harian Member: '.$last_code,
@@ -155,6 +205,14 @@ class Transaction extends CI_Controller {
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
 		}
+	}
+
+	public function get_member_class()
+	{
+		$hari = $this->get_hari();
+		$title = $this->input->post('title');
+		$get_member_class['get_member_class'] = $this->global_model->get_member_class($title, $hari)->result_array();
+		echo json_encode(['code'=>200, 'result'=>$get_member_class]);
 	}
 
 }

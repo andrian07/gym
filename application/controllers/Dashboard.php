@@ -10,6 +10,7 @@ class Dashboard extends CI_Controller {
 		$this->load->helper('url');
 		$this->load->library('session');
 		$this->load->helper(array('url', 'html'));
+		date_default_timezone_set('Asia/Jakarta');
 	}
 
 	public function index()

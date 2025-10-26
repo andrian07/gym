@@ -7,6 +7,22 @@ require DOC_ROOT_PATH . $this->config->item('header');
   .page-with-aside .page-aside .aside-header {
     padding: 24px 22px !important;
   }
+  #schedule{
+    width:130px !important;
+  }
+
+  p.msg {
+    font-size: 15px !important;
+  }
+
+  .page-with-aside .page-aside .aside-nav .nav>li>a {
+    font-size: 14px !important;
+  }
+
+  .mail-wrapper .mail-content .inbox-body .email-list .email-list-item {
+    padding: 2px 1px !important;
+  }
+
 </style>
 <div class="container">
   <div class="page-inner">
@@ -97,6 +113,15 @@ require DOC_ROOT_PATH . $this->config->item('header');
                                       </div>
                                     </div>
                                     <div class="form-group form-inline">
+                                      <label for="inlineinput" class="col-md-3 col-form-label">Gender:</label>
+                                      <div class="col-md-12 p-0">
+                                        <select class="form-control input-full" id=member_gender name="member_gender">
+                                          <option value="Wanita">Wanita</option>
+                                          <option value="Pria">Pria</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div class="form-group form-inline">
                                       <label for="inlineinput" class="col-md-3 col-form-label">Alamat:</label>
                                       <div class="col-md-12 p-0">
                                         <textarea class="form-control input-full" name="member_address" id="member_address"></textarea>
@@ -117,7 +142,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                                           <option value="">-- Pilih Kelas --</option>
                                           <?php foreach ($data['class_list'] as $row) { ?>
                                             <?php $date = date_create($row->schedule_time_start); ?>
-                                            <option value="<?php echo $row->schedule_class_id ?>"><?php echo $row->class_name ?> (<?php echo date_format($date,"H:i") ?> / <?php echo $row->coach_name; ?>)</option>
+                                            <option value="<?php echo $row->schedule_class_id ?>"><?php echo $row->class_name ?> (<?php echo $row->schedule_day ?> / <?php echo date_format($date,"H:i") ?> / <?php echo $row->coach_name; ?>)</option>
                                           <?php } ?>
                                         </select>
                                       </div>
@@ -152,7 +177,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                                     <div class="form-group form-inline">
                                       <label for="inlineinput" class="col-md-3 col-form-label">Harga:</label>
                                       <div class="col-md-12 p-0">
-                                        <input type="text" class="form-control input-full" name="class_price" id="class_price" readonly>
+                                        <input type="text" class="form-control input-full" name="class_price" id="class_price" value="0" readonly>
                                       </div>
                                     </div>
 
@@ -194,21 +219,13 @@ require DOC_ROOT_PATH . $this->config->item('header');
                         </div>
                       </div>
                       <div class="btn-group">
-                        <button data-bs-toggle="dropdown" type="button" class="btn btn-secondary btn-border dropdown-toggle" aria-expanded="false"> With selected </button>
+                        <select class="form-control input-full js-example-basic-single schedule" id="schedule" name="schedule"></select>
                         <div role="menu" class="dropdown-menu" style=""><a href="#" class="dropdown-item">Mark as read</a><a href="#" class="dropdown-item">Mark as unread</a><a href="#" class="dropdown-item">Spam</a>
                           <div class="dropdown-divider"></div><a href="#" class="dropdown-item">Delete</a>
                         </div>
                       </div>
                       <div class="btn-group">
-                        <button type="button" class="btn btn-secondary btn-border">Archive</button>
-                        <button type="button" class="btn btn-secondary btn-border">Span</button>
-                        <button type="button" class="btn btn-secondary btn-border">Delete</button>
-                      </div>
-                      <div class="btn-group">
-                        <button data-bs-toggle="dropdown" type="button" class="btn btn-secondary btn-border dropdown-toggle" aria-expanded="false">Order by </button>
-                        <div role="menu" class="dropdown-menu dropdown-menu-right"><a href="#" class="dropdown-item">Date</a><a href="#" class="dropdown-item">From</a><a href="#" class="dropdown-item">Subject</a>
-                          <div class="dropdown-divider"></div><a href="#" class="dropdown-item">Size</a>
-                        </div>
+                        <input type="text" class="form-control input-full" name="member_name_search" id="member_name_search">
                       </div>
                     </div>
 
@@ -232,6 +249,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
 <script>
 
+  new bootstrap.Modal(document.getElementById('myModal'), {backdrop: 'static', keyboard: false})  
 
   $(document ).ready(function() {
     var title = 'Gym';
@@ -277,6 +295,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     var member_name           = $("#member_name").val();
     var member_phone          = $("#member_phone").val();
     var member_address        = $("#member_address").val();
+    var member_gender         = $("#member_gender").val();
     var ellunainfo            = $("#ellunainfo").val();
     var schedule_class_id     = $("#schedule_class_id").val();
     var class_price_val       = class_price.get();
@@ -286,14 +305,16 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       type: "POST",
       url: "<?php echo base_url(); ?>transaction/daily_save",
       dataType: "json",
-      data: {member_name:member_name, member_phone:member_phone, member_address:member_address, ellunainfo:ellunainfo, schedule_class_id:schedule_class_id, class_price_val:class_price_val, payment:payment},
+      data: {member_name:member_name, member_phone:member_phone, member_address:member_address, member_gender:member_gender, ellunainfo:ellunainfo, schedule_class_id:schedule_class_id, class_price_val:class_price_val, payment:payment},
       success : function(data){
         if (data.code == "200"){
           let title = 'Tambah Data';
           let message = 'Data Berhasil Di Tambah';
           let state = 'info';
           notif_success(title, message, state);
-          window.location.href = "<?php echo base_url(); ?>/Register/1";
+          $("#myModal").modal('hide');
+          var titles = 'Gym';
+          getdatamember(titles)
         } else {
           Swal.fire({
             icon: 'error',
@@ -306,20 +327,42 @@ require DOC_ROOT_PATH . $this->config->item('footer');
   });
 
   function getdatamember(title) {
-    $('#titlemember').html('Anggota Kelas '+title);
-    $('#datamember').html('<div class="email-list-item"><div class="email-list-actions"></div><div class="email-list-detail"><span class="date float-end"><span class="badge badge-success">Hadir</span></span><span class="from">Lukas</span><p class="msg">#VIP007 / 085245139056</p></div></div><div class="email-list-item"><div class="email-list-actions"></div><div class="email-list-detail"><span class="date float-end"><span class="badge badge-success">Hadir</span></span><span class="from">Lukas</span><p class="msg">#VIP007 / 085245139056</p></div></div>');
-    const activeLis = document.querySelectorAll("li.active");
-    activeLis.forEach(li => {
-      li.classList.remove("active");
-    }); 
+
     $('#'+title+'').addClass("active");
-    /*$.ajax({
-      url: 'load_data.php',
+    $.ajax({
+      url: '<?php echo base_url(); ?>transaction/get_member_class',
       type: 'POST',
-      data: { user: 'andrian', action: 'load' },
-      success: function(response) {
-        $('#datamember').html('<div class="email-list-item"><div class="email-list-actions"></div><div class="email-list-detail"><span class="date float-end"><span class="badge badge-success">Hadir</span></span><span class="from">Lukas</span><p class="msg">#VIP007 / 085245139056</p></div></div><div class="email-list-item"><div class="email-list-actions"></div><div class="email-list-detail"><span class="date float-end"><span class="badge badge-success">Hadir</span></span><span class="from">Lukas</span><p class="msg">#VIP007 / 085245139056</p></div></div>');
+      dataType: "json",
+      data: {title: title},
+      success: function(data) {
+        $('#titlemember').html('Anggota Kelas '+title);
+        let text_temp = "";
+        for (let i = 0; i < data.result.get_member_class.length; i++) {
+          text_temp += '<div class="email-list-item"><div class="email-list-actions"></div><div class="email-list-detail"><span class="date float-end"><span class="badge badge-success" style="margin-top: 23px;margin-right: 40px;font-size: 15px;">Hadir</span></span><span class="from" style="font-size:20px;">'+data.result.get_member_class[i].member_name+'</span><p class="msg">#'+data.result.get_member_class[i].member_code+' / '+data.result.get_member_class[i].member_phone+'</p><p>'+data.result.get_member_class[i].schedule_time_start+'</p></div></div>';
+        }
+        $('#datamember').html(text_temp);
+
+        const activeLis = document.querySelectorAll("li.active");
+        activeLis.forEach(li => {
+          li.classList.remove("active");
+        }); 
+        $('#'+title).addClass("active");
       }
-    });*/
+    });
+
+    $.ajax({
+      url: '<?php echo base_url(); ?>transaction/get_class_schedule',
+      type: 'POST',
+      dataType: "json",
+      data: {class_name: title},
+      success: function(data) {
+        let text_temps = "";
+        text_temps += '<option value="">--Semua Sesi--</option>';
+        for (let i = 0; i < data.result.get_class_schedule.length; i++) {
+          text_temps += '<option value="'+data.result.get_class_schedule[i].schedule_time_start+'">'+data.result.get_class_schedule[i].schedule_time_start+'</option>';
+        }
+        $('#schedule').html(text_temps);
+      }
+    });
   }
 </script>
