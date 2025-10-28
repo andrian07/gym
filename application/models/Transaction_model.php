@@ -28,6 +28,15 @@ class transaction_model extends CI_Model {
         return $result;
     }
 
+    public function save_abssence($data_insert)
+    {
+        $this->db->trans_start();
+        $this->db->insert('absence', $data_insert);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return  $insert_id;
+    }
+
     //end daily
 
 

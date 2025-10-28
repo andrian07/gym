@@ -84,26 +84,34 @@ class global_model extends CI_Model {
         return $result;
     }
 
-    public function get_member_class($title, $hari)
+    public function get_absence($title)
     {
+        $this->db->select('*');
+        $this->db->from('absence');
+        $this->db->join('ms_class', 'ms_class.class_id = absence.absence_class_id');
+        $this->db->where('absence_date = CURDATE()');
+        $this->db->where('class_name', $title);
+        $query = $this->db->get();
+        return $query;
+    }
 
-          /*if($search != null){
-            $this->db->where('member_code like "%'.$search.'%"');
-            $this->db->or_where('member_name like "%'.$search.'%"');
-        }*/
-
-        $this->db->select('member_name, member_code, member_phone, class_name, schedule_day, schedule_time_start');
+    public function get_member_class($title, $hari, $name)
+    {
+        $this->db->select('ms_member.member_id, member_name, member_code, member_phone, class_name, schedule_day, schedule_time_start, "Member" as type_member, schedule_class.schedule_class_id , ms_class.class_id');
         $this->db->from('ms_class');
         $this->db->join('schedule_class', 'ms_class.class_id = schedule_class.class_id');
         $this->db->join('member_class', 'schedule_class.schedule_class_id = member_class.schedule_class_id');
         $this->db->join('ms_member', 'member_class.member_id = ms_member.member_id');
         $this->db->where('class_name', $title);
         $this->db->where('schedule_day', $hari);
-        $this->db->where('member_class_active', 'Y');
-         $query1 = $this->db->get_compiled_select();
-        
+        if($name != null){
+            $this->db->where('(member_name like "%'.$name.'%" or member_phone like "%'.$name.'%")');
+        }
+        $this->db->where('member_active', 'Y');
+        $query1 = $this->db->get_compiled_select();
 
-        $this->db->select('member_name, member_code, member_phone, class_name, schedule_day, schedule_time_start');
+
+        $this->db->select('ms_member.member_id, member_name, member_code, member_phone, class_name, schedule_day, schedule_time_start, "Non" as type_member, schedule_class.schedule_class_id, ms_class.class_id');
         $this->db->from('transaction_register_daily');
         $this->db->join('transaction_register', 'transaction_register_daily.transaction_register_id = transaction_register.transaction_register_id ');
         $this->db->join('schedule_class', 'transaction_register_daily.schedule_class_id = schedule_class.schedule_class_id');
@@ -111,10 +119,24 @@ class global_model extends CI_Model {
         $this->db->join('ms_class', 'schedule_class.class_id = ms_class.class_id');
         $this->db->where('class_name', $title);
         $this->db->where('schedule_day', $hari);
-         $query2 = $this->db->get_compiled_select();
+        if($name != null){
+            $this->db->where('(member_name like "%'.$name.'%" or member_phone like "%'.$name.'%")');
+        }
+        $this->db->where('member_active', 'Y');
+        $query2 = $this->db->get_compiled_select();
 
         $result = $this->db->query($query1 . ' UNION ' . $query2);
         return $result;
+    }
+
+    public function search_member($keyword)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_member');
+        $this->db->where('(member_name like "%'.$keyword.'%" or member_phone like "%'.$keyword.'%")');
+        $this->db->where('member_active', 'Y');
+        $query = $this->db->get();
+        return $query;
     }
 
 }

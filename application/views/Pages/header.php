@@ -128,28 +128,6 @@
             </li>
 
             <li class="nav-item">
-              <a data-bs-toggle="collapse" href="#pendaftaran">
-                <i class="fas fa-layer-group"></i>
-                <p>Pendaftaran</p>
-                <span class="caret"></span>
-              </a>
-              <div class="collapse show" id="pendaftaran">
-                <ul class="nav nav-collapse">
-                  <li>
-                    <a href="<?php echo base_url(); ?>Register">
-                      <span class="sub-item">Pendaftaran Member</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="<?php echo base_url(); ?>Transaction/daily">
-                      <span class="sub-item">Kelas Harian</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-
-            <li class="nav-item">
               <a href="<?php echo base_url(); ?>Register">
                 <i class="fas fa-user-clock"></i>
                 <p>Pendaftaran</p>
@@ -157,7 +135,7 @@
             </li>
 
             <li class="nav-item">
-              <a href="<?php echo base_url(); ?>Absence">
+              <a href="<?php echo base_url(); ?>Transaction/daily">
                 <i class="fas fa-user-clock"></i>
                 <p>Absensi</p>
               </a>
