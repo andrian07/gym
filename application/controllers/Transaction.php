@@ -110,8 +110,6 @@ class Transaction extends CI_Controller {
 			$payment 					= $this->input->post('payment');
 			$user_id 		   			= $_SESSION['user_id'];
 
-
-
 			$check_member_phone = $this->masterdata_model->check_member_phone($member_phone);
 
 			if($member_id == null){
@@ -155,6 +153,7 @@ class Transaction extends CI_Controller {
 				'member_phone'	   			=> $member_phone,
 				'member_address'	    	=> $member_address,
 				'member_gender'				=> $member_gender,
+				'member_category'			=> 'Daily',
 				'member_info_join'			=> $member_info_join
 			);
 
@@ -178,6 +177,7 @@ class Transaction extends CI_Controller {
 
 			$data_insert_register = array(
 				'transaction_register_inv'	    => $last_code,
+				'transaction_register_date'		=> date('Y/m/d'),
 				'member_id'	       				=> $insert_member,
 				'transaction_type_member'	   	=> 'Kelas Only',
 				'transaction_class'	    		=> 'Y',
@@ -283,6 +283,8 @@ class Transaction extends CI_Controller {
 			echo json_encode(['code'=>0, 'result'=>$msg]);
 		}
 	}
+
+
 
 }
 

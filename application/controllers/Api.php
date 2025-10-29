@@ -9,8 +9,7 @@ class Api extends CI_Controller {
 		parent::__construct();
 		$this->load->helper('url');
 		$this->load->library('session');
-		$this->load->model('auth_model');
-		$this->load->model('global_model');
+		$this->load->model('api_model');
 		$this->load->helper(array('url', 'html'));
 		date_default_timezone_set('Asia/Jakarta');
 	}
@@ -26,9 +25,26 @@ class Api extends CI_Controller {
 		}
 	}
 
-	public function processlogin(){
-	
+	public function saveclient()
+	{
+		$data 	= json_decode(file_get_contents('php://input'), true);
+		print_r($data);die();
 	}
+
+	public function checkregisterdaily()
+	{
+		$data 	= json_decode(file_get_contents('php://input'), true);
+		$phone  			= $data['phone'];
+		$schedule_class_id  = $data['schedule_class_id'];
+		$checkregisterdaily = $this->api_model->checkregisterdaily($phone, $schedule_class_id)->result_array();
+		if($checkregisterdaily != null){
+			echo json_encode(['code'=>0, 'result'=>'Data Sudah Ada']);
+		}else{
+			echo json_encode(['code'=>200, 'result'=>'Data Belum Ada']);
+		}
+	}
+
+
 
 }
 
