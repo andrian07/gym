@@ -141,7 +141,7 @@
                     </a>
                   </li>
                   <li>
-                    <a href="<?php echo base_url(); ?>Register/daily ">
+                    <a href="<?php echo base_url(); ?>Register/registerdaily ">
                        <span class="sub-item">Member Harian</span>
                     </a>
                   </li>

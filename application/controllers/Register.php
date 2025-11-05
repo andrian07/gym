@@ -485,7 +485,7 @@ class Register extends CI_Controller {
 			$pt_list['pt_list'] = $this->global_model->pt_list();
 			$check_auth['check_auth'] = $check_auth;
 			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $pt_list);
-			$this->load->view('Pages/Register/register', $data);
+			$this->load->view('Pages/Register/registerdaily', $data);
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
