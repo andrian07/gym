@@ -103,6 +103,7 @@ class Register extends CI_Controller {
 			if($search != null){
 				$search = $search['value'];
 			}
+
 			$list = $this->register_model->register_list($search, $length, $start)->result_array();
 			$count_list = $this->register_model->register_list_count($search)->result_array();
 			$total_row = $count_list[0]['total_row'];
@@ -121,10 +122,10 @@ class Register extends CI_Controller {
 				$print = '<a href="'.base_url().'Register/print_nota?id='.$field['transaction_register_id'].'"><button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'" title="Print"><i class="fas fa-copy sizing-fa"></i></button></a> ';
 
 
-				if($field['transaction_register_status'] == 'Success'){
-					$status = '<span class="badge badge-success">Success</span>';
+				if($field['transaction_payment_status'] == 'Lunas'){
+					$status = '<span class="badge badge-success">Lunas</span>';
 				}else{
-					$status = '<span class="badge badge-danger">Cancel</span>';
+					$status = '<span class="badge badge-danger">Belum Lunas</span>';
 				}
 
 				$date = date_create($field['transaction_register_date']); 
@@ -135,9 +136,11 @@ class Register extends CI_Controller {
 				$row[] = $field['transaction_register_inv'];
 				$row[] = $field['member_name'];
 				$row[] = date_format($date,"d-m-Y");
-				$row[] = 'Rp. '.number_format($field['transaction_register_discount']);
-				$row[] = 'Rp. '.number_format($field['transaction_register_total']);
+				$row[] = $field['transaction_type_member'];
+				$row[] = 'Rp. '.number_format($field['transaction_payment_discount']);
+				$row[] = 'Rp. '.number_format($field['transaction_payment_total']);
 				$row[] = $status;
+				$row[] = $field['transaction_type_member'];
 				$row[] = $detail.$edit.$print;
 				$data[] = $row;
 			}
@@ -468,6 +471,27 @@ class Register extends CI_Controller {
 		echo json_encode(['code'=>200, 'result'=>$get_pt_info_month]);
 	}
 	// end register //
+
+
+	// register daily //
+
+	public function registerdaily()
+	{
+		$modul = 'Register';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$class_list['class_list'] = $this->global_model->class_list();
+			$coach_list['coach_list'] = $this->global_model->coach_list();
+			$pt_list['pt_list'] = $this->global_model->pt_list();
+			$check_auth['check_auth'] = $check_auth;
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $pt_list);
+			$this->load->view('Pages/Register/register', $data);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+	// end register daily //
 
 }	
 

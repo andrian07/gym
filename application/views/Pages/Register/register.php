@@ -35,9 +35,11 @@ require DOC_ROOT_PATH . $this->config->item('header');
                     <th>No Invoice</th>
                     <th>Nama Member</th>
                     <th>Tanggal</th>
+                    <th>Tipe</th>
                     <th>Diskon</th>
                     <th>Total</th>
                     <th>Status</th>
+                    <th>Transaksi</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
@@ -83,7 +85,9 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       {data: 3},
       {data: 4},
       {data: 5},
-      {data: 6}
+      {data: 6},
+      {data: 7},
+      {data: 8}
       ]
     });
   }

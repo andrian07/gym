@@ -113,7 +113,7 @@
                       <span class="sub-item">Kelas</span>
                     </a>
                   </li>
-                   <li>
+                  <li>
                     <a href="<?php echo base_url(); ?>Masterdata/promo">
                       <span class="sub-item">Promo</span>
                     </a>
@@ -128,11 +128,28 @@
             </li>
 
             <li class="nav-item">
-              <a href="<?php echo base_url(); ?>Register">
-                <i class="fas fa-user-clock"></i>
+              <a data-bs-toggle="collapse" href="#register">
+                <i class="fas fa-layer-group"></i>
                 <p>Pendaftaran</p>
+                <span class="caret"></span>
               </a>
+              <div class="collapse show" id="register">
+                <ul class="nav nav-collapse">
+                  <li>
+                    <a href="<?php echo base_url(); ?>Register">
+                      <span class="sub-item">Member Bulanan</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="<?php echo base_url(); ?>Register/daily ">
+                       <span class="sub-item">Member Harian</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </li>
+
+            
 
             <li class="nav-item">
               <a href="<?php echo base_url(); ?>Transaction/daily">
