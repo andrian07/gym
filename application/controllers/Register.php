@@ -12,6 +12,7 @@ class Register extends CI_Controller {
 		$this->load->model('register_model');
 		$this->load->model('masterdata_model');
 		$this->load->model('global_model');
+		$this->load->model('transaction_model');
 		$this->load->helper(array('url', 'html'));
 		date_default_timezone_set('Asia/Jakarta');
 	}
@@ -480,17 +481,201 @@ class Register extends CI_Controller {
 		$modul = 'Register';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
-			$class_list['class_list'] = $this->global_model->class_list();
+			$class_list['class_list'] = $this->global_model->class_list_schedule();
 			$coach_list['coach_list'] = $this->global_model->coach_list();
 			$pt_list['pt_list'] = $this->global_model->pt_list();
+			$payment_list['payment_list'] = $this->global_model->payment_list();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $pt_list);
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $pt_list, $payment_list);
 			$this->load->view('Pages/Register/registerdaily', $data);
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
 		}	
 	}
+
+	public function register_daily_list()
+	{
+		$modul = 'Register';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$search 			= $this->input->post('search');
+			$length 			= $this->input->post('length');
+			$start 			  	= $this->input->post('start');
+
+			if($search != null){
+				$search = $search['value'];
+			}
+
+			$list = $this->register_model->register_daily_list($search, $length, $start)->result_array();
+			$count_list = $this->register_model->register_daily_list_count($search)->result_array();
+			$total_row = $count_list[0]['total_row'];
+			$data = array();
+			$no = $_POST['start'];
+			foreach ($list as $field) {
+
+				$detail = '<a href="'.base_url().'Register/detailtransaction?id='.$field['transaction_register_id'].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
+
+				if($check_auth[0]->edit == 'Y'){
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['transaction_register_id'].'" data-name="'.$field['transaction_register_inv'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
+				}else{
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
+				}
+
+				$print = '<a href="'.base_url().'Register/print_nota?id='.$field['transaction_register_id'].'"><button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'" title="Print"><i class="fas fa-copy sizing-fa"></i></button></a> ';
+
+
+				if($field['transaction_payment_status'] == 'Lunas'){
+					$status = '<span class="badge badge-success">Lunas</span>';
+				}else{
+					$status = '<span class="badge badge-danger">Belum Lunas</span>';
+				}
+
+				$date = date_create($field['transaction_register_date']); 
+
+				//$url_image = base_url().'assets/products/'.$field['product_image'];
+				$no++;
+				$row = array();
+				$row[] = $field['transaction_register_inv'];
+				$row[] = $field['member_name'];
+				$row[] = date_format($date,"d-m-Y");
+				$row[] = $field['transaction_type_member'];
+				$row[] = 'Rp. '.number_format($field['transaction_payment_discount']);
+				$row[] = 'Rp. '.number_format($field['transaction_payment_total']);
+				$row[] = $status;
+				$row[] = $field['transaction_type_member'];
+				$row[] = $detail.$edit.$print;
+				$data[] = $row;
+			}
+
+			$output = array(
+				"draw" => $_POST['draw'],
+				"recordsTotal" => $total_row,
+				"recordsFiltered" => $total_row,
+				"data" => $data,
+			);
+			echo json_encode($output);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+	public function daily_save()
+	{
+		$modul = 'Transactiondaily';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$member_id 					= $this->input->post('member_id');
+			$member_name 				= $this->input->post('member_name');
+			$member_phone 				= $this->input->post('member_phone');
+			$member_address 			= $this->input->post('member_address');
+			$member_gender 				= $this->input->post('member_gender');
+			$member_info_join 			= $this->input->post('ellunainfo');
+			$schedule_class_id  		= $this->input->post('schedule_class_id');
+			$class_price_val 			= $this->input->post('class_price_val');
+			$payment 					= $this->input->post('payment');
+			$user_id 		   			= $_SESSION['user_id'];
+
+			$check_member_phone = $this->masterdata_model->check_member_phone($member_phone);
+
+			if($member_id == null){
+				if($check_member_phone != null){
+					$msg = "No Hp Sudah Di Gunakan";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
+
+				if($member_name == null){
+					$msg = "Nama Harus Di isi";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
+			}
+			if($member_phone == null){
+				$msg = "No Hp Harus Di isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($schedule_class_id == null){
+				$msg = "Kelas Harus di Pilih Harus Di isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($payment == null){
+				$msg = "Pembayaran di Pilih Harus Di isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			$maxCode = $this->masterdata_model->last_member_code();
+			if ($maxCode == NULL) {
+				$last_code = '000001';
+			} else {
+				$maxCode = $maxCode[0]->member_code;
+				$last_code = substr($maxCode, -6);
+				$last_code = substr('00000' . strval(floatval($last_code) + 1), -6);
+			}
+
+			$data_insert = array(
+				'member_code'	       		=> $last_code,
+				'member_name'	       		=> $member_name,
+				'member_phone'	   			=> $member_phone,
+				'member_address'	    	=> $member_address,
+				'member_gender'				=> $member_gender,
+				'member_category'			=> 'Daily',
+				'member_info_join'			=> $member_info_join,
+			);
+
+			if($member_id == null){
+				$insert_member = $this->masterdata_model->save_member($data_insert);
+			}else{
+				$insert_member = $member_id;
+			}
+
+			$get_class_id = $this->transaction_model->get_class_id($schedule_class_id);
+
+			$maxCode  = $this->register_model->last_register();
+			$inv_code = 'TRX/'.date("d/m/Y").'/';
+			if ($maxCode == NULL) {
+				$last_code = $inv_code.'000001';
+			} else {
+				$maxCode   = $maxCode[0]->transaction_register_inv;
+				$last_code = substr($maxCode, -6);
+				$last_code = $inv_code.substr('000000' . strval(floatval($last_code) + 1), -6);
+			}
+
+			$data_insert_register = array(
+				'transaction_register_inv'	    => $last_code,
+				'transaction_register_date'		=> date('Y/m/d'),
+				'member_id'	       				=> $insert_member,
+				'transaction_type_member'	   	=> 'Kelas Only',
+				'transaction_class'	    		=> 'Y',
+				'transaction_class_id'			=> $get_class_id[0]->class_id,
+				'transaction_type'				=> 'Daily'
+			);
+
+			$save_transaction = $this->transaction_model->save_transaction($data_insert_register);
+
+
+			$insert_transaction_register_daily = array(
+				'transaction_register_id '	=> $save_transaction,
+				'schedule_class_id'	       	=> $schedule_class_id
+			);
+
+			$this->transaction_model->save_transaction_daily($insert_transaction_register_daily);
+
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Tambah Pendaftaran Kelas Harian Member: '.$last_code,
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Input";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}
+	}
+
 	// end register daily //
 
 }	

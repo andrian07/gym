@@ -154,7 +154,7 @@ class Transaction extends CI_Controller {
 				'member_address'	    	=> $member_address,
 				'member_gender'				=> $member_gender,
 				'member_category'			=> 'Daily',
-				'member_info_join'			=> $member_info_join
+				'member_info_join'			=> $member_info_join,
 			);
 
 			if($member_id == null){
@@ -181,7 +181,8 @@ class Transaction extends CI_Controller {
 				'member_id'	       				=> $insert_member,
 				'transaction_type_member'	   	=> 'Kelas Only',
 				'transaction_class'	    		=> 'Y',
-				'transaction_class_id'			=> $get_class_id[0]->class_id
+				'transaction_class_id'			=> $get_class_id[0]->class_id,
+				'transaction_type'				=> 'Daily'
 			);
 
 			$save_transaction = $this->transaction_model->save_transaction($data_insert_register);

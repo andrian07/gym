@@ -11,6 +11,7 @@ class register_model extends CI_Model {
             $this->db->where('transaction_register_inv like "%'.$search.'%"');
             $this->db->or_where('member_name like "%'.$search.'%"');
         }
+        $this->db->where('transaction_type', 'Member');
         $this->db->limit($length);
         $this->db->offset($start);
         $query = $this->db->get();
@@ -26,6 +27,39 @@ class register_model extends CI_Model {
             $this->db->where('transaction_register_inv like "%'.$search.'%"');
             $this->db->or_where('member_name like "%'.$search.'%"');
         }
+        $this->db->where('transaction_type', 'Member');
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function register_daily_list($search, $length, $start)
+    {
+        $this->db->select('*');
+        $this->db->from('transaction_register');
+        $this->db->join('ms_member', 'transaction_register.member_id = ms_member.member_id');
+        $this->db->join('transaction_register_daily', 'transaction_register.transaction_register_id = transaction_register_daily.transaction_register_id');
+        if($search != null){
+            $this->db->where('transaction_register_inv like "%'.$search.'%"');
+            $this->db->or_where('member_name like "%'.$search.'%"');
+        }
+        $this->db->where('transaction_type', 'Daily');
+        $this->db->limit($length);
+        $this->db->offset($start);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function register_daily_list_count($search)
+    {
+        $this->db->select('count(*) as total_row');
+        $this->db->from('transaction_register');
+        $this->db->join('ms_member', 'transaction_register.member_id = ms_member.member_id');
+        $this->db->join('transaction_register_daily', 'transaction_register.transaction_register_id = transaction_register_daily.transaction_register_id');
+        if($search != null){
+            $this->db->where('transaction_register_inv like "%'.$search.'%"');
+            $this->db->or_where('member_name like "%'.$search.'%"');
+        }
+        $this->db->where('transaction_type', 'Daily');
         $query = $this->db->get();
         return $query;
     }
