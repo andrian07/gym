@@ -148,6 +148,16 @@ class register_model extends CI_Model {
         return $query;
     }
 
+    public function get_pt_info_price($pt_id)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_coach');
+        $this->db->join('ms_pt_price', 'ms_coach.coach_lvl = ms_pt_price.ms_pt_price_id');
+        $this->db->where('coach_id ', $pt_id);
+        $query = $this->db->get();
+        return $query;
+    }
+
     public function get_pt_info_month($package_sesion)
     {
         $this->db->select('*');

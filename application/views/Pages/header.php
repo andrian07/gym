@@ -104,6 +104,11 @@
                     </a>
                   </li>
                   <li>
+                    <a href="<?php echo base_url(); ?>Setting/personaltrainingprice">
+                      <span class="sub-item">Harga Personal Training</span>
+                    </a>
+                  </li>
+                  <li>
                     <a href="<?php echo base_url(); ?>Masterdata/instruktur">
                       <span class="sub-item">Instruktur </span>
                     </a>
@@ -113,6 +118,7 @@
                       <span class="sub-item">Kelas</span>
                     </a>
                   </li>
+                  
                   <li>
                     <a href="<?php echo base_url(); ?>Masterdata/promo">
                       <span class="sub-item">Promo</span>
@@ -121,6 +127,28 @@
                   <li>
                     <a href="<?php echo base_url(); ?>Masterdata/product">
                       <span class="sub-item">Produk</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="nav-item">
+              <a data-bs-toggle="collapse" href="#package">
+                <i class="fas fa-layer-group"></i>
+                <p>Paket</p>
+                <span class="caret"></span>
+              </a>
+              <div class="collapse show" id="package">
+                <ul class="nav nav-collapse">
+                  <li>
+                    <a href="<?php echo base_url(); ?>Masterdata/gym">
+                      <span class="sub-item">Harga Paket GYM</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="<?php echo base_url(); ?>Masterdata/classpackage">
+                      <span class="sub-item">Harga Paket Kelas</span>
                     </a>
                   </li>
                 </ul>
@@ -142,247 +170,252 @@
                   </li>
                   <li>
                     <a href="<?php echo base_url(); ?>Register/registerdaily ">
-                       <span class="sub-item">Member Harian</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-
-            
-
-            <li class="nav-item">
-              <a href="<?php echo base_url(); ?>Transaction/daily">
-                <i class="fas fa-user-clock"></i>
-                <p>Absensi</p>
-              </a>
-            </li>
+                     <span class="sub-item">Member Harian</span>
+                   </a>
+                 </li>
+               </ul>
+             </div>
+           </li>
 
 
 
-            <li class="nav-item">
-              <a href="<?php echo base_url(); ?>Purchase">
-                <i class="fas fa-shopping-cart"></i>
-                <p>Pembelian Stock</p>
-              </a>
-            </li>
+           <li class="nav-item">
+            <a href="<?php echo base_url(); ?>Transaction/daily">
+              <i class="fas fa-user-clock"></i>
+              <p>Absensi</p>
+            </a>
+          </li>
 
 
-            <li class="nav-item">
-              <a href="<?php echo base_url(); ?>Opname">
-                <i class="fas fa-box"></i>
-                <p>Stock Opname</p>
-              </a>
-            </li>
 
-            <li class="nav-item">
-              <a data-bs-toggle="collapse" href="#user">
-                <i class="fas fa-user"></i>
-                <p>Admin</p>
-                <span class="caret"></span>
-              </a>
-              <div class="collapse" id="user">
-                <ul class="nav nav-collapse">
-                  <li>
-                    <a href="<?php echo base_url(); ?>User/role">
-                      <span class="sub-item">Grup Pengguna</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="<?php echo base_url(); ?>User/account">
-                      <span class="sub-item">Akun Pengguna</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-          </ul>
-        </div>
+          <li class="nav-item">
+            <a href="<?php echo base_url(); ?>Purchase">
+              <i class="fas fa-shopping-cart"></i>
+              <p>Pembelian Stock</p>
+            </a>
+          </li>
+
+
+          <li class="nav-item">
+            <a href="<?php echo base_url(); ?>Opname">
+              <i class="fas fa-box"></i>
+              <p>Stock Opname</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a data-bs-toggle="collapse" href="#user">
+              <i class="fas fa-user"></i>
+              <p>Setting</p>
+              <span class="caret"></span>
+            </a>
+            <div class="collapse show" id="user">
+              <ul class="nav nav-collapse">
+                <li>
+                  <a href="<?php echo base_url(); ?>Setting/payment">
+                    <span class="sub-item">Pembayaran</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="<?php echo base_url(); ?>Setting/role">
+                    <span class="sub-item">Grup Pengguna</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="<?php echo base_url(); ?>Setting/account">
+                    <span class="sub-item">Akun Pengguna</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
-    <!-- End Sidebar -->
+  </div>
+  <!-- End Sidebar -->
 
-    <div class="main-panel">
-      <div class="main-header">
-        <div class="main-header-logo">
-          <!-- Logo Header -->
-          <div class="logo-header" data-background-color="dark">
-            <a href="index.html" class="logo">
-              <img
-              src="<?php echo base_url(); ?>dist//img/kaiadmin/logo_light.svg"
-              alt="navbar brand"
-              class="navbar-brand"
-              height="20"
-              />
-            </a>
-            <div class="nav-toggle">
-              <button class="btn btn-toggle toggle-sidebar">
-                <i class="gg-menu-right"></i>
-              </button>
-              <button class="btn btn-toggle sidenav-toggler">
-                <i class="gg-menu-left"></i>
-              </button>
-            </div>
-            <button class="topbar-toggler more">
-              <i class="gg-more-vertical-alt"></i>
+  <div class="main-panel">
+    <div class="main-header">
+      <div class="main-header-logo">
+        <!-- Logo Header -->
+        <div class="logo-header" data-background-color="dark">
+          <a href="index.html" class="logo">
+            <img
+            src="<?php echo base_url(); ?>dist//img/kaiadmin/logo_light.svg"
+            alt="navbar brand"
+            class="navbar-brand"
+            height="20"
+            />
+          </a>
+          <div class="nav-toggle">
+            <button class="btn btn-toggle toggle-sidebar">
+              <i class="gg-menu-right"></i>
+            </button>
+            <button class="btn btn-toggle sidenav-toggler">
+              <i class="gg-menu-left"></i>
             </button>
           </div>
-          <!-- End Logo Header -->
+          <button class="topbar-toggler more">
+            <i class="gg-more-vertical-alt"></i>
+          </button>
         </div>
-        <!-- Navbar Header -->
-        <nav
-        class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom"
-        >
-        <div class="container-fluid">
-          <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-            <li
-            class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none"
-            >
-            <a
-            class="nav-link dropdown-toggle"
-            data-bs-toggle="dropdown"
-            href="#"
-            role="button"
-            aria-expanded="false"
-            aria-haspopup="true"
-            >
-            <i class="fa fa-search"></i>
-          </a>
-          <ul class="dropdown-menu dropdown-search animated fadeIn">
-            <form class="navbar-left navbar-form nav-search">
-              <div class="input-group">
-                <input
-                type="text"
-                placeholder="Search ..."
-                class="form-control"
-                />
-              </div>
-            </form>
-          </ul>
-        </li>
-
-        <li class="nav-item topbar-icon dropdown hidden-caret">
+        <!-- End Logo Header -->
+      </div>
+      <!-- Navbar Header -->
+      <nav
+      class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom"
+      >
+      <div class="container-fluid">
+        <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+          <li
+          class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none"
+          >
           <a
           class="nav-link dropdown-toggle"
-          href="#"
-          id="notifDropdown"
-          role="button"
           data-bs-toggle="dropdown"
-          aria-haspopup="true"
+          href="#"
+          role="button"
           aria-expanded="false"
+          aria-haspopup="true"
           >
-          <i class="fa fa-bell"></i>
-          <span class="notification">2</span>
+          <i class="fa fa-search"></i>
         </a>
-        <ul
-        class="dropdown-menu notif-box animated fadeIn"
-        aria-labelledby="notifDropdown"
-        >
-        <li>
-          <div class="dropdown-title">
-            Ada 2 Notiifikasi Terbaru
-          </div>
-        </li>
-        <li>
-          <div class="notif-scroll scrollbar-outer">
-            <div class="notif-center">
-              <a href="#">
-                <div class="notif-icon notif-primary">
-                  <i class="fas fa-coins"></i>
-                </div>
-                <div class="notif-content">
-                  <span class="block">Item Di Bawah Stock </span>
-                  <span class="time">4 Item</span>
-                </div>
-              </a>
-              <a href="#">
-                <div class="notif-icon notif-success">
-                  <i class="fas fa-file-invoice"></i>
-                </div>
-                <div class="notif-content">
-                  <span class="block">Tagihan Jatuh Tempo Hari Ini</span>
-                  <span class="time">5 Tagihan</span>
-                </div>
-              </a>
+        <ul class="dropdown-menu dropdown-search animated fadeIn">
+          <form class="navbar-left navbar-form nav-search">
+            <div class="input-group">
+              <input
+              type="text"
+              placeholder="Search ..."
+              class="form-control"
+              />
             </div>
-          </div>
-        </li>
-      </ul>
-    </li>
-    <li class="nav-item topbar-icon dropdown hidden-caret">
-      <a
-      class="nav-link"
-      data-bs-toggle="dropdown"
-      href="#"
-      aria-expanded="false"
+          </form>
+        </ul>
+      </li>
+
+      <li class="nav-item topbar-icon dropdown hidden-caret">
+        <a
+        class="nav-link dropdown-toggle"
+        href="#"
+        id="notifDropdown"
+        role="button"
+        data-bs-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        >
+        <i class="fa fa-bell"></i>
+        <span class="notification">2</span>
+      </a>
+      <ul
+      class="dropdown-menu notif-box animated fadeIn"
+      aria-labelledby="notifDropdown"
       >
-      <i class="fas fa-layer-group"></i>
-    </a>
-    <div class="dropdown-menu quick-actions animated fadeIn">
-      <div class="quick-actions-header">
-        <span class="title mb-1">Quick Actions</span>
-        <span class="subtitle op-7">Shortcuts</span>
-      </div>
-      <div class="quick-actions-scroll scrollbar-outer">
-        <div class="quick-actions-items">
-          <div class="row m-0">
-            <a class="col-6 col-md-4 p-0" href="#">
-              <div class="quick-actions-item">
-                <div class="avatar-item bg-danger rounded-circle">
-                  <i class="far fa-calendar-alt"></i>
-                </div>
-                <span class="text">Calendar</span>
+      <li>
+        <div class="dropdown-title">
+          Ada 2 Notiifikasi Terbaru
+        </div>
+      </li>
+      <li>
+        <div class="notif-scroll scrollbar-outer">
+          <div class="notif-center">
+            <a href="#">
+              <div class="notif-icon notif-primary">
+                <i class="fas fa-coins"></i>
+              </div>
+              <div class="notif-content">
+                <span class="block">Item Di Bawah Stock </span>
+                <span class="time">4 Item</span>
               </div>
             </a>
-            <a class="col-6 col-md-4 p-0" href="#">
-              <div class="quick-actions-item">
-                <div
-                class="avatar-item bg-warning rounded-circle"
-                >
-                <i class="fas fa-map"></i>
+            <a href="#">
+              <div class="notif-icon notif-success">
+                <i class="fas fa-file-invoice"></i>
               </div>
-              <span class="text">Maps</span>
-            </div>
-          </a>
+              <div class="notif-content">
+                <span class="block">Tagihan Jatuh Tempo Hari Ini</span>
+                <span class="time">5 Tagihan</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </li>
+  <li class="nav-item topbar-icon dropdown hidden-caret">
+    <a
+    class="nav-link"
+    data-bs-toggle="dropdown"
+    href="#"
+    aria-expanded="false"
+    >
+    <i class="fas fa-layer-group"></i>
+  </a>
+  <div class="dropdown-menu quick-actions animated fadeIn">
+    <div class="quick-actions-header">
+      <span class="title mb-1">Quick Actions</span>
+      <span class="subtitle op-7">Shortcuts</span>
+    </div>
+    <div class="quick-actions-scroll scrollbar-outer">
+      <div class="quick-actions-items">
+        <div class="row m-0">
           <a class="col-6 col-md-4 p-0" href="#">
             <div class="quick-actions-item">
-              <div class="avatar-item bg-info rounded-circle">
-                <i class="fas fa-file-excel"></i>
+              <div class="avatar-item bg-danger rounded-circle">
+                <i class="far fa-calendar-alt"></i>
               </div>
-              <span class="text">Reports</span>
+              <span class="text">Calendar</span>
             </div>
           </a>
           <a class="col-6 col-md-4 p-0" href="#">
             <div class="quick-actions-item">
               <div
-              class="avatar-item bg-success rounded-circle"
+              class="avatar-item bg-warning rounded-circle"
               >
-              <i class="fas fa-envelope"></i>
+              <i class="fas fa-map"></i>
             </div>
-            <span class="text">Emails</span>
+            <span class="text">Maps</span>
+          </div>
+        </a>
+        <a class="col-6 col-md-4 p-0" href="#">
+          <div class="quick-actions-item">
+            <div class="avatar-item bg-info rounded-circle">
+              <i class="fas fa-file-excel"></i>
+            </div>
+            <span class="text">Reports</span>
           </div>
         </a>
         <a class="col-6 col-md-4 p-0" href="#">
           <div class="quick-actions-item">
             <div
-            class="avatar-item bg-primary rounded-circle"
+            class="avatar-item bg-success rounded-circle"
             >
-            <i class="fas fa-file-invoice-dollar"></i>
+            <i class="fas fa-envelope"></i>
           </div>
-          <span class="text">Invoice</span>
+          <span class="text">Emails</span>
         </div>
       </a>
       <a class="col-6 col-md-4 p-0" href="#">
         <div class="quick-actions-item">
           <div
-          class="avatar-item bg-secondary rounded-circle"
+          class="avatar-item bg-primary rounded-circle"
           >
-          <i class="fas fa-credit-card"></i>
+          <i class="fas fa-file-invoice-dollar"></i>
         </div>
-        <span class="text">Payments</span>
+        <span class="text">Invoice</span>
       </div>
     </a>
-  </div>
+    <a class="col-6 col-md-4 p-0" href="#">
+      <div class="quick-actions-item">
+        <div
+        class="avatar-item bg-secondary rounded-circle"
+        >
+        <i class="fas fa-credit-card"></i>
+      </div>
+      <span class="text">Payments</span>
+    </div>
+  </a>
+</div>
 </div>
 </div>
 </div>

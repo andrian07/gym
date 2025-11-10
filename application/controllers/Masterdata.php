@@ -422,7 +422,9 @@ class Masterdata extends CI_Controller {
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$check_auth['check_auth'] = $check_auth;
-			$this->load->view('Pages/Masterdata/pt', $check_auth);
+			$get_class_pt['get_class_pt'] = $this->masterdata_model->get_class_pt();
+			$data['data'] = array_merge($check_auth, $get_class_pt);
+			$this->load->view('Pages/Masterdata/pt', $data);
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
@@ -488,6 +490,11 @@ class Masterdata extends CI_Controller {
 				$row[] = $field['coach_phone'];
 				$row[] = $field['coach_address'];
 				$row[] = date_format($date,"d-m-Y");
+				if($type == 'PT'){
+					$row[] = $field['ms_pt_price_name'];
+				}else{
+					$row[] = $field['coach_title'];
+				}
 				$row[] = $field['coach_title'];
 				$row[] = $status;
 				$row[] = $detail.$edit.$share_link;
@@ -538,6 +545,7 @@ class Masterdata extends CI_Controller {
 			$coach_dob 			= $this->input->post('coach_dob');
 			$coach_gender 		= $this->input->post('coach_gender');
 			$coach_address 		= $this->input->post('coach_address');
+			$coach_lvl 			= $this->input->post('coach_lvl');
 			$coach_title 		= $this->input->post('coach_title');
 			$coach_type 		= $this->input->post('coach_type');
 			$coach_salary 		= $this->input->post('coach_salary');
@@ -588,7 +596,10 @@ class Masterdata extends CI_Controller {
 				$msg = "Alamat Harus Di isi";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
-
+			if($coach_lvl == null){
+				$msg = "LVL Harus Di isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
 			if($coach_salary == null){
 				$msg = "Gaji Pokok Harus Di isi";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
@@ -623,6 +634,7 @@ class Masterdata extends CI_Controller {
 				'coach_identity'	   	=> $coach_identity,
 				'coach_gender'	   		=> $coach_gender,
 				'coach_title'	   		=> $coach_title,
+				'coach_lvl'	   			=> $coach_lvl,
 				'coach_type'			=> $coach_type,
 				'coach_dob'				=> $coach_dob,
 				'coach_salary'	    	=> $coach_salary,
@@ -661,6 +673,7 @@ class Masterdata extends CI_Controller {
 			$coach_dob 			= $this->input->post('coach_dob_edit');
 			$coach_gender 		= $this->input->post('coach_gender_edit');
 			$coach_address 		= $this->input->post('coach_address_edit');
+			$coach_lvl 			= $this->input->post('coach_lvl_edit');
 			$coach_title 		= $this->input->post('coach_title_edit');
 			$coach_salary 		= $this->input->post('coach_salary_edit');
 			$coach_extra_charge = $this->input->post('coach_extra_charge_edit');
@@ -704,6 +717,11 @@ class Masterdata extends CI_Controller {
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
 
+			if($coach_lvl == null){
+				$msg = "LVL Harus Di isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
 			if($coach_salary == null){
 				$msg = "Gaji Pokok Harus Di isi";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
@@ -744,6 +762,7 @@ class Masterdata extends CI_Controller {
 				'coach_identity'	   	=> $coach_identity,
 				'coach_gender'	   		=> $coach_gender,
 				'coach_title'	   		=> $coach_title,
+				'coach_lvl'	   			=> $coach_lvl,
 				'coach_salary'	    	=> $coach_salary,
 				'coach_dob'				=> $coach_dob,
 				'coach_extra_charge'	=> $coach_extra_charge,
@@ -807,6 +826,13 @@ class Masterdata extends CI_Controller {
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);die();
 		}
+	}
+
+	public function get_pt_price()
+	{
+		$ms_pt_price_id  = $this->input->post('id');
+		$get_ms_pt_price['get_ms_pt_price'] = $this->global_model->get_ms_pt_price($ms_pt_price_id);
+		echo json_encode(['code'=>200, 'result'=>$get_ms_pt_price]);
 	}
 	// end coach //
 
@@ -1193,6 +1219,369 @@ class Masterdata extends CI_Controller {
 	}
 	// end class //
 
+	// class paket//
+
+	public function classpackage(){
+		$modul = 'Gym';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$coach_list['coach_list'] = $this->global_model->coach_list();
+			$check_auth['check_auth'] = $check_auth;
+			$data['data'] = array_merge($coach_list, $check_auth);
+			$this->load->view('Pages/Masterdata/classpackage', $data);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+
+	public function class_package_list()
+	{
+		$modul = 'Gym';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$search 			= $this->input->post('search');
+			$length 			= $this->input->post('length');
+			$start 			  	= $this->input->post('start');
+
+			if($search != null){
+				$search = $search['value'];
+			}
+			$list = $this->masterdata_model->gym_list($search, $length, $start)->result_array();
+			$count_list = $this->masterdata_model->gym_list_count($search)->result_array();
+			$total_row = $count_list[0]['total_row'];
+			$data = array();
+			$no = $_POST['start'];
+			foreach ($list as $field) {
+
+				if($check_auth[0]->edit == 'Y'){
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['ms_gym_package_id'].'" data-name="'.$field['ms_gym_package_name'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
+				}else{
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
+				}
+				if($check_auth[0]->delete == 'Y'){
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_gym_package_id'].'" data-name="'.$field['ms_gym_package_name'].'" onclick="delete_gym_package('.$field['ms_gym_package_id'].')"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+				}else{
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_gym_package_id'].'" data-name="'.$field['ms_gym_package_name'].'" disabled="disabled"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+				}
+
+				$url_image = base_url().'assets/gym/'.$field['ms_gym_package_image'];
+
+				$no++;
+				$row = array();
+				$row[] = $field['ms_gym_package_name'];
+				$row[] = 'Rp. '.number_format($field['ms_gym_package_day_price']).' / Hari';
+				$row[] = 'Rp. '.number_format($field['ms_gym_package_month_price']).' / Bulan';
+				$row[] = 'Rp. '.number_format($field['ms_gym_package_year_price']).' / Tahun';
+				$row[] = $field['ms_gym_package_qty'].' '.$field['ms_gym_package_type'];
+				$row[] = '<img src="'.$url_image.'" style="height:70px; width:70px;" />';
+				$row[] = $edit.$delete;
+				$data[] = $row;
+			}
+
+			$output = array(
+				"draw" => $_POST['draw'],
+				"recordsTotal" => $total_row,
+				"recordsFiltered" => $total_row,
+				"data" => $data,
+			);
+			echo json_encode($output);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+	// end class paket //
+
+	// gym paket //
+
+	public function gym(){
+		$modul = 'Gym';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$coach_list['coach_list'] = $this->global_model->coach_list();
+			$check_auth['check_auth'] = $check_auth;
+			$data['data'] = array_merge($coach_list, $check_auth);
+			$this->load->view('Pages/Masterdata/gym', $data);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+
+	public function gym_list()
+	{
+		$modul = 'Gym';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$search 			= $this->input->post('search');
+			$length 			= $this->input->post('length');
+			$start 			  	= $this->input->post('start');
+
+			if($search != null){
+				$search = $search['value'];
+			}
+			$list = $this->masterdata_model->gym_list($search, $length, $start)->result_array();
+			$count_list = $this->masterdata_model->gym_list_count($search)->result_array();
+			$total_row = $count_list[0]['total_row'];
+			$data = array();
+			$no = $_POST['start'];
+			foreach ($list as $field) {
+
+				if($check_auth[0]->edit == 'Y'){
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['ms_gym_package_id'].'" data-name="'.$field['ms_gym_package_name'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
+				}else{
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
+				}
+				if($check_auth[0]->delete == 'Y'){
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_gym_package_id'].'" data-name="'.$field['ms_gym_package_name'].'" onclick="delete_gym_package('.$field['ms_gym_package_id'].')"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+				}else{
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_gym_package_id'].'" data-name="'.$field['ms_gym_package_name'].'" disabled="disabled"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+				}
+
+				$url_image = base_url().'assets/gym/'.$field['ms_gym_package_image'];
+
+				$no++;
+				$row = array();
+				$row[] = $field['ms_gym_package_name'];
+				$row[] = 'Rp. '.number_format($field['ms_gym_package_day_price']).' / Hari';
+				$row[] = 'Rp. '.number_format($field['ms_gym_package_month_price']).' / Bulan';
+				$row[] = 'Rp. '.number_format($field['ms_gym_package_year_price']).' / Tahun';
+				$row[] = $field['ms_gym_package_qty'].' '.$field['ms_gym_package_type'];
+				$row[] = '<img src="'.$url_image.'" style="height:70px; width:70px;" />';
+				$row[] = $edit.$delete;
+				$data[] = $row;
+			}
+
+			$output = array(
+				"draw" => $_POST['draw'],
+				"recordsTotal" => $total_row,
+				"recordsFiltered" => $total_row,
+				"data" => $data,
+			);
+			echo json_encode($output);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+	public function save_gym_package()
+	{	
+
+		$modul = 'Gym';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$screenshoot 				= $this->input->post('screenshoot');
+			$paket_name 				= $this->input->post('paket_name');
+			$daily_price 				= $this->input->post('daily_price');
+			$monthly_price	 			= $this->input->post('monthly_price');
+			$yearly_price	 			= $this->input->post('yearly_price');
+			$paket_type	 				= $this->input->post('paket_type');
+			$paket_qty	 				= $this->input->post('paket_qty');
+			$user_id 		   			= $_SESSION['user_id'];
+
+			$daily_price_replace = str_replace('Rp. ', '', $daily_price);
+			$daily_price = str_replace('.', '', $daily_price_replace);
+
+			$monthly_price_replace = str_replace('Rp. ', '', $monthly_price);
+			$monthly_price = str_replace('.', '', $monthly_price_replace);
+
+			$yearly_price_replace = str_replace('Rp. ', '', $yearly_price);
+			$yearly_price = str_replace('.', '', $yearly_price_replace);
+
+			if($paket_name == null){
+				$msg = "Silahkan Isi Nama Paket";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($paket_type == null){
+				$msg = "Silahkan Isi Tipe Paket";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($paket_qty == null){
+				$msg = "Silahkan Isi Masa Berlaku";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($_FILES['screenshoot']['name'] == null){
+				$new_image_name = 'default.png';
+			}else{
+				$new_image_name = 'Gym-set-'.$this->generateRandomString().'.png';
+				$config['upload_path'] = './assets/gym/';
+				$config['allowed_types'] = 'gif|jpg|png|jpeg|PNG';
+				$config['file_name'] = $new_image_name;
+				$this->load->library('upload', $config);
+				if (!$this->upload->do_upload('screenshoot')) 
+				{
+					$error = array('error' => $this->upload->display_errors());
+					echo json_encode(['code'=>0, 'result'=>$error]);die();
+				} 
+				else
+				{
+					$data = array('image_metadata' => $this->upload->data());
+				}
+			}
+
+			$data_insert = array(
+				'ms_gym_package_name'	    => $paket_name,
+				'ms_gym_package_day_price'	=> $daily_price,
+				'ms_gym_package_month_price'=> $monthly_price,
+				'ms_gym_package_year_price'	=> $yearly_price,
+				'ms_gym_package_image'	    => $new_image_name,
+				'ms_gym_package_type'		=> $paket_type,
+				'ms_gym_package_qty'		=> $paket_qty
+			);
+			$this->masterdata_model->save_gym_package($data_insert);
+
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Tambah Master Paket Gym',
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Input";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+
+	public function get_edit_gym_package()
+	{
+		$modul = 'Gym';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$id = $this->input->post('id');
+			$get_edit_gym_package = $this->masterdata_model->get_edit_gym_package($id);
+			echo json_encode(['code'=>200, 'result'=>$get_edit_gym_package]);die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+
+	public function edit_gym_package()
+	{
+		$modul = 'Gym';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->edit == 'Y'){
+			$screenshoot 				= $this->input->post('screenshoot');
+			$paket_id 					= $this->input->post('paket_id_edit');
+			$paket_name 				= $this->input->post('paket_name_edit');
+			$daily_price 				= $this->input->post('daily_price_edit');
+			$monthly_price	 			= $this->input->post('monthly_price_edit');
+			$yearly_price	 			= $this->input->post('yearly_price_edit');
+			$paket_type	 				= $this->input->post('paket_type_edit');
+			$paket_qty	 				= $this->input->post('paket_qty_edit');
+			$user_id 		   			= $_SESSION['user_id'];
+
+			$daily_price_replace = str_replace('Rp. ', '', $daily_price);
+			$daily_price = str_replace('.', '', $daily_price_replace);
+
+			$monthly_price_replace = str_replace('Rp. ', '', $monthly_price);
+			$monthly_price = str_replace('.', '', $monthly_price_replace);
+
+			$yearly_price_replace = str_replace('Rp. ', '', $yearly_price);
+			$yearly_price = str_replace('.', '', $yearly_price_replace);
+
+			if($paket_name == null){
+				$msg = "Silahkan Isi Nama Paket";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($paket_type == null){
+				$msg = "Silahkan Isi Tipe Paket";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($paket_qty == null){
+				$msg = "Silahkan Isi Masa Berlaku";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+
+			$get_paket_by_id = $this->masterdata_model->get_edit_gym_package($paket_id);
+
+			$check_image_name = $get_paket_by_id[0]->ms_gym_package_image;
+
+			if($_FILES['screenshoot_edit']['name'] == null){
+				$new_image_name = $get_paket_by_id[0]->ms_gym_package_image;
+			}else{
+				if($check_image_name != $_FILES['screenshoot_edit']['name']){
+					$new_image_name = 'Gym-set-'.$this->generateRandomString().'.png';
+					$config['upload_path'] = './assets/gym/';
+					$config['allowed_types'] = 'gif|jpg|png|jpeg|PNG';
+					$config['file_name'] = $new_image_name;
+					$this->load->library('upload', $config);
+					if (!$this->upload->do_upload('screenshoot_edit')) 
+					{
+						$error = array('error' => $this->upload->display_errors());
+						echo json_encode(['code'=>0, 'result'=>$error]);die();
+					} 
+					else
+					{
+						$data = array('image_metadata' => $this->upload->data());
+					}
+				}else{
+					$new_image_name = $check_image_name;
+				}
+			}
+
+			$data_edit = array(
+				'ms_gym_package_name'	    => $paket_name,
+				'ms_gym_package_day_price'	=> $daily_price,
+				'ms_gym_package_month_price'=> $monthly_price,
+				'ms_gym_package_year_price'	=> $yearly_price,
+				'ms_gym_package_image'	    => $new_image_name,
+				'ms_gym_package_type'		=> $paket_type,
+				'ms_gym_package_qty'		=> $paket_qty
+			);
+			$this->masterdata_model->edit_gym_package($data_edit, $paket_id);
+
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Ubah Master Paket Gym',
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Input";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}		
+	}
+
+	public function delete_gym_package()
+	{
+		$modul = 'Gym';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->delete == 'Y'){
+			$paket_id  		= $this->input->post('id');
+			$user_id 		= $_SESSION['user_id'];
+			$this->masterdata_model->delete_gym_package($paket_id);
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Hapus Master Paket Gym',
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Delete";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+	// end gym paket//
 
 	// start promo //
 
@@ -1202,7 +1591,8 @@ class Masterdata extends CI_Controller {
 		if($check_auth[0]->view == 'Y'){
 			$check_auth['check_auth'] = $check_auth;
 			$list_pt_package['list_pt_package'] = $this->global_model->pt_package();
-			$data['data'] = array_merge($check_auth, $list_pt_package);
+			$list_gym_package['list_gym_package'] = $this->global_model->gym_package();
+			$data['data'] = array_merge($check_auth, $list_pt_package, $list_gym_package);
 			$this->load->view('Pages/Masterdata/promo', $data);
 		}else{
 			$msg = "No Access";
@@ -1263,9 +1653,8 @@ class Masterdata extends CI_Controller {
 				$no++;
 				$row = array();
 				$row[] = $field['ms_pormo_name'];
-				$row[] = $field['ms_pormo_discount'].'%';
 				$row[] = $promo_member;
-				$row[] = $field['ms_promo_member_month'].' Bulan';
+				$row[] = $field['ms_gym_package_qty'].' '.$field['ms_gym_package_type'];
 				$row[] = $promo_pt;
 				$row[] = $field['ms_promo_pt_sesi'].' Sesi';
 				$row[] = $promo_kelas;
@@ -1288,6 +1677,20 @@ class Masterdata extends CI_Controller {
 		}
 	}
 
+	public function detailpromo()
+	{
+		$modul = 'Promo';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$id = $this->input->get('id');
+			$get_promo_by_id['get_promo_by_id'] = $this->masterdata_model->get_promo_id($id);
+			$this->load->view('Pages/Masterdata/promo_detail', $get_promo_by_id);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}
+	}
+
 	public function save_promo()
 	{
 		$modul = 'Promo';
@@ -1303,6 +1706,9 @@ class Masterdata extends CI_Controller {
 			$promo_kelas 				= $this->input->post('promo_kelas');
 			$class_session_unit 		= $this->input->post('class_session_unit');
 			$promo_category 			= $this->input->post('promo_category');
+			$promo_disc_pt 				= $this->input->post('promo_disc_pt_val');
+			$promo_disc_member 			= $this->input->post('promo_disc_member_val');
+			$promo_disc_class   		= $this->input->post('promo_disc_class_val');
 			$user_id 		   			= $_SESSION['user_id'];
 			
 			if($promo_name == null){
@@ -1333,6 +1739,9 @@ class Masterdata extends CI_Controller {
 				'ms_promo_class_month'	=> $class_session_unit,
 				'ms_pormo_discount'	   	=> $promo_disc_val,
 				'ms_promo_category'		=> $promo_category,
+				'ms_promo_member_promo' => $promo_disc_member,
+				'ms_promo_pt_promo'	   	=> $promo_disc_pt,
+				'ms_promo_class_promo'	=> $promo_disc_class,
 			);
 
 			$this->masterdata_model->save_promo($data_insert);
@@ -1388,6 +1797,9 @@ class Masterdata extends CI_Controller {
 			$promo_kelas 				= $this->input->post('promo_kelas');
 			$class_session_unit 		= $this->input->post('class_session_unit');
 			$promo_category 			= $this->input->post('promo_category');
+			$promo_disc_pt 				= $this->input->post('promo_disc_pt_val');
+			$promo_disc_member 			= $this->input->post('promo_disc_member_val');
+			$promo_disc_class   		= $this->input->post('promo_disc_class_val');
 			$user_id 		   			= $_SESSION['user_id'];
 			
 			if($promo_name == null){
@@ -1416,7 +1828,10 @@ class Masterdata extends CI_Controller {
 				'ms_promo_class'	    => $promo_kelas,
 				'ms_promo_class_month'	=> $class_session_unit,
 				'ms_pormo_discount'	   	=> $promo_disc_val,
-				'ms_promo_category'		=> $promo_category
+				'ms_promo_category'		=> $promo_category,
+				'ms_promo_member_promo' => $promo_disc_member,
+				'ms_promo_pt_promo'	   	=> $promo_disc_pt,
+				'ms_promo_class_promo'	=> $promo_disc_class,
 			);
 
 			$this->masterdata_model->edit_promo($data_edit, $promo_id);

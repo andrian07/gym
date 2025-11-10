@@ -84,6 +84,20 @@ class global_model extends CI_Model {
         return $result;
     }
 
+    public function get_ms_pt_price($ms_pt_price_id)
+    {
+        $query = $this->db->query("select * from ms_pt_price where ms_pt_price_id  = '".$ms_pt_price_id."'");
+        $result = $query->result();
+        return $result;
+    }
+
+    public function gym_package()
+    {
+        $query = $this->db->query("select * from ms_gym_package where ms_gym_package_active = 'Y'");
+        $result = $query->result();
+        return $result;
+    }
+
     public function get_absence($title)
     {
         $this->db->select('*');

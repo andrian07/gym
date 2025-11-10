@@ -59,7 +59,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             <select class="form-control input-full js-example-basic-single" id="class_package_promo" name="class_package_promo">
                               <option value="">-- Pilih Paket --</option>
                               <?php foreach ($data['promo_list'] as $row) { ?>
-                                <option value="<?php echo $row->ms_promo_id; ?>"><?php echo $row->ms_pormo_name; ?> ( Potongan <?php echo $row->ms_pormo_discount; ?> % )</option>  
+                                <option value="<?php echo $row->ms_promo_id; ?>"><?php echo $row->ms_pormo_name; ?></option>  
                               <?php } ?>
                             </select>
                           </div>
@@ -88,7 +88,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                           <div class="col-md-12">
                             <label for="inlineinput" class="col-md-3 col-form-label">Periode Mulai:</label>
                             <div class="col-md-12 p-0">
-                              <input type="date" class="form-control input-full" name="class_sessions_start" id="class_sessions_start" value="<?php echo date('Y-m-d');?>">
+                              <input type="date" class="form-control input-full" name="gym_sessions_start" id="gym_sessions_start" value="<?php echo date('Y-m-d');?>">
                             </div>
                           </div>
                         </div>
@@ -97,13 +97,13 @@ require DOC_ROOT_PATH . $this->config->item('header');
                       <div class="form-group form-inline">
                         <div class="row">
                           <div class="col-md-12">
-                            <label for="inlineinput" class="col-md-3 col-form-label">Total Bulan:</label>
+                            <label for="inlineinput" class="col-md-3 col-form-label">Paket Gym:</label>
                             <div class="col-md-12 p-0">
                               <select class="form-control input-full js-example-basic-single" id="total_member_month" name="total_member_month">
-                                <option value="">-- Total Bulan --</option>
-                                <option value="3">3 Bulan</option>
-                                <option value="6">6 Bulan</option>
-                                <option value="12">12 Bulan</option>
+                                <option value="">-- Pilih Paket GYM --</option>
+                                <?php foreach ($data['gym_package'] as $row) { ?>
+                                  <option value="<?php echo $row->ms_gym_package_id ; ?>"><?php echo $row->ms_gym_package_name; ?></option>  
+                                <?php } ?>
                               </select>
                             </div>
                           </div>
@@ -115,7 +115,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                           <div class="col-md-12">
                             <label for="inlineinput" class="col-md-3 col-form-label">Periode Akhir:</label>
                             <div class="col-md-12 p-0">
-                              <input type="date" class="form-control input-full" name="class_sessions_end" id="class_sessions_end" value="2027-01-01" readonly>
+                              <input type="date" class="form-control input-full" name="gym_sessions_end" id="gym_sessions_end" value="2027-01-01" readonly>
                             </div>
                           </div>
                         </div>
@@ -126,7 +126,18 @@ require DOC_ROOT_PATH . $this->config->item('header');
                           <div class="col-md-12">
                             <label for="inlineinput" class="col-md-3 col-form-label">Harga Perbulan:</label>
                             <div class="col-md-12 p-0">
-                              <input type="text" class="form-control input-full" name="gym_price" id="gym_price" placeholder="Harga" value="300000">
+                              <input type="text" class="form-control input-full" name="gym_price" id="gym_price" placeholder="Harga" value="0">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group form-inline">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <label for="inlineinput" class="col-md-3 col-form-label">Diskon:</label>
+                            <div class="col-md-12 p-0">
+                              <input type="text" class="form-control input-full" name="discount_class" id="discount_class" value="0" readonly>
                             </div>
                           </div>
                         </div>
@@ -170,35 +181,106 @@ require DOC_ROOT_PATH . $this->config->item('header');
                     <div class="row"> 
                       <div class="col-md-12">
 
+                       <div class="form-group form-inline">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <label for="inlineinput" class="col-md-3 col-form-label">Periode Mulai:</label>
+                            <div class="col-md-12 p-0">
+                              <input type="date" class="form-control input-full" name="class_sessions_start" id="class_sessions_start" value="<?php echo date('Y-m-d');?>">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group form-inline">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Kelas:</label>
+                        <div class="col-md-12 p-0">
+                          <select class="form-control input-full js-example-basic-single" id="class_package" name="class_package">
+                            <option value="">-- Pilih Kelas --</option>
+                            <option value="All">Semua</option>
+                            <?php foreach ($data['class_list'] as $row) { ?>
+                              <option value="<?php echo $row->class_id; ?>"><?php echo $row->class_name; ?></option>  
+                            <?php } ?>
+                          </select>
+                        </div>
+                      </div>  
+
+                      <div class="form-group form-inline">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Harga Kelas:</label>
+                        <div class="col-md-12 p-0">
+                          <input type="text" class="form-control input-full" name="class_price" id="class_price" placeholder="Harga" value="0">
+                        </div>
+                      </div>
+
+                      <div class="form-group form-inline">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <label for="inlineinput" class="col-md-3 col-form-label">Jumlah Bulan:</label>
+                            <div class="col-md-12 p-0">
+                              <select class="form-control input-full" id="class_session_unit" name="class_session_unit">
+                                <option value="">-- Pilih Bulan --</option>
+                                <option value="3">3 Bulan</option>
+                                <option value="6">6 Bulan</option>
+                                <option value="12">12 Bulan</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group form-inline">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Total:</label>
+                        <div class="col-md-12 p-0">
+                          <input type="text" class="form-control input-full" name="class_total" id="class_total" placeholder="Harga" value="0" readonly>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" id="PTdiv">
+            <div class="col-md-3"> 
+              <div class="card-header">
+                <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Personal Training</div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card-body">
+                    <div class="row"> 
+                      <div class="col-md-12">
+
                         <div class="form-group form-inline">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Kelas:</label>
+                          <label for="inlineinput" class="col-md-3 col-form-label">Nama Personal Training:</label>
                           <div class="col-md-12 p-0">
-                            <select class="form-control input-full js-example-basic-single" id="class_package" name="class_package">
-                              <option value="">-- Pilih Kelas --</option>
-                              <?php foreach ($data['class_list'] as $row) { ?>
-                                <option value="<?php echo $row->class_id; ?>"><?php echo $row->class_name; ?></option>  
+                            <select class="form-control input-full js-example-basic-single" id="PT" name="PT">
+                              <option value="">-- Pilih Personal Training --</option>
+                              <?php foreach ($data['pt_list'] as $row) { ?>
+                                <option value="<?php echo $row->coach_id; ?>"><?php echo $row->coach_name; ?></option>  
                               <?php } ?>
                             </select>
                           </div>
-                        </div>  
+                        </div>
 
                         <div class="form-group form-inline">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Harga Kelas:</label>
+                          <label for="inlineinput" class="col-md-3 col-form-label">Harga Sesi:</label>
                           <div class="col-md-12 p-0">
-                            <input type="text" class="form-control input-full" name="class_price" id="class_price" placeholder="Harga" value="0">
+                            <input type="text" class="form-control input-full" name="pt_price" id="pt_price" placeholder="Harga" value="0" readonly>
                           </div>
                         </div>
 
                         <div class="form-group form-inline">
                           <div class="row">
                             <div class="col-md-12">
-                              <label for="inlineinput" class="col-md-3 col-form-label">Jumlah Bulan:</label>
+                              <label for="inlineinput" class="col-md-3 col-form-label">Jumlah Sesi:</label>
                               <div class="col-md-12 p-0">
-                                <select class="form-control input-full" id="class_session_unit" name="class_session_unit">
-                                  <option value="">-- Pilih Bulan --</option>
-                                  <option value="3">3 Bulan</option>
-                                  <option value="6">6 Bulan</option>
-                                  <option value="12">12 Bulan</option>
+                                <select class="form-control input-full" id="pt_session_unit" name="pt_session_unit">
+                                  <option value="">-- Pilih Sesi --</option>
+                                  <?php foreach ($data['pt_package'] as $row) { ?>
+                                    <option value="<?php echo $row->ms_pt_package_session; ?>"><?php echo $row->ms_pt_package_session; ?> Sesi</option>  
+                                  <?php } ?>
                                 </select>
                               </div>
                             </div>
@@ -206,9 +288,26 @@ require DOC_ROOT_PATH . $this->config->item('header');
                         </div>
 
                         <div class="form-group form-inline">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Total:</label>
+                          <div class="row">
+                            <div class="col-md-4">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Masa Berlaku:</label>
+                              <div class="col-md-12 p-0">
+                                <input type="text" class="form-control input-full" name="pt_session_month" id="pt_session_month" value="0" readonly>
+                              </div>
+                            </div>
+                            <div class="col-md-8">
+                              <label for="inlineinput" class="col-md-3 col-form-label" style="margin-top:20px;"></label>
+                              <div class="col-md-12 p-0">
+                                <input type="text" class="form-control input-full" name="pt_session_month" id="pt_session_month" value="Bulan" readonly>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group form-inline">
+                          <label for="inlineinput" class="col-md-3 col-form-label">Total Personal Training:</label>
                           <div class="col-md-12 p-0">
-                            <input type="text" class="form-control input-full" name="class_total" id="class_total" placeholder="Harga" value="0" readonly>
+                            <input type="text" class="form-control input-full" name="pt_total" id="pt_total" placeholder="Harga" value="0" readonly>
                           </div>
                         </div>
                       </div>
@@ -217,300 +316,224 @@ require DOC_ROOT_PATH . $this->config->item('header');
                 </div>
               </div>
             </div>
-
-            <div class="row" id="PTdiv">
-              <div class="col-md-3"> 
-                <div class="card-header">
-                  <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Personal Training</div>
+            <div class="col-md-9"> 
+             <div class="col-md-12" id="step2"> 
+              <div class="card-header">
+                <div class="card-title" style="font-size: 17px; color: #1572e8!important;">Client Readiness For Exercise</div>
+              </div>
+              <div class="card-body" style="padding-left: 3%;">
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-12 col-form-label" style="color:#E77D22 !important">Pekerjaan</label>
                 </div>
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="card-body">
-                      <div class="row"> 
-                        <div class="col-md-12">
 
-                          <div class="form-group form-inline">
-                            <label for="inlineinput" class="col-md-3 col-form-label">Nama Personal Training:</label>
-                            <div class="col-md-12 p-0">
-                              <select class="form-control input-full js-example-basic-single" id="PT" name="PT">
-                                <option value="">-- Pilih Personal Training --</option>
-                                <?php foreach ($data['pt_list'] as $row) { ?>
-                                  <option value="<?php echo $row->coach_id; ?>"><?php echo $row->coach_name; ?></option>  
-                                <?php } ?>
-                              </select>
-                            </div>
-                          </div>
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-9 col-form-label">1.) Apa pekerjaan anda sekarang ?</label>
+                  <div class="col-md-9 p-0">
+                    <input type="text" class="form-control input-full" name="crfe_w_1" id="crfe_w_1" style="margin-left: 2%; width: 80% !important;">
+                  </div>
+                </div>
 
-                          <div class="form-group form-inline">
-                            <label for="inlineinput" class="col-md-3 col-form-label">Harga Sesi:</label>
-                            <div class="col-md-12 p-0">
-                              <input type="text" class="form-control input-full" name="pt_price" id="pt_price" placeholder="Harga" value="0" readonly>
-                            </div>
-                          </div>
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-9 col-form-label">2.) Apakah pekerjaan Anda membutuhkan waktu duduk yang lama ?</label>
+                  <div class="col-sm-2">
+                    <div class="d-flex">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_w_2" id="crfe_w_2_y" value="Y">
+                        <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_w_2" id="crfe_w_2_n" value="N">
+                        <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-                          <div class="form-group form-inline">
-                            <div class="row">
-                              <div class="col-md-12">
-                                <label for="inlineinput" class="col-md-3 col-form-label">Jumlah Sesi:</label>
-                                <div class="col-md-12 p-0">
-                                  <select class="form-control input-full" id="pt_session_unit" name="pt_session_unit">
-                                    <option value="">-- Pilih Sesi --</option>
-                                    <?php foreach ($data['pt_package'] as $row) { ?>
-                                      <option value="<?php echo $row->ms_pt_package_session; ?>"><?php echo $row->ms_pt_package_session; ?> Sesi</option>  
-                                    <?php } ?>
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-9 col-form-label">3.) Apakah pekerjaan Anda memerlukan gerakan berulang? Jika Ya, mohon di jelaskan ?</label>
+                  <div class="col-sm-2">
+                    <div class="d-flex">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_w_3" id="crfe_w_3_y" value="Y" onchange="crfe_w_3_change(this)">
+                        <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_w_3" id="crfe_w_3_n" value="N" onchange="crfe_w_3_change(this)">
+                        <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-9 p-0">
+                    <input type="text" class="form-control input-full" name="crfe_w_3_desc" id="crfe_w_3_desc" style="margin-left: 2%; width: 80% !important;" readonly>
+                  </div>
 
-                          <div class="form-group form-inline">
-                            <div class="row">
-                              <div class="col-md-4">
-                                <label for="inlineinput" class="col-md-3 col-form-label">Masa Berlaku:</label>
-                                <div class="col-md-12 p-0">
-                                  <input type="text" class="form-control input-full" name="pt_session_month" id="pt_session_month" value="0" readonly>
-                                </div>
-                              </div>
-                              <div class="col-md-8">
-                                <label for="inlineinput" class="col-md-3 col-form-label" style="margin-top:20px;"></label>
-                                <div class="col-md-12 p-0">
-                                  <input type="text" class="form-control input-full" name="pt_session_month" id="pt_session_month" value="Bulan" readonly>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                </div>
 
-                          <div class="form-group form-inline">
-                            <label for="inlineinput" class="col-md-3 col-form-label">Total Personal Training:</label>
-                            <div class="col-md-12 p-0">
-                              <input type="text" class="form-control input-full" name="pt_total" id="pt_total" placeholder="Harga" value="0" readonly>
-                            </div>
-                          </div>
-                        </div>
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-9 col-form-label">4.) Apakah pekerjaan Anda mengharuskan Anda memakai sepatu berhak? (misalnya Sepatu Formal)</label>
+                  <div class="col-sm-2">
+                    <div class="d-flex">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_w_4" id="crfe_w_4_y" value="Y">
+                        <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_w_4" id="crfe_w_4_n" value="N">
+                        <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-9 col-form-label">5.) Apakah pekerjaan Anda menyebabkan Anda stres mental ?</label>
+                  <div class="col-sm-2">
+                    <div class="d-flex">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_w_5" id="crfe_w_5_y" value="Y">
+                        <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_w_5" id="crfe_w_5_n" value="N">
+                        <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="col-md-9"> 
-               <div class="col-md-12" id="step2"> 
-                <div class="card-header">
-                  <div class="card-title" style="font-size: 17px; color: #1572e8!important;">Client Readiness For Exercise</div>
+
+              <div class="card-body" style="padding-left: 3%;">
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-12 col-form-label" style="color:#E77D22 !important">Rekreasional</label>
                 </div>
-                <div class="card-body" style="padding-left: 3%;">
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-12 col-form-label" style="color:#E77D22 !important">Pekerjaan</label>
-                  </div>
 
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-9 col-form-label">1.) Apa pekerjaan anda sekarang ?</label>
-                    <div class="col-md-9 p-0">
-                      <input type="text" class="form-control input-full" name="crfe_w_1" id="crfe_w_1" style="margin-left: 2%; width: 80% !important;">
-                    </div>
-                  </div>
-
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-9 col-form-label">2.) Apakah pekerjaan Anda membutuhkan waktu duduk yang lama ?</label>
-                    <div class="col-sm-2">
-                      <div class="d-flex">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_w_2" id="crfe_w_2_y" value="Y">
-                          <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_w_2" id="crfe_w_2_n" value="N">
-                          <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
-                        </div>
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-9 col-form-label">1.) Apakah Anda melakukan aktivitas fisik rekreasi (golf, ski, dll.)? Jika ya, mohon dijelaskan.</label>
+                  <div class="col-sm-2">
+                    <div class="d-flex">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_r_1" id="crfe_r_1_y" value="Y" onchange="crfe_r_1_change(this)">
+                        <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_r_1" id="crfe_r_N" value="N" onchange="crfe_r_1_change(this)">
+                        <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
                       </div>
                     </div>
                   </div>
-
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-9 col-form-label">3.) Apakah pekerjaan Anda memerlukan gerakan berulang? Jika Ya, mohon di jelaskan ?</label>
-                    <div class="col-sm-2">
-                      <div class="d-flex">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_w_3" id="crfe_w_3_y" value="Y" onchange="crfe_w_3_change(this)">
-                          <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_w_3" id="crfe_w_3_n" value="N" onchange="crfe_w_3_change(this)">
-                          <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-9 p-0">
-                      <input type="text" class="form-control input-full" name="crfe_w_3_desc" id="crfe_w_3_desc" style="margin-left: 2%; width: 80% !important;" readonly>
-                    </div>
-
-                  </div>
-
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-9 col-form-label">4.) Apakah pekerjaan Anda mengharuskan Anda memakai sepatu berhak? (misalnya Sepatu Formal)</label>
-                    <div class="col-sm-2">
-                      <div class="d-flex">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_w_4" id="crfe_w_4_y" value="Y">
-                          <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_w_4" id="crfe_w_4_n" value="N">
-                          <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-9 col-form-label">5.) Apakah pekerjaan Anda menyebabkan Anda stres mental ?</label>
-                    <div class="col-sm-2">
-                      <div class="d-flex">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_w_5" id="crfe_w_5_y" value="Y">
-                          <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_w_5" id="crfe_w_5_n" value="N">
-                          <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
-                        </div>
-                      </div>
-                    </div>
+                  <div class="col-md-9 p-0">
+                    <input type="text" class="form-control input-full" name="crfe_r_1_desc" id="crfe_r_1_desc" style="margin-left: 2%; width: 80% !important;" readonly>
                   </div>
                 </div>
 
-                <div class="card-body" style="padding-left: 3%;">
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-12 col-form-label" style="color:#E77D22 !important">Rekreasional</label>
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-9 col-form-label">2.) Apakah Anda memiliki hobi tambahan (membaca, bermain video game, dll.)? (Jika ya, mohon dijelaskan)</label>
+                  <div class="col-sm-2">
+                    <div class="d-flex">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_r_2" id="crfe_r_2_y" value="Y" onchange="crfe_r_2_change(this)">
+                        <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_r_2" id="crfe_r_2_n" value="N" onchange="crfe_r_2_change(this)">
+                        <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
+                      </div>
+                    </div>
                   </div>
+                  <div class="col-md-9 p-0">
+                    <input type="text" class="form-control input-full" name="crfe_r_2_desc" id="crfe_r_2_desc" style="margin-left: 2%; width: 80% !important;" readonly>
+                  </div>
+                </div>
+              </div>
 
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-9 col-form-label">1.) Apakah Anda melakukan aktivitas fisik rekreasi (golf, ski, dll.)? Jika ya, mohon dijelaskan.</label>
+              <div class="card-body" style="padding-left: 3%;">
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-12 col-form-label" style="color:#E77D22 !important">Medical</label>
+                </div>
+
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-9 col-form-label">1.) Pernahkah Anda mengalami cedera atau nyeri kronis? (jika YA, mohon dijelaskan)</label>
+                  <div class="col-sm-2">
+                    <div class="d-flex">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_m_1" id="crfe_m_1_y" value="Y" onchange="crfe_m_1_change(this)">
+                        <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_m_1" id="crfe_m_1_n" value="N" onchange="crfe_m_1_change(this)">
+                        <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-9 p-0">
+                    <input type="text" class="form-control input-full" name="crfe_m_1_desc" id="crfe_m_1_desc" style="margin-left: 2%; width: 80% !important;" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-9 col-form-label">2.) Pernahkah Anda menjalani operasi? (jika YA, mohon dijelaskan)</label>
+                  <div class="col-sm-2">
+                    <div class="d-flex">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_m_2" id="crfe_m_2_y" value="Y" onchange="crfe_m_2_change(this)">
+                        <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="crfe_m_2" id="crfe_m_2_n" value="N" onchange="crfe_m_2_change(this)">
+                        <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-9 p-0">
+                    <input type="text" class="form-control input-full" name="crfe_m_2_desc" id="crfe_m_2_desc" style="margin-left: 2%; width: 80% !important;" readonly>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="noinvoice" class="col-sm-9   col-form-label">
+                    3.) Pernahkah dokter mendiagnosis Anda menderita penyakit kronis, seperti penyakit jantung, <br />hipertensi, kolesterol tinggi, atau diabetes? (Jika YA, jelaskan)</label>
                     <div class="col-sm-2">
                       <div class="d-flex">
                         <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_r_1" id="crfe_r_1_y" value="Y" onchange="crfe_r_1_change(this)">
+                          <input class="form-check-input" type="radio" name="crfe_m_3" id="crfe_m_2_y" value="Y" onchange="crfe_m_3_change(this)">
                           <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_r_1" id="crfe_r_N" value="N" onchange="crfe_r_1_change(this)">
+                          <input class="form-check-input" type="radio" name="crfe_m_3" id="crfe_m_3_n" value="N" onchange="crfe_m_3_change(this)">
                           <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
                         </div>
                       </div>
                     </div>
                     <div class="col-md-9 p-0">
-                      <input type="text" class="form-control input-full" name="crfe_r_1_desc" id="crfe_r_1_desc" style="margin-left: 2%; width: 80% !important;" readonly>
+                      <input type="text" class="form-control input-full" name="crfe_m_3_desc" id="crfe_m_3_desc" style="margin-left: 2%; width: 80% !important;" readonly>
                     </div>
                   </div>
 
+
                   <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-9 col-form-label">2.) Apakah Anda memiliki hobi tambahan (membaca, bermain video game, dll.)? (Jika ya, mohon dijelaskan)</label>
+                    <label for="noinvoice" class="col-sm-9 col-form-label">
+                    4.) Apakah Anda sedang mengonsumsi obat apa pun? (Jika YA, mohon dijelaskan)</label>
                     <div class="col-sm-2">
                       <div class="d-flex">
                         <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_r_2" id="crfe_r_2_y" value="Y" onchange="crfe_r_2_change(this)">
+                          <input class="form-check-input" type="radio" name="crfe_m_4" id="crfe_m_4_y" value="Y" onchange="crfe_m_4_change(this)">
                           <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_r_2" id="crfe_r_2_n" value="N" onchange="crfe_r_2_change(this)">
+                          <input class="form-check-input" type="radio" name="crfe_m_4" id="crfe_m_4_n" value="N" onchange="crfe_m_4_change(this)">
                           <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
                         </div>
                       </div>
                     </div>
                     <div class="col-md-9 p-0">
-                      <input type="text" class="form-control input-full" name="crfe_r_2_desc" id="crfe_r_2_desc" style="margin-left: 2%; width: 80% !important;" readonly>
+                      <input type="text" class="form-control input-full" name="crfe_m_4_desc" id="crfe_m_4_desc" style="margin-left: 2%; width: 80% !important;" readonly>
                     </div>
                   </div>
                 </div>
 
-                <div class="card-body" style="padding-left: 3%;">
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-12 col-form-label" style="color:#E77D22 !important">Medical</label>
-                  </div>
-
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-9 col-form-label">1.) Pernahkah Anda mengalami cedera atau nyeri kronis? (jika YA, mohon dijelaskan)</label>
-                    <div class="col-sm-2">
-                      <div class="d-flex">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_m_1" id="crfe_m_1_y" value="Y" onchange="crfe_m_1_change(this)">
-                          <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_m_1" id="crfe_m_1_n" value="N" onchange="crfe_m_1_change(this)">
-                          <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-9 p-0">
-                      <input type="text" class="form-control input-full" name="crfe_m_1_desc" id="crfe_m_1_desc" style="margin-left: 2%; width: 80% !important;" readonly>
-                    </div>
-                  </div>
-
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-9 col-form-label">2.) Pernahkah Anda menjalani operasi? (jika YA, mohon dijelaskan)</label>
-                    <div class="col-sm-2">
-                      <div class="d-flex">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_m_2" id="crfe_m_2_y" value="Y" onchange="crfe_m_2_change(this)">
-                          <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="crfe_m_2" id="crfe_m_2_n" value="N" onchange="crfe_m_2_change(this)">
-                          <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-9 p-0">
-                      <input type="text" class="form-control input-full" name="crfe_m_2_desc" id="crfe_m_2_desc" style="margin-left: 2%; width: 80% !important;" readonly>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="noinvoice" class="col-sm-9   col-form-label">
-                      3.) Pernahkah dokter mendiagnosis Anda menderita penyakit kronis, seperti penyakit jantung, <br />hipertensi, kolesterol tinggi, atau diabetes? (Jika YA, jelaskan)</label>
-                      <div class="col-sm-2">
-                        <div class="d-flex">
-                          <div class="form-check">
-                            <input class="form-check-input" type="radio" name="crfe_m_3" id="crfe_m_2_y" value="Y" onchange="crfe_m_3_change(this)">
-                            <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
-                          </div>
-                          <div class="form-check">
-                            <input class="form-check-input" type="radio" name="crfe_m_3" id="crfe_m_3_n" value="N" onchange="crfe_m_3_change(this)">
-                            <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-9 p-0">
-                        <input type="text" class="form-control input-full" name="crfe_m_3_desc" id="crfe_m_3_desc" style="margin-left: 2%; width: 80% !important;" readonly>
-                      </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                      <label for="noinvoice" class="col-sm-9 col-form-label">
-                      4.) Apakah Anda sedang mengonsumsi obat apa pun? (Jika YA, mohon dijelaskan)</label>
-                      <div class="col-sm-2">
-                        <div class="d-flex">
-                          <div class="form-check">
-                            <input class="form-check-input" type="radio" name="crfe_m_4" id="crfe_m_4_y" value="Y" onchange="crfe_m_4_change(this)">
-                            <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
-                          </div>
-                          <div class="form-check">
-                            <input class="form-check-input" type="radio" name="crfe_m_4" id="crfe_m_4_n" value="N" onchange="crfe_m_4_change(this)">
-                            <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-9 p-0">
-                        <input type="text" class="form-control input-full" name="crfe_m_4_desc" id="crfe_m_4_desc" style="margin-left: 2%; width: 80% !important;" readonly>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
               </div>
             </div>
           </div>
+        </div>
 
           <!-- 
           <div class="col-md-3" > 
@@ -562,53 +585,52 @@ require DOC_ROOT_PATH . $this->config->item('header');
               </div>
             </div>
           </div>
-          -->
-          <div class="row card-action">
-            <div class="col-md-9"></div>
-            <div class="col-md-3">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="card-body">
-                    <div class="row"> 
-                      <div class="form-group form-inline">
-                        <div class="row">
-                          <div class="col-md-4">
-                            <label for="inlineinput" class="col-md-3 col-form-label">Pembayaran:</label>
-                          </div>
-                          <div class="col-md-8">
-                            <div class="col-md-12 p-0">
-                              <select class="form-control input-full js-example-basic-single" id="payment" name="payment">
-                                <option value="">-- Pilih Pembayaran --</option>
-                                <option value="Transfer BCA">Transfer BCA</option>
-                                <option value="Transfer BNI">Transfer BNI</option>
-                                <option value="Qris BCA">Qris BCA</option>
-                                <option value="Qris BNI">Qris BNI</option>
-                              </select>
-                            </div>
+        -->
+        <div class="row card-action">
+          <div class="col-md-9"></div>
+          <div class="col-md-3">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card-body">
+                  <div class="row"> 
+                    <div class="form-group form-inline">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <label for="inlineinput" class="col-md-3 col-form-label">Pembayaran:</label>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="col-md-12 p-0">
+                            <select class="form-control input-full js-example-basic-single" id="payment" name="payment">
+                              <option value="">-- Pilih Pembayaran --</option>
+                              <option value="Transfer BCA">Transfer BCA</option>
+                              <option value="Transfer BNI">Transfer BNI</option>
+                              <option value="Qris BCA">Qris BCA</option>
+                              <option value="Qris BNI">Qris BNI</option>
+                            </select>
                           </div>
                         </div>
                       </div>
-                      <div class="form-group form-inline">
-                        <div class="row">
-                          <div class="col-md-4">
-                            <label for="inlineinput" class="col-md-3 col-form-label">Diskon:</label>
-                          </div>
-                          <div class="col-md-8">
-                            <div class="col-md-12 p-0">
-                              <input type="text" class="form-control input-full" name="discount" id="discount" value="0" readonly>
-                            </div>
+                    </div>
+                    <div class="form-group form-inline">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <label for="inlineinput" class="col-md-3 col-form-label">Diskon:</label>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="col-md-12 p-0">
+                            <input type="text" class="form-control input-full" name="discount" id="discount" value="0" readonly>
                           </div>
                         </div>
                       </div>
-                      <div class="form-group form-inline">
-                        <div class="row">
-                          <div class="col-md-4">
-                            <label for="inlineinput" class="col-md-3 col-form-label">Total:</label>
-                          </div>
-                          <div class="col-md-8">
-                            <div class="col-md-12 p-0">
-                              <input type="text" class="form-control input-full" name="total" id="total" value="0" readonly>
-                            </div>
+                    </div>
+                    <div class="form-group form-inline">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <label for="inlineinput" class="col-md-3 col-form-label">Total:</label>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="col-md-12 p-0">
+                            <input type="text" class="form-control input-full" name="total" id="total" value="0" readonly>
                           </div>
                         </div>
                       </div>
@@ -618,15 +640,16 @@ require DOC_ROOT_PATH . $this->config->item('header');
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="card-action" style="text-align: right;">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times-circle"></i> Batal</button>
-            <button id="btn_save" class="btn btn-primary" ><i class="fas fa-save"></i> Simpan</button>
-          </div>
+        <div class="card-action" style="text-align: right;">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times-circle"></i> Batal</button>
+          <button id="btn_save" class="btn btn-primary" ><i class="fas fa-save"></i> Simpan</button>
         </div>
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <?php 
@@ -723,6 +746,14 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
   let total = new AutoNumeric('#total', {
     currencySymbol : 'Rp. ',
+    decimalCharacter : ',',
+    decimalPlaces: 0,
+    decimalPlacesShownOnFocus: 0,
+    digitGroupSeparator : '.',
+  });
+
+  let discount_class = new AutoNumeric('#discount_class', {
+    suffixText: "%",
     decimalCharacter : ',',
     decimalPlaces: 0,
     decimalPlacesShownOnFocus: 0,
@@ -833,6 +864,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     });
   });
 
+
   $('#PT').on('change', function() {
     var id = this.value;
     $.ajax({
@@ -843,7 +875,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       success : function(data){
         if (data.code == "200"){
           let row = data.result.get_pt_info[0];
-          pt_price.set(row.coach_salary);
+          pt_price.set(row.ms_pt_price_price);
         } else {
           Swal.fire({
             icon: 'error',
@@ -929,6 +961,10 @@ require DOC_ROOT_PATH . $this->config->item('footer');
           }else{
             $('#kelasdiv').hide();
           }
+          $('#total_member_month').val(row.ms_promo_member_month);
+          $('#total_member_month').trigger('change');
+          gym_price.set(row.ms_gym_package_month_price);
+
         } else {
           Swal.fire({
             icon: 'error',
@@ -942,10 +978,13 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
   $('#btn_save').click(function(e){
     e.preventDefault();
-    var member_name               = $("#member_name").val();
-    var member_phone              = $("#member_phone").val();
-    var member_nik                = $("#member_nik").val();
-    var member_dob                = $("#member_dob").val();
+    var member_id                 = $("#member_id").val();
+    var class_member_type         = $("#class_member_type").val();
+    var class_package_promo       = $("#class_package_promo").val();
+    var gym_sessions_start        = $("#gym_sessions_start").val();
+    var total_member_month        = $("#total_member_month").val();
+
+    /*
     var member_email              = $("#member_email").val();
     var member_address            = $("#member_address").val();
     var member_gender             = $("#member_gender").val();
@@ -961,7 +1000,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     var parq_q4                   = $('input[name="parq_q4"]:checked').val();
     var parq_q5                   = $('input[name="parq_q5"]:checked').val();
     var parq_q6                   = $('input[name="parq_q6"]:checked').val();
-    /*var crfe_w_1                  = $("#crfe_w_1").val();
+     var crfe_w_1                  = $("#crfe_w_1").val();
     var crfe_w_2                  = $('input[name="crfe_w_2"]:checked').val();
     var crfe_w_3                  = $('input[name="crfe_w_3"]:checked').val();
     var crfe_w_3_desc             = $("#crfe_w_3").val();
@@ -984,7 +1023,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       type: "POST",
       url: "<?php echo base_url(); ?>register/save_register",
       dataType: "json",
-      data: {member_name:member_name, member_phone:member_phone, member_nik:member_nik, member_dob:member_dob, member_email:member_email, member_address:member_address, member_gender:member_gender, member_urgent_phone:member_urgent_phone, member_nik:member_nik,member_urgent_name:member_urgent_name, member_urgent_sibiling:member_urgent_sibiling, member_desc:member_desc, parq_q1:parq_q1, parq_q2:parq_q2, parq_q3:parq_q3, parq_q4:parq_q4, parq_q5:parq_q5, parq_q6:parq_q6},
+      data: {member_id:member_id, class_member_type:class_member_type, class_package_promo:class_package_promo, gym_sessions_start:gym_sessions_start, total_member_month:total_member_month},
       success : function(data){
         if (data.code == "200"){
           let title = 'Tambah Data';
@@ -992,45 +1031,6 @@ require DOC_ROOT_PATH . $this->config->item('footer');
           let state = 'info';
           notif_success(title, message, state);
           $("#member_id").val(data.member);
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: data.result,
-          })
-        }
-      }
-    });
-  });
-
-
-  $('#btn_save_class').click(function(e){
-    e.preventDefault();
-    var member_id             = $("#member_id").val();
-    var class_package         = $("#class_package").val();
-    var class_price_val       = class_price.get();
-    var class_session_val     = class_session.get();
-    var class_session_unit    = $("#class_session_unit").val();
-    var class_total_val       = class_total.get();
-    var PT                    = $("#PT").val();
-    var class_sessions_start  = $("#class_sessions_start").val();
-    var class_sessions_end    = $("#class_sessions_end").val();
-    var class_package_promo   = $("#class_package_promo").val();
-    var discount_val          = discount.get();
-    var total_val             = total.get();
-
-    $.ajax({
-      type: "POST",
-      url: "<?php echo base_url(); ?>register/save_transaction",
-      dataType: "json",
-      data: {member_id:member_id, class_package:class_package, class_price_val:class_price_val, class_session_val:class_session_val, class_session_unit:class_session_unit, class_total_val:class_total_val, PT:PT, class_sessions_start:class_sessions_start, class_sessions_end:class_sessions_end, class_package_promo:class_package_promo, discount_val:discount_val, total_val:total_val},
-      success : function(data){
-        if (data.code == "200"){
-          let title = 'Tambah Data';
-          let message = 'Data Berhasil Di Tambah';
-          let state = 'info';
-          notif_success(title, message, state);
-          window.location.href = "<?php echo base_url(); ?>/Register/1";
         } else {
           Swal.fire({
             icon: 'error',

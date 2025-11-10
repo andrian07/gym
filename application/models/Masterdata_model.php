@@ -272,6 +272,62 @@ class masterdata_model extends CI_Model {
 
     //end class
 
+
+    //gym paket
+
+    public function gym_list($search, $length, $start)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_gym_package');
+        $this->db->where('ms_gym_package_active', 'Y');
+        if($search != null){
+            $this->db->where('ms_gym_package_name like "%'.$search.'%"');
+        }
+        $this->db->limit($length);
+        $this->db->offset($start);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function gym_list_count($search)
+    {
+        $this->db->select('count(*) as total_row');
+        $this->db->from('ms_gym_package');
+        $this->db->where('ms_gym_package_active', 'Y');
+        if($search != null){
+            $this->db->where('ms_gym_package_name like "%'.$search.'%"');
+        }
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function save_gym_package($data_insert)
+    {
+        $this->db->insert('ms_gym_package', $data_insert);
+    }
+
+    public function get_edit_gym_package($id)
+    {
+        $query = $this->db->query("select * from ms_gym_package where ms_gym_package_id ='".$id."'");
+        $result = $query->result();
+        return $result;
+    }
+
+    public function edit_gym_package($data_edit, $paket_id)
+    {
+        $this->db->set($data_edit);
+        $this->db->where('ms_gym_package_id', $paket_id);
+        $this->db->update('ms_gym_package');
+    }
+
+    public function delete_gym_package($paket_id)
+    {
+        $this->db->set('ms_gym_package_active', 'N');
+        $this->db->where('ms_gym_package_id', $paket_id);
+        $this->db->update('ms_gym_package');
+    }
+    //end gym paket
+
     //coach
 
     public function coach_list($search, $length, $start, $type)
@@ -279,6 +335,7 @@ class masterdata_model extends CI_Model {
         $this->db->select('*');
         $this->db->from('ms_coach');
         $this->db->where('coach_type', $type);
+        $this->db->join('ms_pt_price', 'ms_coach.coach_lvl = ms_pt_price.ms_pt_price_id', 'left');
         if($search != null){
             $this->db->where('coach_code like "%'.$search.'%"');
             $this->db->or_where('coach_name like "%'.$search.'%"');
@@ -294,6 +351,7 @@ class masterdata_model extends CI_Model {
         $this->db->select('count(*) as total_row');
         $this->db->from('ms_coach');
         $this->db->where('coach_type', $type);
+        $this->db->join('ms_pt_price', 'ms_coach.coach_lvl = ms_pt_price.ms_pt_price_id', 'left');
         if($search != null){
             $this->db->where('coach_code like "%'.$search.'%"');
             $this->db->or_where('coach_name like "%'.$search.'%"');
@@ -362,6 +420,13 @@ class masterdata_model extends CI_Model {
         return $result;
     }
 
+    public function get_class_pt()
+    {
+        $query = $this->db->query("select * from ms_pt_price where ms_pt_price_active = 'Y'");
+        $result = $query->result();
+        return $result;
+    }
+
     //end coach
 
     //start promo
@@ -375,6 +440,7 @@ class masterdata_model extends CI_Model {
     {
         $this->db->select('*');
         $this->db->from('ms_promo');
+        $this->db->join('ms_gym_package', 'ms_promo.ms_promo_member_month = ms_gym_package.ms_gym_package_id', 'left');
         $this->db->where('ms_promo_active', 'Y');
         if($search != null){
             $this->db->where('ms_pormo_name like "%'.$search.'%"');
@@ -389,6 +455,7 @@ class masterdata_model extends CI_Model {
     {
         $this->db->select('count(*) as total_row');
         $this->db->from('ms_promo');
+        $this->db->join('ms_gym_package', 'ms_promo.ms_promo_member_month = ms_gym_package.ms_gym_package_id', 'left');
         $this->db->where('ms_promo_active', 'Y');
         if($search != null){
             $this->db->where('ms_pormo_name like "%'.$search.'%"');

@@ -19,7 +19,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
               </div>
               <div class="ms-md-auto py-2 py-md-0">
                 <button class="btn btn-info" id="reload"><span class="btn-label"><i class="fas fa-sync"></i></span> Reload</button>
-                <?php if($check_auth[0]->add == 'N'){ ?>
+                <?php if($data['check_auth'][0]->add == 'N'){ ?>
                   <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".bd-example-modal-xl" disabled="disabled"><span class="btn-label"><i class="fa fa-plus"></i></span> Tambah</button>
                 <?php }else{ ?>
                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".bd-example-modal-xl"><span class="btn-label"><i class="fa fa-plus"></i></span> Tambah</button>
@@ -53,7 +53,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               <label for="inlineinput" class="col-md-3 col-form-label">Kode Personal Training</label>
                               <div class="col-md-12 p-0">
                                 <input type="text" class="form-control input-full" name="coach_code" id="coach_code" placeholder="Kode Personal Training">
-                                <input type="hidden" class="form-control input-full" name="coach_code" id="coach_type" value="PT">
+                                <input type="hidden" class="form-control input-full" name="coach_type" id="coach_type" value="PT">
                               </div>
                             </div>
 
@@ -113,6 +113,18 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             </div>
 
                             <div class="form-group form-inline">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Personal Training LVL</label>
+                              <div class="col-md-12 p-0">
+                                <select class="form-select form-control" id="coach_lvl" name="coach_lvl">
+                                  <option value="">--Pilih LVL--</option>
+                                  <?php foreach($data['get_class_pt'] as $row){ ?>
+                                    <option value="<?php echo $row->ms_pt_price_id; ?>"><?php echo $row->ms_pt_price_name; ?></option>
+                                  <?php } ?>
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="form-group form-inline">
                               <label for="inlineinput" class="col-md-3 col-form-label">Spesialist</label>
                               <div class="col-md-12 p-0">
                                 <input type="text" class="form-control input-full" name="coach_title" id="coach_title" placeholder="Spesialist">
@@ -122,7 +134,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             <div class="form-group form-inline">
                               <label for="inlineinput" class="col-md-3 col-form-label">Fee / Sesi</label>
                               <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="coach_salary" id="coach_salary" placeholder=">Fee / Sesi" value="0">
+                                <input type="text" class="form-control input-full" name="coach_salary" id="coach_salary" placeholder=">Fee / Sesi" value="0" readonly>
                                 <input type="hidden" class="form-control input-full" name="coach_extra_charge" id="coach_extra_charge" placeholder="Extra Charge" value="0">
                               </div>
                             </div>
@@ -228,6 +240,18 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             </div>
 
                             <div class="form-group form-inline">
+                              <label for="inlineinput" class="col-md-3 col-form-label">Personal Training LVL</label>
+                              <div class="col-md-12 p-0">
+                                <select class="form-select form-control" id="coach_lvl_edit" name="coach_lvl_edit">
+                                  <option value="">--Pilih LVL--</option>
+                                  <?php foreach($data['get_class_pt'] as $row){ ?>
+                                    <option value="<?php echo $row->ms_pt_price_id; ?>"><?php echo $row->ms_pt_price_name; ?></option>
+                                  <?php } ?>
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="form-group form-inline">
                               <label for="inlineinput" class="col-md-3 col-form-label">Spesialist</label>
                               <div class="col-md-12 p-0">
                                 <input type="text" class="form-control input-full" name="coach_title_edit" id="coach_title_edit" placeholder="NIK">
@@ -237,7 +261,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             <div class="form-group form-inline">
                               <label for="inlineinput" class="col-md-3 col-form-label">Fee / Sesi</label>
                               <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="coach_salary_edit" id="coach_salary_edit" placeholder="Fee / Sesi">
+                                <input type="text" class="form-control input-full" name="coach_salary_edit" id="coach_salary_edit" placeholder="Fee / Sesi" readonly>
                                 <input type="hidden" class="form-control input-full" name="coach_extra_charge_edit" id="coach_extra_charge_edit" placeholder="Extra Charge">
                               </div>
                             </div>
@@ -266,7 +290,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                 <th>Telp</th>
                 <th>Alamat</th>
                 <th>Join</th>
-                <th>Spesialis</th>
+                <th>LVL</th>
                 <th>Status</th>
                 <th>Aksi</th>
               </tr>
@@ -460,6 +484,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     var coach_dob             = $("#coach_dob_edit").val();
     var coach_gender          = $("#coach_gender_edit").val();
     var coach_address         = $("#coach_address_edit").val();
+    var coach_lvl             = $("#coach_lvl_edit").val();
     var coach_title           = $("#coach_title_edit").val();
     var coach_salary          = $("#coach_salary_edit").val();
     var coach_extra_charge    = $("#coach_extra_charge_edit").val();
@@ -499,6 +524,12 @@ require DOC_ROOT_PATH . $this->config->item('footer');
         icon: 'error',
         title: 'Oops...',
         text: 'Silahkan Isi Alamat',
+      })
+    }else if(coach_lvl == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi LVL',
       })
     }else if(coach_salary == ''){
       Swal.fire({
@@ -541,6 +572,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     var coach_dob             = $("#coach_dob").val();
     var coach_gender          = $("#coach_gender").val();
     var coach_address         = $("#coach_address").val();
+    var coach_lvl             = $("#coach_lvl").val();
     var coach_title           = $("#coach_title").val();
     var coach_salary          = $("#coach_salary").val();
     var coach_extra_charge    = $("#coach_extra_charge").val();
@@ -581,6 +613,12 @@ require DOC_ROOT_PATH . $this->config->item('footer');
         title: 'Oops...',
         text: 'Silahkan Isi Alamat',
       })
+    }else if(coach_lvl == ''){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Silahkan Isi LVL',
+      })
     }else if(coach_salary == ''){
       Swal.fire({
         icon: 'error',
@@ -612,6 +650,50 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     }
   }));
 
+  $('#coach_lvl').on('change', function() {
+    var id = this.value;
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>Masterdata/get_pt_price",
+      dataType: "json",
+      data: {id:id},
+      success : function(data){
+        if (data.code == "200"){
+          let row = data.result.get_ms_pt_price[0];
+          coach_salary.set(row.ms_pt_price_price);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Data Tidak Di Temukan',
+          })
+        }
+      }
+    });
+  }); 
+
+  $('#coach_lvl_edit').on('change', function() {
+    var id = this.value;
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>Masterdata/get_pt_price",
+      dataType: "json",
+      data: {id:id},
+      success : function(data){
+        if (data.code == "200"){
+          let row = data.result.get_ms_pt_price[0];
+          coach_salary_edit.set(row.ms_pt_price_price);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Data Tidak Di Temukan',
+          })
+        }
+      }
+    });
+  }); 
+
   $('#exampleModaledit').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var id   = button.data('id')
@@ -636,6 +718,8 @@ require DOC_ROOT_PATH . $this->config->item('footer');
           modal.find('#coach_dob_edit').val(row.coach_dob)
           modal.find('#coach_gender_edit').val(row.coach_gender)
           modal.find('#coach_address_edit').val(row.coach_address)
+          modal.find('#coach_lvl_edit').val(row.coach_lvl)
+          $('#coach_lvl_edit').trigger('change');
           modal.find('#coach_title_edit').val(row.coach_title)
           coach_salary_edit.set(row.coach_salary);
           coach_extra_charge_edit.set(row.coach_extra_charge)

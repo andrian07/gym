@@ -270,7 +270,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       success : function(data){
         if (data.code == "200"){
           let member_id = data.member;
-          window.location.href = "<?php echo base_url(); ?>register/registerpayment?id="+member_id;
+          window.location.href = "<?php echo base_url(); ?>register/addregisterpayment?id="+member_id;
         } else {
           Swal.fire({
             icon: 'error',

@@ -83,8 +83,9 @@ class Register extends CI_Controller {
 			$promo_list['promo_list'] = $this->global_model->promo_list();
 			$pt_list['pt_list'] = $this->global_model->pt_list();
 			$pt_package['pt_package'] = $this->global_model->pt_package();
+			$gym_package['gym_package'] = $this->global_model->gym_package();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list, $pt_list, $pt_package);
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list, $pt_list, $pt_package, $gym_package);
 			$this->load->view('Pages/Register/registerpayment', $data);
 		}else{
 			$msg = "No Access";
@@ -461,7 +462,8 @@ class Register extends CI_Controller {
 	public function get_pt_info()
 	{
 		$pt_id = $this->input->post('id');
-		$get_pt_info['get_pt_info'] = $this->register_model->get_pt_info($pt_id)->result_array();
+		
+		$get_pt_info['get_pt_info'] = $this->register_model->get_pt_info_price($pt_id)->result_array();
 		echo json_encode(['code'=>200, 'result'=>$get_pt_info]);
 	}
 
