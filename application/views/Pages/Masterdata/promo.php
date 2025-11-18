@@ -104,8 +104,8 @@ require DOC_ROOT_PATH . $this->config->item('header');
                                   <div class="col-md-12 p-0">
                                     <select class="form-control input-full" id="pt_session_unit" name="pt_session_unit">
                                       <option value="">-- Pilih Sesi --</option>
-                                      <?php foreach ($data['list_pt_package'] as $row) { ?>
-                                        <option value="<?php echo $row->ms_pt_package_session; ?>"><?php echo $row->ms_pt_package_session; ?> Sesi</option>  
+                                      <?php foreach ($data['list_pt_package_price'] as $row) { ?>
+                                        <option value="<?php echo $row->ms_pt_package_price_id ; ?>"><?php echo $row->ms_pt_package_price_name; ?></option> 
                                       <?php } ?>
                                     </select>
                                   </div>
@@ -140,13 +140,13 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               </div>
                               <div class="col-md-4">
                                 <div class="form-group form-inline">
-                                  <label for="inlineinput" class="col-md-3 col-form-label">Jumlah Kelas</label>
+                                  <label for="inlineinput" class="col-md-3 col-form-label">Paket Kelas</label>
                                   <div class="col-md-12 p-0">
                                     <select class="form-control input-full" id="class_session_unit" name="class_session_unit">
-                                      <option value="">-- Pilih Bulan --</option>
-                                      <option value="3">3 Bulan</option>
-                                      <option value="6">6 Bulan</option>
-                                      <option value="12">12 Bulan</option>
+                                      <option value="">-- Pilih Paket --</option>
+                                      <?php foreach ($data['list_class_package'] as $row) { ?>
+                                        <option value="<?php echo $row->ms_class_package_id; ?>"><?php echo $row->ms_class_package_name; ?></option>  
+                                      <?php } ?>
                                     </select>
                                   </div>
                                 </div>
@@ -233,7 +233,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                                     <select class="form-control input-full" id="member_session_unit_edit" name="member_session_unit_edit">
                                       <option value="">-- Pilih Bulan --</option>
                                       <?php foreach ($data['list_gym_package'] as $row) { ?>
-                                        <option value="<?php echo $row->ms_gym_package_id ; ?>"><?php echo $row->ms_gym_package_name; ?></option>  
+                                        <option value="<?php echo $row->ms_gym_package_id ; ?>"><?php echo $row->ms_gym_package_name; ?></option> 
                                       <?php } ?>
                                     </select>
                                   </div>
@@ -270,9 +270,9 @@ require DOC_ROOT_PATH . $this->config->item('header');
                                   <div class="col-md-12 p-0">
                                     <select class="form-control input-full" id="pt_session_unit_edit" name="pt_session_unit_edit">
                                       <option value="">-- Pilih Sesi --</option>
-                                      <option value="8">8 Sesi</option>
-                                      <option value="12">12 Sesi</option>
-                                      <option value="24">24 Sesi</option>
+                                      <?php foreach ($data['list_pt_package_price'] as $row) { ?>
+                                        <option value="<?php echo $row->ms_pt_package_price_id ; ?>"><?php echo $row->ms_pt_package_price_name; ?></option> 
+                                      <?php } ?>
                                     </select>
                                   </div>
                                 </div>
@@ -307,13 +307,13 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               </div>
                               <div class="col-md-4">
                                 <div class="form-group form-inline">
-                                  <label for="inlineinput" class="col-md-3 col-form-label">Jumlah Kelas</label>
+                                  <label for="inlineinput" class="col-md-3 col-form-label">Paket Kelas</label>
                                   <div class="col-md-12 p-0">
                                     <select class="form-control input-full" id="class_session_unit_edit" name="class_session_unit_edit">
-                                      <option value="">-- Pilih Bulan --</option>
-                                      <option value="3">3 Bulan</option>
-                                      <option value="6">6 Bulan</option>
-                                      <option value="12">12 Bulan</option>
+                                      <option value="">-- Pilih Paket --</option>
+                                      <?php foreach ($data['list_class_package'] as $row) { ?>
+                                        <option value="<?php echo $row->ms_class_package_id; ?>"><?php echo $row->ms_class_package_name; ?></option>  
+                                      <?php } ?>
                                     </select>
                                   </div>
                                 </div>
@@ -368,11 +368,11 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   <tr>
                     <th>Nama Promo</th>
                     <th>Include Member</th>
-                    <th>Jumlah Bulan (GYM)</th>
+                    <th>Paket Gym</th>
                     <th>Include PT</th>
-                    <th>Jumlah Sesi (PT)</th>
+                    <th>Paket PT</th>
                     <th>Include Kelas</th>
-                    <th>Jumlah Bulan (Kelas)</th>
+                    <th>Paket Kelas</th>
                     <th>Kategori</th>
                     <th>Aksi</th>
                   </tr>
@@ -591,15 +591,15 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       },
       columns: 
       [
-        {data: 0},
-        {data: 1},
-        {data: 2},
-        {data: 3},
-        {data: 4},
-        {data: 5},
-        {data: 6},
-        {data: 7},
-        {data: 8}
+      {data: 0},
+      {data: 1},
+      {data: 2},
+      {data: 3},
+      {data: 4},
+      {data: 5},
+      {data: 6},
+      {data: 7},
+      {data: 8}
       ]
     });
   }
@@ -616,6 +616,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       dataType: "json",
       data: {id:id},
       success : function(data){
+        console.log(data);
         if (data.code == "200"){
           let row = data.result.get_promo_id[0];
           modal.find('#promo_id_edit').val(row.ms_promo_id)

@@ -434,11 +434,6 @@
 					echo json_encode(['code'=>0, 'result'=>$msg]);die();
 				}
 
-				if($pt_price < 1){
-					$msg = "Harga Per Sesi Harus Di Isi";
-					echo json_encode(['code'=>0, 'result'=>$msg]);die();
-				}
-
 				$data_insert = array(
 					'ms_pt_price_name'	       	=> $pt_price_name,
 					'ms_pt_price_price'	       	=> $pt_price
@@ -499,11 +494,6 @@
 
 				if($pt_price_name == null){
 					$msg = "Nama LVL PT Harus Di Isi";
-					echo json_encode(['code'=>0, 'result'=>$msg]);die();
-				}
-
-				if($pt_price_val < 1){
-					$msg = "Harga Per Sesi Harus Di Isi";
 					echo json_encode(['code'=>0, 'result'=>$msg]);die();
 				}
 

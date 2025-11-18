@@ -2,6 +2,11 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Methods: GET, OPTIONS");
+require 'vendor/autoload.php';
+
+use Dompdf\Dompdf;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Register extends CI_Controller {
 
@@ -28,7 +33,7 @@ class Register extends CI_Controller {
 
 	private function check_auth($modul){
 		if(isset($_SESSION['user_name']) == null){
-			redirect('Masterdata', 'refresh');
+			redirect('Register', 'refresh');
 		}else{
 			$user_role_id = $_SESSION['user_role_id'];
 			$check_access = $this->global_model->check_access($user_role_id, $modul);
@@ -46,8 +51,9 @@ class Register extends CI_Controller {
 			$class_list['class_list'] = $this->global_model->class_list();
 			$coach_list['coach_list'] = $this->global_model->coach_list();
 			$pt_list['pt_list'] = $this->global_model->pt_list();
+			$payment_list['payment_list'] = $this->global_model->payment_list();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $pt_list);
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $pt_list, $payment_list);
 			$this->load->view('Pages/Register/register', $data);
 		}else{
 			$msg = "No Access";
@@ -64,8 +70,9 @@ class Register extends CI_Controller {
 			$coach_list['coach_list'] = $this->global_model->coach_list();
 			$promo_list['promo_list'] = $this->global_model->promo_list();
 			$pt_list['pt_list'] = $this->global_model->pt_list();
+			$member_list['member_list'] = $this->global_model->member_list();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list, $pt_list);
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list, $pt_list, $member_list);
 			$this->load->view('Pages/Register/addregister', $data);
 		}else{
 			$msg = "No Access";
@@ -84,8 +91,11 @@ class Register extends CI_Controller {
 			$pt_list['pt_list'] = $this->global_model->pt_list();
 			$pt_package['pt_package'] = $this->global_model->pt_package();
 			$gym_package['gym_package'] = $this->global_model->gym_package();
+			$class_package['class_package'] = $this->global_model->class_package();
+			$pt_package_price['pt_package_price'] = $this->global_model->pt_package_price();
+			$payment_list['payment_list'] = $this->global_model->payment_list();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list, $pt_list, $pt_package, $gym_package);
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list, $pt_list, $pt_package, $gym_package, $class_package, $pt_package_price, $payment_list);
 			$this->load->view('Pages/Register/registerpayment', $data);
 		}else{
 			$msg = "No Access";
@@ -107,13 +117,14 @@ class Register extends CI_Controller {
 			}
 
 			$list = $this->register_model->register_list($search, $length, $start)->result_array();
+			
 			$count_list = $this->register_model->register_list_count($search)->result_array();
 			$total_row = $count_list[0]['total_row'];
 			$data = array();
 			$no = $_POST['start'];
 			foreach ($list as $field) {
 
-				$detail = '<a href="'.base_url().'Register/detailtransaction?id='.$field['transaction_register_id'].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
+				$detail = '<a href="'.base_url().'Register/detailregister?id='.$field['transaction_register_id'].'" data-fancybox="" data-type="iframe"><button type="button" class="btn btn-icon btn-primary btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'"><i class="fas fa-eye sizing-fa"></i></button></a> ';
 
 				if($check_auth[0]->edit == 'Y'){
 					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['transaction_register_id'].'" data-name="'.$field['transaction_register_inv'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
@@ -121,13 +132,17 @@ class Register extends CI_Controller {
 					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
 				}
 
-				$print = '<a href="'.base_url().'Register/print_nota?id='.$field['transaction_register_id'].'"><button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'" title="Print"><i class="fas fa-copy sizing-fa"></i></button></a> ';
+				if($field['transaction_payment_status'] == 'Lunas'){
+					$print = '<a href="'.base_url().'Register/print_nota?id='.$field['transaction_register_id'].'"><button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'" title="Print"><i class="fas fa-file-pdf sizing-fa"></i></button></a> ';
+				}else{
+					$print = '<a href="'.base_url().'Register/print_nota?id='.$field['transaction_register_id'].'"><button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'" title="Print"><i class="fas fa-file-pdf sizing-fa" disabledzv0></i></button></a> ';
+				}
 
 
 				if($field['transaction_payment_status'] == 'Lunas'){
 					$status = '<span class="badge badge-success">Lunas</span>';
 				}else{
-					$status = '<span class="badge badge-danger">Belum Lunas</span>';
+					$status = '<a href="" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['transaction_register_id'].'" data-inv="'.$field['transaction_register_inv'].'" data-total="'.$field['transaction_payment_total'].'"><span class="badge badge-danger">Belum Lunas</span></a>';
 				}
 
 				$date = date_create($field['transaction_register_date']); 
@@ -143,7 +158,7 @@ class Register extends CI_Controller {
 				$row[] = 'Rp. '.number_format($field['transaction_payment_total']);
 				$row[] = $status;
 				$row[] = $field['transaction_type_member'];
-				$row[] = $detail.$edit.$print;
+				$row[] = $detail.$print;
 				$data[] = $row;
 			}
 
@@ -160,153 +175,239 @@ class Register extends CI_Controller {
 		}
 	}
 
+	public function detailregister()
+	{
+		$modul = 'Register';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$id = $this->input->get('id');
+			$get_transaction_by_id['get_transaction_by_id'] = $this->register_model->get_transaction_by_id($id)->result_array();
+			$this->load->view('Pages/Register/detailregister', $get_transaction_by_id);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}
+	}
+
 	public function save_register()
 	{
 		$modul = 'Register';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->add == 'Y'){
-			//$member_code 				= $this->input->post('member_code');
-			$member_name 				= $this->input->post('member_name');
-			$member_phone 				= $this->input->post('member_phone');
-			$member_nik 				= $this->input->post('member_nik');
-			$member_dob 				= $this->input->post('member_dob');
-			$member_email				= $this->input->post('member_email');
-			$member_address	 			= $this->input->post('member_address');
-			$member_gender 				= $this->input->post('member_gender');
-			$member_urgent_phone 		= $this->input->post('member_urgent_phone');
-			$member_nik	 				= $this->input->post('member_nik');
-			$member_urgent_name 		= $this->input->post('member_urgent_name');
-			$member_urgent_sibiling 	= $this->input->post('member_urgent_sibiling');
-			$member_desc 				= $this->input->post('member_desc');
-			$parq_q1 					= $this->input->post('parq_q1');
-			$parq_q2 					= $this->input->post('parq_q2');
-			$parq_q3 					= $this->input->post('parq_q3');
-			$parq_q4 					= $this->input->post('parq_q4');
-			$parq_q5					= $this->input->post('parq_q5');
-			$parq_q6	 				= $this->input->post('parq_q6');
-			/*$crfe_w_1 					= $this->input->post('crfe_w_1');
-			$crfe_w_2 					= $this->input->post('crfe_w_2');
-			$crfe_w_3	 				= $this->input->post('crfe_w_3');
-			$crfe_w_3_desc 				= $this->input->post('crfe_w_3_desc');
-			$crfe_w_4 					= $this->input->post('crfe_w_4');
-			$crfe_w_5 					= $this->input->post('crfe_w_5');
-			$crfe_r_1 					= $this->input->post('crfe_r_1');
-			$crfe_r_1_desc 				= $this->input->post('crfe_r_1_desc');
-			$crfe_r_2 					= $this->input->post('crfe_r_2');
-			$crfe_r_2_desc				= $this->input->post('crfe_r_2_desc');
-			$crfe_m_1	 				= $this->input->post('crfe_m_1');
-			$crfe_w_1 					= $this->input->post('crfe_w_1');
-			$crfe_m_1_desc 				= $this->input->post('crfe_m_1_desc');
-			$crfe_m_2	 				= $this->input->post('crfe_m_2');
-			$crfe_m_2_desc 				= $this->input->post('crfe_m_2_desc');
-			$crfe_m_3 					= $this->input->post('crfe_m_3');
-			$crfe_m_3_desc 				= $this->input->post('crfe_m_3_desc');
-			$crfe_m_4 					= $this->input->post('crfe_m_4');
-			$crfe_m_4_desc	 			= $this->input->post('crfe_m_4_desc');*/
+
+			$member_id                 = $this->input->post('member_id');
+			$class_member_type         = $this->input->post('class_member_type');
+			$all_promo_package         = $this->input->post('all_promo_package');
+
+			$gym_sessions_start        = $this->input->post('gym_sessions_start');
+			$gym_package               = $this->input->post('gym_package');
+			$gym_sessions_end          = $this->input->post('gym_sessions_end');
+			$gym_price_val             = $this->input->post('gym_price_val');
+			$discount_gym_val          = $this->input->post('discount_gym_val');
+			$gym_total_val             = $this->input->post('gym_total_val');
+
+			$pt_package                = $this->input->post('pt_package');
+			$pt_package_price          = $this->input->post('pt_package_price');
+			$pt_id                     = $this->input->post('pt_id');
+			$pt_price_val              = $this->input->post('pt_price_val');
+			$pt_session_month          = $this->input->post('pt_session_month');
+			$pt_discount_val           = $this->input->post('pt_discount_val');
+			$pt_total_val              = $this->input->post('pt_total_val');
+
+			$class_sessions_start      = $this->input->post('class_sessions_start');
+			$class_package             = $this->input->post('class_package');
+			$class_price_val           = $this->input->post('class_price_val');
+			$class_session_unit        = $this->input->post('class_session_unit');
+			$class_discount_val        = $this->input->post('class_discount_val');
+			$class_total_val           = $this->input->post('class_total_val');
+
+			$payment                   = $this->input->post('payment');
+			$discount_val              = $this->input->post('discount_val');
+			$total_val                 = $this->input->post('total_val');
+
+			$crfe_w_1                  = $this->input->post('crfe_w_1');
+			$crfe_w_2                  = $this->input->post('crfe_w_2');
+			$crfe_w_3                  = $this->input->post('crfe_w_3');
+			$crfe_w_3_desc             = $this->input->post('crfe_w_3_desc');
+			$crfe_w_4                  = $this->input->post('crfe_w_4');
+			$crfe_w_5                  = $this->input->post('crfe_w_5');
+			$crfe_r_1                  = $this->input->post('crfe_r_1');
+			$crfe_r_1_desc             = $this->input->post('crfe_r_1_desc');
+			$crfe_r_2                  = $this->input->post('crfe_r_2');
+			$crfe_r_2_desc             = $this->input->post('crfe_r_2_desc');
+			$crfe_m_1                  = $this->input->post('crfe_m_1');
+			$crfe_m_1_desc             = $this->input->post('crfe_m_1_desc');
+			$crfe_m_2                  = $this->input->post('crfe_m_2');
+			$crfe_m_2_desc             = $this->input->post('crfe_m_2_desc');
+			$crfe_m_3                  = $this->input->post('crfe_m_3');
+			$crfe_m_3_desc             = $this->input->post('crfe_m_3_desc');
+			$crfe_m_4                  = $this->input->post('crfe_m_4');
+			$crfe_m_4_desc             = $this->input->post('crfe_m_4_desc');
+
 			$user_id 		   			= $_SESSION['user_id'];
 
-			$check_member_nik = $this->masterdata_model->check_member_nik($member_nik);
-			if($member_nik == null){
-				$msg = "Nik Harus Di Isi";
-				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			
+			if($class_member_type == 'Extend PT' || $pt_package == 'Ya'){
+				if($pt_id == null || $pt_id == 0){
+					$msg = "Silahkan Isi Nama PT";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
 			}
-			if($check_member_nik != null){
-				$msg = "Nik Sudah Di Gunakan";
+
+			if($class_member_type == 'Kelas Only'){
+				if($class_package == null){
+					$msg = "Silahkan Isi Paket Kelas";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
+			}
+
+			if($class_member_type == 'Member (GYM) + Kelas'){
+				if($gym_package == null){
+					$msg = "Silahkan Isi Paket Gym";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
+				if($class_package == null){
+					$msg = "Silahkan Isi Paket Kelas";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
+			}
+
+			if($class_member_type == 'Member'){
+				if($gym_package == null){
+					$msg = "Silahkan Isi Paket Kelas";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
+			}
+
+			if($total_val == 0){
+				$msg = "Silahkan Isi Traansaksi Terlebih Dahulu";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
 
-			$check_member_phone = $this->masterdata_model->check_member_phone($member_phone);
-			if($member_phone == null){
-				$msg = "No HP Harus Di Isi";
-				echo json_encode(['code'=>0, 'result'=>$msg]);die();
-			}
-			if($check_member_phone != null){
-				$msg = "No Hp Sudah Di Gunakan";
-				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			if($class_member_type == 'Extend PT' || $pt_package == 'Ya'){
+
+				if($crfe_w_1 == null || $crfe_w_2 == null || $crfe_w_3 == null || $crfe_w_4 == null || $crfe_w_5 == null || $crfe_r_1 == null || $crfe_r_2 == null || $crfe_m_1 == null || $crfe_m_2 == null || $crfe_m_3 == null || $crfe_m_4 == null){
+					$msg = "Silahkan Lengkapi Data Quisioner! ";
+					echo json_encode(['code'=>0, 'result'=>$msg]);die();
+				}
 			}
 
-
-			$check_member_email = $this->masterdata_model->check_member_email($member_email);
-			if($member_email == null){
-				$msg = "Email Harus Di Isi";
-				echo json_encode(['code'=>0, 'result'=>$msg]);die();
-			}
-			if($check_member_email != null){
-				$msg = "Email Sudah Di Gunakan";
-				echo json_encode(['code'=>0, 'result'=>$msg]);die();
-			}
-
-			if($member_name == null){
-				$msg = "Nama member Harus Di isi";
-				echo json_encode(['code'=>0, 'result'=>$msg]);die();
-			}
-
-			if($member_phone == null){
-				$msg = "No Hp Harus Di isi";
-				echo json_encode(['code'=>0, 'result'=>$msg]);die();
-			}
-
-			if($parq_q1 == null || $parq_q2 == null || $parq_q3 == null || $parq_q4 == null || $parq_q5 == null || $parq_q6 == null){
-				$msg = "Silahkan Lengkapi Kuisioner Terlebih Dahulu";
-				echo json_encode(['code'=>0, 'result'=>$msg]);die();
-			}
-
-
-			$maxCode = $this->masterdata_model->last_member_code();
+			$maxCode  = $this->register_model->last_register();
+			$inv_code = 'TRX/'.date("d/m/Y").'/';
 			if ($maxCode == NULL) {
-				$last_code = '000001';
+				$last_code_trx = $inv_code.'000001';
 			} else {
-				$maxCode = $maxCode[0]->member_code;
+				$maxCode   = $maxCode[0]->transaction_register_inv;
 				$last_code = substr($maxCode, -6);
-				$last_code = substr('00000' . strval(floatval($last_code) + 1), -6);
+				$last_code_trx = $inv_code.substr('000000' . strval(floatval($last_code) + 1), -6);
 			}
 
-			$data_insert = array(
-				'member_code'	       		=> $last_code,
-				'member_name'	       		=> $member_name,
-				'member_phone'	   			=> $member_phone,
-				'member_address'	    	=> $member_address,
-				'member_dob'	       		=> $member_dob,
-				'member_gender'	    		=> $member_gender,
-				'member_nik'				=> $member_nik,
-				'member_email'	    		=> $member_email,
-				'member_urgent_name'		=> $member_urgent_name,
-				'member_urgent_phone'		=> $member_urgent_phone,
-				'member_urgent_sibiling'	=> $member_urgent_sibiling,
-				'member_desc'				=> $member_desc
+			$data_insert_header = array(
+				'transaction_register_inv'	    => $last_code_trx,
+				'member_id'	   					=> $member_id,
+				'transaction_type_member'	   	=> $class_member_type,
+				'transaction_paket_promo'	    => $all_promo_package,
+				'transaction_payment_id'		=> $payment,
+				'transaction_payment_discount'	=> $discount_val,
+				'transaction_payment_total'		=> $total_val,
+				'transaction_user_id'           => $user_id,
 			);
 
-			$save_member = $this->masterdata_model->save_member($data_insert);
+			if($class_member_type == 'Member' || $class_member_type == 'Member (GYM) + Kelas'){
+				$data_insert_gym = array(
+					'member_gym'						=> 'Y',
+					'transaction_gym_periode_start'	   	=> $gym_sessions_start,
+					'transaction_gym_month'	   			=> $gym_package,
+					'transaction_gym_periode_end'	    => $gym_sessions_end,
+					'transaction_gym_price'	    		=> $gym_price_val,
+					'transaction_gym_discount'	   		=> $discount_gym_val,
+					'transaction_gym_total_price'	   	=> $gym_total_val,
+				);
+			}else{
+				$data_insert_gym = array(
+					'member_gym'						=> 'N',
+					'transaction_gym_periode_start'	   	=> '',
+					'transaction_gym_month'	   			=> '',
+					'transaction_gym_periode_end'	    => '',
+					'transaction_gym_price'	    		=> '',
+					'transaction_gym_discount'	   		=> '',
+					'transaction_gym_total_price'	   	=> '',
+				);
+			}
 
-			$data_insert_kuisioner = array(
-				'member_id'				=> $save_member,
-				'parq_q1'	       		=> $parq_q1,
-				'parq_q2'	       		=> $parq_q2,
-				'parq_q3'	   			=> $parq_q3,
-				'parq_q4'	    		=> $parq_q4,
-				'parq_q5'	       		=> $parq_q5,
-				'parq_q6'	    		=> $parq_q6,
-				/*'crfe_w_1'				=> $crfe_w_1,
-				'crfe_w_2'	    		=> $crfe_w_2,
-				'crfe_w_3'				=> $crfe_w_3,
-				'crfe_w_3_desc'			=> $crfe_w_3_desc,
-				'crfe_w_4'				=> $crfe_w_4,
-				'crfe_w_5'				=> $crfe_w_5,
-				'crfe_r_1'				=> $crfe_r_1,
-				'crfe_r_1_desc'	    	=> $crfe_r_1_desc,
-				'crfe_r_2'				=> $crfe_r_2,
-				'crfe_r_2_desc'			=> $crfe_r_2_desc,
-				'crfe_m_1'				=> $crfe_m_1,
-				'crfe_m_1_desc'			=> $crfe_m_1_desc,
-				'crfe_m_2'				=> $crfe_m_2,
-				'crfe_m_2_desc'	    	=> $crfe_m_2_desc,
-				'crfe_m_3'				=> $crfe_m_3,
-				'crfe_m_3_desc'			=> $crfe_m_3_desc,
-				'crfe_m_4'				=> $crfe_m_4,
-				'crfe_m_4_desc'			=> $crfe_m_4_desc*/
-			);
+			if($class_member_type == 'Extend PT' || $pt_package == 'Ya'){
+				$data_insert_pt = array(
+					'transaction_pt'	   			=> 'Y',
+					'transaction_pt_id'	   			=> $pt_id,
+					'transaction_pt_price'	    	=> $pt_price_val,
+					'transaction_pt_session'	    => $pt_package_price,
+					'transaction_pt_month'	   		=> $pt_session_month,
+					'transaction_pt_discount'	   	=> $pt_discount_val,
+					'transaction_pt_total_price'	=> $pt_total_val,
+				);
+			}else{
+				$data_insert_pt = array(
+					'transaction_pt'	   			=> 'N',
+					'transaction_pt_id'	   			=> '',
+					'transaction_pt_price'	    	=> '',
+					'transaction_pt_session'	    => '',
+					'transaction_pt_month'	   		=> '',
+					'transaction_pt_discount'	   	=> '',
+					'transaction_pt_total_price'	=> '',
+				);
+			}	
 
-			$this->register_model->save_member_kuisioner($data_insert_kuisioner);
+			if($class_member_type == 'Kelas Only' || $class_member_type == 'Member (GYM) + Kelas'){
+				$data_insert_class = array(
+					'transaction_class'					=> 'Y',
+					'transaction_class_id'	   			=> '',
+					'transaction_class_price'	   		=> $class_price_val,
+					'transaction_class_month'	    	=> $class_package,
+					'transaction_class_total_month'	    => $class_session_unit,
+					'transaction_class_total_discount'	=> $class_discount_val,
+					'transaction_class_total_price'	   	=> $class_total_val,
+				);
+			}else{
+				$data_insert_class = array(
+					'transaction_class'					=> 'N',
+					'transaction_class_id'	   			=> '',
+					'transaction_class_price'	   		=> '',
+					'transaction_class_month'	    	=> '',
+					'transaction_class_total_month'	    => '',
+					'transaction_class_total_discount'	=> '',
+					'transaction_class_total_price'	   	=> '',
+				);
+			}
+			
+
+			$data_insert_result =  array_merge($data_insert_header, $data_insert_gym, $data_insert_pt, $data_insert_class);
+			
+			$save_transaction = $this->register_model->save_register($data_insert_result);
+
+			if($class_member_type == 'Extend PT' || $pt_package == 'Ya'){
+				$data_insert_parq = array(
+					'member_id'	   			=> $member_id,
+					'crfe_w_1'	   			=> $crfe_w_1,
+					'crfe_w_2'	    		=> $crfe_w_2,
+					'crfe_w_3'	    		=> $crfe_w_3,
+					'crfe_w_3_desc'	   		=> $crfe_w_3_desc,
+					'crfe_w_4'	   			=> $crfe_w_4,
+					'crfe_w_5'				=> $crfe_w_5,
+					'crfe_r_1'				=> $crfe_r_1,
+					'crfe_r_1_desc'			=> $crfe_r_1_desc,
+					'crfe_r_2'				=> $crfe_r_2,
+					'crfe_r_2_desc'			=> $crfe_r_2_desc,
+					'crfe_m_1'				=> $crfe_m_1,
+					'crfe_m_1_desc'			=> $crfe_m_1_desc,
+					'crfe_m_2'				=> $crfe_m_2,
+					'crfe_m_3'				=> $crfe_m_3,
+					'crfe_m_3_desc'			=> $crfe_m_3_desc,
+					'crfe_m_4'				=> $crfe_m_4,
+					'crfe_m_4_desc'			=> $crfe_m_4_desc
+				);
+			}
+
+			$this->register_model->save_parq($data_insert_parq);
 
 			$data_insert_act = array(
 				'activity_table_desc'	       => 'Tambah Pendaftaran Member Baru',
@@ -314,8 +415,55 @@ class Register extends CI_Controller {
 			);
 			$this->global_model->save($data_insert_act);
 			$msg = "Succes Input";
+			if($member_id != null){
+				$save_member = $member_id;
+			}
 			echo json_encode(['code'=>200, 'result'=>$msg, 'member'=>$save_member]);
 			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}	
+
+	public function savepayment()
+	{
+		$modul = 'Register';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$transaction_id 			= $this->input->post('transaction_id');
+			$transaction_inv 			= $this->input->post('transaction_inv');
+			$transaction_payment_total 	= $this->input->post('transaction_payment_total');
+			$transaction_payment_type 	= $this->input->post('transaction_payment_type');
+			$transaction_payment_desc	= $this->input->post('transaction_payment_desc');
+			$user_id 		   			= $_SESSION['user_id'];
+			$check_transaction_id = $this->register_model->check_transaction_id($transaction_id)->result_array();
+			if($check_transaction_id != null){
+				$data_insert = array(
+					'transaction_ref_id'	      => $check_transaction_id[0]['transaction_register_id'],
+					'transaction_ref_invoice'	  => $check_transaction_id[0]['transaction_register_inv'],
+					'transaction_payment_total'	  => $check_transaction_id[0]['transaction_payment_total'],
+					'transaction_payment_type'	  => $transaction_payment_type,
+					'transaction_payment_desc'	  => $transaction_payment_desc,
+					'transaction_payment_user'	  => $user_id,
+				);
+
+				$save_payment = $this->register_model->save_payment($data_insert);
+
+				$this->register_model->update_transaction($transaction_id);
+
+				$data_insert_act = array(
+					'activity_table_desc'	       => 'Tambah Pembayran Invoice '.$transaction_inv,
+					'activity_table_user'	       => $user_id,
+				);
+				$this->global_model->save($data_insert_act);
+				$msg = "Succes Input";
+				echo json_encode(['code'=>200, 'result'=>$msg]);
+				die();
+			}else{
+				$msg = "Data Tidak Di Temukan";
+				echo json_encode(['code'=>0, 'result'=>$msg]);
+			}			
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
@@ -429,13 +577,56 @@ class Register extends CI_Controller {
 		}	
 	}
 
+
 	public function print_nota()
 	{
-		$transaction_register_id  = $this->input->get('id');
-		$get_register['get_register'] = $this->register_model->get_register($transaction_register_id);
-		$get_detail_register['get_detail_register'] = $this->register_model->get_detail_register($transaction_register_id);
-		$data['data'] = array_merge($get_register, $get_detail_register);
-		$this->load->view('Pages/Register/print', $data);
+		$modul = 'Register';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$id  = $this->input->get('id');
+			$get_transaction_by_id['get_transaction_by_id'] = $this->register_model->get_transaction_by_id($id)->result_array();
+			$this->load->view('Pages/Register/print', $get_transaction_by_id);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}
+	}
+
+	public function print_pdf()
+	{
+		$modul = 'Register';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$id  = $this->input->get('id');
+			$get_transaction_by_id['get_transaction_by_id'] = $this->register_model->get_transaction_by_id($id)->result_array();
+			$htmlView   = $this->load->view('Pages/Register/printpdf', $get_transaction_by_id, true);
+			$dompdf = new Dompdf();
+			$options = $dompdf->getOptions();
+			$options->set('isRemoteEnabled', true);
+			$options->set('isHtml5ParserEnabled', true);
+			$dompdf->setOptions($options);
+
+			$context = stream_context_create([
+				'ssl' => [
+					'verify_peer' => false,
+					'verify_peer_name' => false,
+					'allow_self_signed' => true,
+				]
+			]);
+			$dompdf->setHttpContext($context);
+
+			$dompdf->setOptions($options);
+			$dompdf->loadHtml($htmlView);
+			$dompdf->setPaper('A4', 'potrait');
+			$dompdf->render();
+			
+			$dompdf->stream('printpdf.pdf', array("Attachment" => false));
+			
+			exit();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}
 	}
 
 	public function get_promo_info()
@@ -452,11 +643,25 @@ class Register extends CI_Controller {
 		echo json_encode(['code'=>200, 'result'=>$get_member_info]);
 	}
 
+	public function get_gym_package()
+	{
+		$id = $this->input->post('id');
+		$get_gym_package['get_gym_package'] = $this->register_model->get_gym_package($id)->result_array();
+		echo json_encode(['code'=>200, 'result'=>$get_gym_package]);
+	}
+
 	public function get_class_info()
 	{
 		$class_id = $this->input->post('id');
 		$get_class_info['get_class_info'] = $this->register_model->get_class_info($class_id)->result_array();
 		echo json_encode(['code'=>200, 'result'=>$get_class_info]);
+	}
+
+	public function get_package_class_info()
+	{
+		$ms_class_package_id = $this->input->post('id');
+		$get_package_class_info['get_package_class_info'] = $this->register_model->get_package_class_info($ms_class_package_id)->result_array();
+		echo json_encode(['code'=>200, 'result'=>$get_package_class_info]);
 	}
 
 	public function get_pt_info()
@@ -473,6 +678,39 @@ class Register extends CI_Controller {
 		$get_pt_info_month['get_pt_info_month'] = $this->register_model->get_pt_info_month($package_sesion)->result_array();
 		echo json_encode(['code'=>200, 'result'=>$get_pt_info_month]);
 	}
+
+	public function get_pt_package_price()
+	{
+		$pt_package_price_id = $this->input->post('id');
+		$get_pt_package_price['get_pt_package_price'] = $this->register_model->get_pt_package_price($pt_package_price_id)->result_array();
+		echo json_encode(['code'=>200, 'result'=>$get_pt_package_price]);
+	}
+
+	public function ptselect()
+	{	
+		$id = $this->input->get('id');
+		if($id == null){
+			$result = ['success' => FALSE, 'num_product' => 0, 'data' => 0, 'message' => 'Silahkan Isi Paket PT Terlebih Dahulu'];
+			echo json_encode($result);
+		}else{
+			$keyword = $this->input->get('term');
+			$result = ['success' => FALSE, 'num_product' => 0, 'data' => [], 'message' => ''];
+			if (!($keyword == '' || $keyword == NULL)) {
+				$find = $this->global_model->search_ptselect($keyword, $id)->result_array();
+				$find_result = [];
+				foreach ($find as $row) {
+					$diplay_text = $row['coach_name'].' - '.$row['coach_code'];
+					$find_result[] = [
+						'id'                  	 => $row['coach_id'],
+						'value'               	 => $diplay_text
+					];
+				}
+				$result = ['success' => TRUE, 'num_product' => count($find_result), 'data' => $find_result, 'message' => ''];
+			}
+			echo json_encode($result);
+		}
+	} 
+
 	// end register //
 
 

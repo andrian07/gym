@@ -22,10 +22,10 @@
       google: { families: ["Public Sans:300,400,500,600,700"] },
       custom: {
         families: [
-          "Font Awesome 5 Solid",
-          "Font Awesome 5 Regular",
-          "Font Awesome 5 Brands",
-          "simple-line-icons",
+        "Font Awesome 5 Solid",
+        "Font Awesome 5 Regular",
+        "Font Awesome 5 Brands",
+        "simple-line-icons",
         ],
         urls: ["<?php echo base_url(); ?>dist/css/fonts.min.css"],
       },
@@ -142,8 +142,13 @@
               <div class="collapse show" id="package">
                 <ul class="nav nav-collapse">
                   <li>
-                    <a href="<?php echo base_url(); ?>Masterdata/gym">
+                    <a href="<?php echo base_url(); ?>Masterdata/gympackage">
                       <span class="sub-item">Harga Paket GYM</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="<?php echo base_url(); ?>Masterdata/ptpackage">
+                      <span class="sub-item">Harga Paket PT</span>
                     </a>
                   </li>
                   <li>

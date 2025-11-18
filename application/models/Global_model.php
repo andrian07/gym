@@ -19,6 +19,12 @@ class global_model extends CI_Model {
         return $result;
     }
 
+    public function member_list(){
+        $query = $this->db->query("select * from ms_member where member_active = 'Y'");
+        $result = $query->result();
+        return $result;
+    }
+
     public function class_list(){
         $query = $this->db->query("select * from ms_class where class_active = 'Y'");
         $result = $query->result();
@@ -51,6 +57,13 @@ class global_model extends CI_Model {
         return $result;
     }
 
+    public function pt_price()
+    {
+        $query = $this->db->query("select * from ms_pt_price where ms_pt_price_active = 'Y'");
+        $result = $query->result();
+        return $result;
+    }
+
     public function promo_list(){
         $query = $this->db->query("select * from ms_promo where ms_promo_active = 'Y'");
         $result = $query->result();
@@ -77,6 +90,13 @@ class global_model extends CI_Model {
         return $result;
     }
 
+    public function pt_package_price()
+    {
+        $query = $this->db->query("select * from ms_pt_package_price where ms_pt_package_price_active = 'Y'");
+        $result = $query->result();
+        return $result;
+    }
+    
     public function payment_list()
     { 
         $query = $this->db->query("select * from ms_payment where payment_active = 'Y'");
@@ -94,6 +114,13 @@ class global_model extends CI_Model {
     public function gym_package()
     {
         $query = $this->db->query("select * from ms_gym_package where ms_gym_package_active = 'Y'");
+        $result = $query->result();
+        return $result;
+    }
+
+    public function class_package()
+    {
+        $query = $this->db->query("select * from ms_class_package where ms_class_package_active = 'Y'");
         $result = $query->result();
         return $result;
     }
@@ -149,6 +176,29 @@ class global_model extends CI_Model {
         $this->db->from('ms_member');
         $this->db->where('(member_name like "%'.$keyword.'%" or member_phone like "%'.$keyword.'%")');
         $this->db->where('member_active', 'Y');
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function search_member_by_id($id)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_member');
+        $this->db->join('ms_member_question', 'ms_member.member_id = ms_member_question.member_id');
+        $this->db->where('ms_member.member_id', $id);
+        $this->db->where('member_active', 'Y');
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function search_ptselect($keyword, $id)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_coach');
+        $this->db->where('(coach_name like "%'.$keyword.'%" or coach_code like "%'.$keyword.'%")');
+        $this->db->where('coach_active', 'Y');
+        $this->db->where('coach_type', 'PT');
+        $this->db->where('coach_lvl', $id);
         $query = $this->db->get();
         return $query;
     }

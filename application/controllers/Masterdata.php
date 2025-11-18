@@ -495,7 +495,6 @@ class Masterdata extends CI_Controller {
 				}else{
 					$row[] = $field['coach_title'];
 				}
-				$row[] = $field['coach_title'];
 				$row[] = $status;
 				$row[] = $detail.$edit.$share_link;
 				$data[] = $row;
@@ -1219,26 +1218,25 @@ class Masterdata extends CI_Controller {
 	}
 	// end class //
 
-	// class paket//
-
-	public function classpackage(){
-		$modul = 'Gym';
+	// pt Paket //
+	public function ptpackage(){
+		$modul = 'Ptpackage';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
-			$coach_list['coach_list'] = $this->global_model->coach_list();
+			$pt_package['pt_package'] = $this->global_model->pt_package();
+			$pt_price['pt_price'] = $this->global_model->pt_price();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($coach_list, $check_auth);
-			$this->load->view('Pages/Masterdata/classpackage', $data);
+			$data['data'] = array_merge($pt_package, $check_auth, $pt_price);
+			$this->load->view('Pages/Masterdata/ptpackage', $data);
 		}else{
 			$msg = "No Access";
 			echo json_encode(['code'=>0, 'result'=>$msg]);
 		}	
 	}
 
-
-	public function class_package_list()
+	public function pt_package_list()
 	{
-		$modul = 'Gym';
+		$modul = 'Ptpackage';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$search 			= $this->input->post('search');
@@ -1248,35 +1246,455 @@ class Masterdata extends CI_Controller {
 			if($search != null){
 				$search = $search['value'];
 			}
-			$list = $this->masterdata_model->gym_list($search, $length, $start)->result_array();
-			$count_list = $this->masterdata_model->gym_list_count($search)->result_array();
+			$list = $this->masterdata_model->pt_package_list($search, $length, $start)->result_array();
+			$count_list = $this->masterdata_model->pt_package_list_count($search)->result_array();
 			$total_row = $count_list[0]['total_row'];
 			$data = array();
 			$no = $_POST['start'];
 			foreach ($list as $field) {
 
-				if($check_auth[0]->edit == 'Y'){
-					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['ms_gym_package_id'].'" data-name="'.$field['ms_gym_package_name'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
-				}else{
-					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
-				}
+
 				if($check_auth[0]->delete == 'Y'){
-					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_gym_package_id'].'" data-name="'.$field['ms_gym_package_name'].'" onclick="delete_gym_package('.$field['ms_gym_package_id'].')"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_pt_package_price_id'].'" data-name="'.$field['ms_pt_package_price_name'].'" onclick="delete_pt_package('.$field['ms_pt_package_price_id'].')"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
 				}else{
-					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_gym_package_id'].'" data-name="'.$field['ms_gym_package_name'].'" disabled="disabled"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_pt_package_price_id'].'" data-name="'.$field['ms_pt_package_price_name'].'" disabled="disabled"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+				}
+				if($check_auth[0]->edit == 'Y'){
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['ms_pt_package_price_id'].'" data-name="'.$field['ms_pt_package_price_name'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
+				}else{
+					$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['ms_pt_package_price_id'].'" data-name="'.$field['ms_pt_package_price_name'].'" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> ';
+				}
+				$url_image = base_url().'assets/pt/'.$field['ms_pt_package_image'];
+				$no++;
+				$row = array();
+				$row[] = $field['ms_pt_package_price_name'];
+				$row[] = $field['ms_pt_package_session'];
+				$row[] = $field['ms_pt_price_name'];
+				$row[] = 'Rp. '.number_format($field['ms_pt_package_price']);
+				$row[] = '';
+				$row[] = '<img src = "'.$url_image.'" style="height:70px; width:70px;"/>';
+				$row[] = $edit.$delete;
+				$data[] = $row;
+			}
+
+			$output = array(
+				"draw" => $_POST['draw'],
+				"recordsTotal" => $total_row,
+				"recordsFiltered" => $total_row,
+				"data" => $data,
+			);
+			echo json_encode($output);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+
+	public function save_pt_package()
+	{
+		$modul = 'Ptpackage';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$screenshoot 				= $this->input->post('screenshoot');
+			$paket_name 				= $this->input->post('paket_name');
+			$paket_session 				= $this->input->post('paket_session');
+			$paket_lvl	 				= $this->input->post('paket_lvl');
+			$price	 					= $this->input->post('price');
+			$user_id 		   			= $_SESSION['user_id'];
+
+			$price_replace = str_replace('Rp. ', '', $price);
+			$price = str_replace('.', '', $price_replace);
+
+			if($paket_name == null){
+				$msg = "Silahkan Isi Nama Paket";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($paket_session == null){
+				$msg = "Silahkan Isi Jumlah Sesi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($paket_lvl == null){
+				$msg = "Silahkan Isi Lvl PT";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($_FILES['screenshoot']['name'] == null){
+				$new_image_name = 'default.png';
+			}else{
+				$new_image_name = 'PT-set-'.$this->generateRandomString().'.png';
+				$config['upload_path'] = './assets/pt/';
+				$config['allowed_types'] = 'gif|jpg|png|jpeg|PNG';
+				$config['file_name'] = $new_image_name;
+				$this->load->library('upload', $config);
+				if (!$this->upload->do_upload('screenshoot')) 
+				{
+					$error = array('error' => $this->upload->display_errors());
+					echo json_encode(['code'=>0, 'result'=>$error]);die();
+				} 
+				else
+				{
+					$data = array('image_metadata' => $this->upload->data());
+				}
+			}
+
+			$data_insert = array(
+				'ms_pt_package_price_name'	=> $paket_name,
+				'ms_pt_package_id'			=> $paket_session,
+				'ms_pt_price_id'			=> $paket_lvl,
+				'ms_pt_package_price'		=> $price,
+				'ms_pt_package_image'	    => $new_image_name,
+			);
+			$save_pt_package = $this->masterdata_model->save_pt_package($data_insert);
+
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Tambah Master Paket PT',
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Input";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+
+	public function edit_pt_package()
+	{
+		$modul = 'Ptpackage';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->edit == 'Y'){
+			$screenshoot 				= $this->input->post('screenshoot_edit');
+			$paket_id 					= $this->input->post('paket_id_edit');
+			$paket_name 				= $this->input->post('paket_name_edit');
+			$paket_session 				= $this->input->post('paket_session_edit');
+			$paket_lvl	 				= $this->input->post('paket_lvl_edit');
+			$price	 					= $this->input->post('price_edit');
+			$user_id 		   			= $_SESSION['user_id'];
+
+			$price_replace = str_replace('Rp. ', '', $price);
+			$price = str_replace('.', '', $price_replace);
+
+			if($paket_name == null){
+				$msg = "Silahkan Isi Nama Paket";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($paket_session == null){
+				$msg = "Silahkan Isi Jumlah Sesis";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($paket_lvl == null){
+				$msg = "Silahkan Isi Lvl PT";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			$get_paket_by_id = $this->masterdata_model->get_edit_pt_package($paket_id);
+			$check_image_name = $get_paket_by_id[0]->ms_pt_package_image;
+
+			if($_FILES['screenshoot_edit']['name'] == null){
+				$new_image_name = $get_paket_by_id[0]->ms_pt_package_image;
+			}else{
+				if($check_image_name != $_FILES['screenshoot_edit']['name']){
+					$new_image_name = 'Gym-set-'.$this->generateRandomString().'.png';
+					$config['upload_path'] = './assets/pt/';
+					$config['allowed_types'] = 'gif|jpg|png|jpeg|PNG';
+					$config['file_name'] = $new_image_name;
+					$this->load->library('upload', $config);
+					if (!$this->upload->do_upload('screenshoot_edit')) 
+					{
+						$error = array('error' => $this->upload->display_errors());
+						echo json_encode(['code'=>0, 'result'=>$error]);die();
+					} 
+					else
+					{
+						$data = array('image_metadata' => $this->upload->data());
+					}
+				}else{
+					$new_image_name = $check_image_name;
+				}
+			}
+
+			$data_edit = array(
+				'ms_pt_package_price_name'	=> $paket_name,
+				'ms_pt_package_id'			=> $paket_session,
+				'ms_pt_price_id'			=> $paket_lvl,
+				'ms_pt_package_price'		=> $price,
+				'ms_pt_package_image'	    => $new_image_name,
+			);
+
+			$this->masterdata_model->edit_pt_package($data_edit, $paket_id);
+
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Ubah Master Paket PT',
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Input";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}		
+	}
+
+	public function get_edit_pt_package()
+	{
+		$modul = 'Ptpackage';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$id = $this->input->post('id');
+			$get_edit_pt_package = $this->masterdata_model->get_edit_pt_package($id);
+			echo json_encode(['code'=>200, 'result'=>$get_edit_pt_package]);die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+	public function delete_pt_package()
+	{
+		$modul = 'Ptpackage';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$id  	= $this->input->post('id');
+			$this->masterdata_model->delete_pt_package($id);
+			$msg = "Success Hapus";
+			echo json_encode(['code'=>200, 'result'=>$msg]);die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+	// End Pt Paket //
+
+	// class paket//
+
+	public function save_class_package()
+	{
+		$modul = 'classpackage';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$screenshoot 				= $this->input->post('screenshoot');
+			$paket_name 				= $this->input->post('paket_name');
+			$daily_price 				= $this->input->post('daily_price');
+			$monthly_price	 			= $this->input->post('monthly_price');
+			$yearly_price	 			= $this->input->post('yearly_price');
+			$paket_type	 				= $this->input->post('paket_type');
+			$paket_qty	 				= $this->input->post('paket_qty');
+			$user_id 		   			= $_SESSION['user_id'];
+
+			$daily_price_replace = str_replace('Rp. ', '', $daily_price);
+			$daily_price = str_replace('.', '', $daily_price_replace);
+
+			$monthly_price_replace = str_replace('Rp. ', '', $monthly_price);
+			$monthly_price = str_replace('.', '', $monthly_price_replace);
+
+			$yearly_price_replace = str_replace('Rp. ', '', $yearly_price);
+			$yearly_price = str_replace('.', '', $yearly_price_replace);
+
+			if($paket_name == null){
+				$msg = "Silahkan Isi Nama Paket";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($paket_type == null){
+				$msg = "Silahkan Isi Tipe Paket";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($paket_qty == null){
+				$msg = "Silahkan Isi Masa Berlaku";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+
+			if($_FILES['screenshoot']['name'] == null){
+				$new_image_name = 'default.png';
+			}else{
+				$new_image_name = 'Class-set-'.$this->generateRandomString().'.png';
+				$config['upload_path'] = './assets/class/';
+				$config['allowed_types'] = 'gif|jpg|png|jpeg|PNG';
+				$config['file_name'] = $new_image_name;
+				$this->load->library('upload', $config);
+				if (!$this->upload->do_upload('screenshoot')) 
+				{
+					$error = array('error' => $this->upload->display_errors());
+					echo json_encode(['code'=>0, 'result'=>$error]);die();
+				} 
+				else
+				{
+					$data = array('image_metadata' => $this->upload->data());
+				}
+			}
+
+			$data_insert = array(
+				'ms_class_package_name'	    	=> $paket_name,
+				'ms_class_package_day_price'	=> $daily_price,
+				'ms_class_package_month_price'	=> $monthly_price,
+				'ms_class_package_year_price'	=> $yearly_price,
+				'ms_class_package_image'	    => $new_image_name,
+				'ms_class_package_type'			=> $paket_type,
+				'ms_class_package_qty'			=> $paket_qty
+			);
+			$save_class_package = $this->masterdata_model->save_class_package($data_insert);
+
+			$get_temp_class_package = $this->masterdata_model->get_temp_class_package()->result_array();
+			foreach($get_temp_class_package as $row){
+				$data_insert_detail = array(
+					'ms_class_package_id'	    	=> $save_class_package,
+					'class_id'						=> $row['class_id'],
+					'package_class_id'				=> $row['package_class_id']
+				);
+				$this->masterdata_model->save_class_package_detail($data_insert_detail);
+			}
+
+			$this->clear_temp_class_package();
+
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Tambah Master Paket Kelas',
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			$msg = "Succes Input";
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+	public function clear_temp_class_package()
+	{
+		$this->masterdata_model->clear_temp_class_package();
+	}
+
+	public function classpackage(){
+		$modul = 'classpackage';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$coach_list['coach_list'] = $this->global_model->coach_list();
+			$class_list['class_list'] = $this->global_model->class_list();
+			$check_auth['check_auth'] = $check_auth;
+			$data['data'] = array_merge($coach_list, $check_auth, $class_list);
+			$this->load->view('Pages/Masterdata/classpackage', $data);
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);
+		}	
+	}
+
+	public function get_package_class_temp()
+	{
+		$modul = 'classpackage';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$get_package_class_temp = $this->masterdata_model->get_package_class_temp()->result_array();
+			echo json_encode(['code'=>200, 'result'=>$get_package_class_temp]);die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+	public function add_class_package()
+	{
+		$modul = 'classpackage';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$add_class_package  	= $this->input->post('class_package');
+			$check_class_package_input = $this->masterdata_model->check_class_package_input($add_class_package)->result_array();
+			if($check_class_package_input != null){
+				$msg = "Kelas Sudah Di Input";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}else{
+				$data_insert = array(
+					'class_id'	       		=> $add_class_package
+				);
+
+				$this->masterdata_model->save_class_package_temp($data_insert);
+				$msg = "Success";
+				echo json_encode(['code'=>200, 'result'=>$msg]);die();
+			}
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+	public function delete_class_package_temp()
+	{
+		$modul = 'classpackage';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->add == 'Y'){
+			$id  	= $this->input->post('id');
+			$this->masterdata_model->delete_class_package_temp($id);
+			$msg = "Success Hapus";
+			echo json_encode(['code'=>200, 'result'=>$msg]);die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+	public function delete_class_package()
+	{
+		$modul = 'classpackage';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->delete == 'Y'){
+			$id  	= $this->input->post('id');
+			$this->masterdata_model->delete_class_package($id);
+			$msg = "Success Hapus";
+			echo json_encode(['code'=>200, 'result'=>$msg]);die();
+		}else{
+			$msg = "No Access";
+			echo json_encode(['code'=>0, 'result'=>$msg]);die();
+		}
+	}
+
+	public function class_package_list()
+	{
+		$modul = 'classpackage';
+		$check_auth = $this->check_auth($modul);
+		if($check_auth[0]->view == 'Y'){
+			$search 			= $this->input->post('search');
+			$length 			= $this->input->post('length');
+			$start 			  	= $this->input->post('start');
+
+			if($search != null){
+				$search = $search['value'];
+			}
+			$list = $this->masterdata_model->class_package_list($search, $length, $start)->result_array();
+			$count_list = $this->masterdata_model->class_package_list_count($search)->result_array();
+			$total_row = $count_list[0]['total_row'];
+			$data = array();
+			$no = $_POST['start'];
+			foreach ($list as $field) {
+
+				if($check_auth[0]->delete == 'Y'){
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_class_package_id'].'" data-name="'.$field['ms_class_package_name'].'" onclick="delete_class_package('.$field['ms_class_package_id'].')"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+				}else{
+					$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" data-id="'.$field['ms_class_package_id'].'" data-name="'.$field['ms_class_package_name'].'" disabled="disabled"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
 				}
 
-				$url_image = base_url().'assets/gym/'.$field['ms_gym_package_image'];
+				$url_image = base_url().'assets/class/'.$field['ms_class_package_image'];
 
 				$no++;
 				$row = array();
-				$row[] = $field['ms_gym_package_name'];
-				$row[] = 'Rp. '.number_format($field['ms_gym_package_day_price']).' / Hari';
-				$row[] = 'Rp. '.number_format($field['ms_gym_package_month_price']).' / Bulan';
-				$row[] = 'Rp. '.number_format($field['ms_gym_package_year_price']).' / Tahun';
-				$row[] = $field['ms_gym_package_qty'].' '.$field['ms_gym_package_type'];
+				$row[] = $field['ms_class_package_name'];
+				$row[] = 'Rp. '.number_format($field['ms_class_package_day_price']).' / Hari';
+				$row[] = 'Rp. '.number_format($field['ms_class_package_month_price']).' / Bulan';
+				$row[] = 'Rp. '.number_format($field['ms_class_package_year_price']).' / Tahun';
+				$row[] = $field['ms_class_package_qty'].' '.$field['ms_class_package_type'];
 				$row[] = '<img src="'.$url_image.'" style="height:70px; width:70px;" />';
-				$row[] = $edit.$delete;
+				$row[] = $delete;
 				$data[] = $row;
 			}
 
@@ -1297,8 +1715,8 @@ class Masterdata extends CI_Controller {
 
 	// gym paket //
 
-	public function gym(){
-		$modul = 'Gym';
+	public function gympackage(){
+		$modul = 'Gympackage';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$coach_list['coach_list'] = $this->global_model->coach_list();
@@ -1314,7 +1732,7 @@ class Masterdata extends CI_Controller {
 
 	public function gym_list()
 	{
-		$modul = 'Gym';
+		$modul = 'Gympackage';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$search 			= $this->input->post('search');
@@ -1372,7 +1790,7 @@ class Masterdata extends CI_Controller {
 	public function save_gym_package()
 	{	
 
-		$modul = 'Gym';
+		$modul = 'Gympackage';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->add == 'Y'){
 			$screenshoot 				= $this->input->post('screenshoot');
@@ -1455,7 +1873,7 @@ class Masterdata extends CI_Controller {
 
 	public function get_edit_gym_package()
 	{
-		$modul = 'Gym';
+		$modul = 'Gympackage';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$id = $this->input->post('id');
@@ -1470,10 +1888,10 @@ class Masterdata extends CI_Controller {
 
 	public function edit_gym_package()
 	{
-		$modul = 'Gym';
+		$modul = 'Gympackage';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->edit == 'Y'){
-			$screenshoot 				= $this->input->post('screenshoot');
+			$screenshoot 				= $this->input->post('screenshoot_edit');
 			$paket_id 					= $this->input->post('paket_id_edit');
 			$paket_name 				= $this->input->post('paket_name_edit');
 			$daily_price 				= $this->input->post('daily_price_edit');
@@ -1562,7 +1980,7 @@ class Masterdata extends CI_Controller {
 
 	public function delete_gym_package()
 	{
-		$modul = 'Gym';
+		$modul = 'Gympackage';
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->delete == 'Y'){
 			$paket_id  		= $this->input->post('id');
@@ -1590,9 +2008,10 @@ class Masterdata extends CI_Controller {
 		$check_auth = $this->check_auth($modul);
 		if($check_auth[0]->view == 'Y'){
 			$check_auth['check_auth'] = $check_auth;
-			$list_pt_package['list_pt_package'] = $this->global_model->pt_package();
+			$list_pt_package_price['list_pt_package_price'] = $this->global_model->pt_package_price();
 			$list_gym_package['list_gym_package'] = $this->global_model->gym_package();
-			$data['data'] = array_merge($check_auth, $list_pt_package, $list_gym_package);
+			$list_class_package['list_class_package'] = $this->global_model->class_package();
+			$data['data'] = array_merge($check_auth, $list_pt_package_price, $list_gym_package, $list_class_package);
 			$this->load->view('Pages/Masterdata/promo', $data);
 		}else{
 			$msg = "No Access";
@@ -1613,6 +2032,7 @@ class Masterdata extends CI_Controller {
 			if($search != null){
 				$search = $search['value'];
 			}
+
 			$list = $this->masterdata_model->promo_list($search, $length, $start)->result_array();
 			$count_list = $this->masterdata_model->promo_list_count($search)->result_array();
 			$total_row = $count_list[0]['total_row'];
@@ -1634,31 +2054,38 @@ class Masterdata extends CI_Controller {
 
 				if($field['ms_promo_member'] == 'Y'){
 					$promo_member = '<span class="badge badge-success">Include</span>';
+					$gym_pacakge_val  = $field['ms_gym_package_name'];
 				}else{
 					$promo_member = '<span class="badge badge-danger">Non Include</span>';
+					$gym_pacakge_val  = '-';
 				}
 
 				if($field['ms_promo_pt'] == 'Y'){
 					$promo_pt = '<span class="badge badge-success">Include</span>';
+					$pt_package_val = $field['ms_pt_package_price_name'];
 				}else{
 					$promo_pt = '<span class="badge badge-danger">Non Include</span>';
+					$pt_package_val = '-';
 				}
 
 				if($field['ms_promo_class'] == 'Y'){
 					$promo_kelas = '<span class="badge badge-success">Include</span>';
+					$class_package_val = $field['ms_class_package_name'];
 				}else{
 					$promo_kelas = '<span class="badge badge-danger">Non Include</span>';
+					$class_package_val = '-';
 				}
+
 
 				$no++;
 				$row = array();
 				$row[] = $field['ms_pormo_name'];
 				$row[] = $promo_member;
-				$row[] = $field['ms_gym_package_qty'].' '.$field['ms_gym_package_type'];
+				$row[] = $gym_pacakge_val;
 				$row[] = $promo_pt;
-				$row[] = $field['ms_promo_pt_sesi'].' Sesi';
+				$row[] = $pt_package_val;
 				$row[] = $promo_kelas;
-				$row[] = $field['ms_promo_class_month'].' Bulan';
+				$row[] = $class_package_val;
 				$row[] = $field['ms_promo_category'];
 				$row[] = $edit.$delete;
 				$data[] = $row;

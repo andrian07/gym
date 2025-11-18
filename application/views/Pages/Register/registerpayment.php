@@ -41,14 +41,15 @@ require DOC_ROOT_PATH . $this->config->item('header');
                         </div>
 
                         <div class="form-group form-inline">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Tipe Member:</label>
+                          <label for="inlineinput" class="col-md-3 col-form-label">Tipe Register:</label>
                           <div class="col-md-12 p-0">
                             <select class="form-control input-full js-example-basic-single" id="class_member_type" name="class_member_type">
                               <option value="">-- Pilih Tipe Member --</option>
                               <!-- <option value="Non Member / Harian (GYM)">Non Member / Harian (GYM)</option> -->
                               <option value="Kelas Only">Kelas Only</option>
                               <option value="Member">Member (GYM)</option>  
-                              <option value="Member (GYM) + Kelas">Member (GYM) + Kelas</option> 
+                              <option value="Member (GYM) + Kelas">Member (GYM) + Kelas</option>
+                              <option value="Extend PT">Extend PT</option>  
                             </select>
                           </div>
                         </div>
@@ -56,7 +57,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                         <div class="form-group form-inline">
                           <label for="inlineinput" class="col-md-3 col-form-label">Paket Promo:</label>
                           <div class="col-md-12 p-0">
-                            <select class="form-control input-full js-example-basic-single" id="class_package_promo" name="class_package_promo">
+                            <select class="form-control input-full js-example-basic-single" id="all_promo_package" name="all_promo_package">
                               <option value="">-- Pilih Paket --</option>
                               <?php foreach ($data['promo_list'] as $row) { ?>
                                 <option value="<?php echo $row->ms_promo_id; ?>"><?php echo $row->ms_pormo_name; ?></option>  
@@ -99,7 +100,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                           <div class="col-md-12">
                             <label for="inlineinput" class="col-md-3 col-form-label">Paket Gym:</label>
                             <div class="col-md-12 p-0">
-                              <select class="form-control input-full js-example-basic-single" id="total_member_month" name="total_member_month">
+                              <select class="form-control input-full js-example-basic-single" id="gym_package" name="gym_package">
                                 <option value="">-- Pilih Paket GYM --</option>
                                 <?php foreach ($data['gym_package'] as $row) { ?>
                                   <option value="<?php echo $row->ms_gym_package_id ; ?>"><?php echo $row->ms_gym_package_name; ?></option>  
@@ -124,9 +125,9 @@ require DOC_ROOT_PATH . $this->config->item('header');
                       <div class="form-group form-inline">
                         <div class="row">
                           <div class="col-md-12">
-                            <label for="inlineinput" class="col-md-3 col-form-label">Harga Perbulan:</label>
+                            <label for="inlineinput" class="col-md-3 col-form-label">Harga Paket:</label>
                             <div class="col-md-12 p-0">
-                              <input type="text" class="form-control input-full" name="gym_price" id="gym_price" placeholder="Harga" value="0">
+                              <input type="text" class="form-control input-full" name="gym_price" id="gym_price" placeholder="Harga" value="0" readonly>
                             </div>
                           </div>
                         </div>
@@ -137,7 +138,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                           <div class="col-md-12">
                             <label for="inlineinput" class="col-md-3 col-form-label">Diskon:</label>
                             <div class="col-md-12 p-0">
-                              <input type="text" class="form-control input-full" name="discount_class" id="discount_class" value="0" readonly>
+                              <input type="text" class="form-control input-full" name="discount_gym" id="discount_gym" value="0" readonly>
                             </div>
                           </div>
                         </div>
@@ -191,15 +192,14 @@ require DOC_ROOT_PATH . $this->config->item('header');
                           </div>
                         </div>
                       </div>
-
                       <div class="form-group form-inline">
-                        <label for="inlineinput" class="col-md-3 col-form-label">Kelas:</label>
+                        <label for="inlineinput" class="col-md-3 col-form-label">Paket Kelas:</label>
                         <div class="col-md-12 p-0">
                           <select class="form-control input-full js-example-basic-single" id="class_package" name="class_package">
-                            <option value="">-- Pilih Kelas --</option>
+                            <option value="">-- Pilih Paket Kelas --</option>
                             <option value="All">Semua</option>
-                            <?php foreach ($data['class_list'] as $row) { ?>
-                              <option value="<?php echo $row->class_id; ?>"><?php echo $row->class_name; ?></option>  
+                            <?php foreach ($data['class_package'] as $row) { ?>
+                              <option value="<?php echo $row->ms_class_package_id; ?>"><?php echo $row->ms_class_package_name; ?></option>  
                             <?php } ?>
                           </select>
                         </div>
@@ -208,7 +208,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                       <div class="form-group form-inline">
                         <label for="inlineinput" class="col-md-3 col-form-label">Harga Kelas:</label>
                         <div class="col-md-12 p-0">
-                          <input type="text" class="form-control input-full" name="class_price" id="class_price" placeholder="Harga" value="0">
+                          <input type="text" class="form-control input-full" name="class_price" id="class_price" placeholder="Harga" value="0" readonly>
                         </div>
                       </div>
 
@@ -219,12 +219,38 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             <div class="col-md-12 p-0">
                               <select class="form-control input-full" id="class_session_unit" name="class_session_unit">
                                 <option value="">-- Pilih Bulan --</option>
+                                <option value="1">1 Bulan</option>
+                                <option value="2">2 Bulan</option>
                                 <option value="3">3 Bulan</option>
+                                <option value="4">4 Bulan</option>
+                                <option value="5">5 Bulan</option>
                                 <option value="6">6 Bulan</option>
+                                <option value="7">7 Bulan</option>
+                                <option value="8">8 Bulan</option>
+                                <option value="9">9 Bulan</option>
+                                <option value="10">10 Bulan</option>
+                                <option value="11">11 Bulan</option>
                                 <option value="12">12 Bulan</option>
+                                <option value="13">13 Bulan</option>
+                                <option value="14">14 Bulan</option>
+                                <option value="15">15 Bulan</option>
+                                <option value="16">16 Bulan</option>
+                                <option value="17">17 Bulan</option>
+                                <option value="18">18 Bulan</option>
+                                <option value="19">19 Bulan</option>
+                                <option value="20">20 Bulan</option>
+                                <option value="21">21 Bulan</option>
+                                <option value="22">22 Bulan</option>
                               </select>
                             </div>
                           </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group form-inline">
+                        <label for="inlineinput" class="col-md-3 col-form-label">Diskon:</label>
+                        <div class="col-md-12 p-0">
+                          <input type="text" class="form-control input-full" name="class_discount" id="class_discount" placeholder="Harga" value="0" readonly>
                         </div>
                       </div>
 
@@ -253,19 +279,28 @@ require DOC_ROOT_PATH . $this->config->item('header');
                       <div class="col-md-12">
 
                         <div class="form-group form-inline">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Nama Personal Training:</label>
+                          <label for="inlineinput" class="col-md-3 col-form-label">Paket PT:</label>
                           <div class="col-md-12 p-0">
-                            <select class="form-control input-full js-example-basic-single" id="PT" name="PT">
-                              <option value="">-- Pilih Personal Training --</option>
-                              <?php foreach ($data['pt_list'] as $row) { ?>
-                                <option value="<?php echo $row->coach_id; ?>"><?php echo $row->coach_name; ?></option>  
+                            <input id="lvl_id" name="lvl_id" type="hidden">
+                            <select class="form-control input-full js-example-basic-single" id="pt_package_price" name="pt_package_price">
+                              <option value="">-- Pilih Paket P.T --</option>
+                              <?php foreach ($data['pt_package_price'] as $row) { ?>
+                                <option value="<?php echo $row->ms_pt_package_price_id; ?>"><?php echo $row->ms_pt_package_price_name; ?></option>
                               <?php } ?>
                             </select>
                           </div>
                         </div>
 
                         <div class="form-group form-inline">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Harga Sesi:</label>
+                          <label for="inlineinput" class="col-md-3 col-form-label">Nama Personal Training:</label>
+                          <div class="col-md-12 p-0">
+                            <input id="pt_id" name="pt_id" type="hidden">
+                            <input id="PT" name="PT" type="text" class="form-control ui-autocomplete-input" placeholder="ketikkan nama pt" value="" required="" autocomplete="off">
+                          </div>
+                        </div>
+
+                        <div class="form-group form-inline">
+                          <label for="inlineinput" class="col-md-3 col-form-label">Harga:</label>
                           <div class="col-md-12 p-0">
                             <input type="text" class="form-control input-full" name="pt_price" id="pt_price" placeholder="Harga" value="0" readonly>
                           </div>
@@ -298,9 +333,16 @@ require DOC_ROOT_PATH . $this->config->item('header');
                             <div class="col-md-8">
                               <label for="inlineinput" class="col-md-3 col-form-label" style="margin-top:20px;"></label>
                               <div class="col-md-12 p-0">
-                                <input type="text" class="form-control input-full" name="pt_session_month" id="pt_session_month" value="Bulan" readonly>
+                                <input type="text" class="form-control input-full" name="pt_session_month_name" id="pt_session_month_name" value="Bulan" readonly>
                               </div>
                             </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group form-inline">
+                          <label for="inlineinput" class="col-md-3 col-form-label">Diskon:</label>
+                          <div class="col-md-12 p-0">
+                            <input type="text" class="form-control input-full" name="pt_discount" id="pt_discount" placeholder="Harga" value="0" readonly>
                           </div>
                         </div>
 
@@ -326,14 +368,14 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   <label for="noinvoice" class="col-sm-12 col-form-label" style="color:#E77D22 !important">Pekerjaan</label>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-groups row">
                   <label for="noinvoice" class="col-sm-9 col-form-label">1.) Apa pekerjaan anda sekarang ?</label>
                   <div class="col-md-9 p-0">
                     <input type="text" class="form-control input-full" name="crfe_w_1" id="crfe_w_1" style="margin-left: 2%; width: 80% !important;">
                   </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-groups row">
                   <label for="noinvoice" class="col-sm-9 col-form-label">2.) Apakah pekerjaan Anda membutuhkan waktu duduk yang lama ?</label>
                   <div class="col-sm-2">
                     <div class="d-flex">
@@ -349,7 +391,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-groups row">
                   <label for="noinvoice" class="col-sm-9 col-form-label">3.) Apakah pekerjaan Anda memerlukan gerakan berulang? Jika Ya, mohon di jelaskan ?</label>
                   <div class="col-sm-2">
                     <div class="d-flex">
@@ -369,7 +411,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
 
                 </div>
 
-                <div class="form-group row">
+                <div class="form-groups row">
                   <label for="noinvoice" class="col-sm-9 col-form-label">4.) Apakah pekerjaan Anda mengharuskan Anda memakai sepatu berhak? (misalnya Sepatu Formal)</label>
                   <div class="col-sm-2">
                     <div class="d-flex">
@@ -385,7 +427,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-groups row">
                   <label for="noinvoice" class="col-sm-9 col-form-label">5.) Apakah pekerjaan Anda menyebabkan Anda stres mental ?</label>
                   <div class="col-sm-2">
                     <div class="d-flex">
@@ -407,7 +449,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   <label for="noinvoice" class="col-sm-12 col-form-label" style="color:#E77D22 !important">Rekreasional</label>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-groups row">
                   <label for="noinvoice" class="col-sm-9 col-form-label">1.) Apakah Anda melakukan aktivitas fisik rekreasi (golf, ski, dll.)? Jika ya, mohon dijelaskan.</label>
                   <div class="col-sm-2">
                     <div class="d-flex">
@@ -426,7 +468,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-groups row">
                   <label for="noinvoice" class="col-sm-9 col-form-label">2.) Apakah Anda memiliki hobi tambahan (membaca, bermain video game, dll.)? (Jika ya, mohon dijelaskan)</label>
                   <div class="col-sm-2">
                     <div class="d-flex">
@@ -451,7 +493,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   <label for="noinvoice" class="col-sm-12 col-form-label" style="color:#E77D22 !important">Medical</label>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-groups row">
                   <label for="noinvoice" class="col-sm-9 col-form-label">1.) Pernahkah Anda mengalami cedera atau nyeri kronis? (jika YA, mohon dijelaskan)</label>
                   <div class="col-sm-2">
                     <div class="d-flex">
@@ -470,7 +512,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-groups row">
                   <label for="noinvoice" class="col-sm-9 col-form-label">2.) Pernahkah Anda menjalani operasi? (jika YA, mohon dijelaskan)</label>
                   <div class="col-sm-2">
                     <div class="d-flex">
@@ -488,7 +530,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                     <input type="text" class="form-control input-full" name="crfe_m_2_desc" id="crfe_m_2_desc" style="margin-left: 2%; width: 80% !important;" readonly>
                   </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-groups row">
                   <label for="noinvoice" class="col-sm-9   col-form-label">
                     3.) Pernahkah dokter mendiagnosis Anda menderita penyakit kronis, seperti penyakit jantung, <br />hipertensi, kolesterol tinggi, atau diabetes? (Jika YA, jelaskan)</label>
                     <div class="col-sm-2">
@@ -509,7 +551,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                   </div>
 
 
-                  <div class="form-group row">
+                  <div class="form-groups row">
                     <label for="noinvoice" class="col-sm-9 col-form-label">
                     4.) Apakah Anda sedang mengonsumsi obat apa pun? (Jika YA, mohon dijelaskan)</label>
                     <div class="col-sm-2">
@@ -534,61 +576,9 @@ require DOC_ROOT_PATH . $this->config->item('header');
             </div>
           </div>
         </div>
-
-          <!-- 
-          <div class="col-md-3" > 
-            <div class="card-header">
-              <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Pembayaran</div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card-body">
-                  <div class="row"> 
-                    <div class="form-group form-inline">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Pembayaran:</label>
-                          <div class="col-md-12 p-0">
-                            <select class="form-control input-full js-example-basic-single" id="payment" name="payment">
-                              <option value="">-- Pilih Pembayaran --</option>
-                              <option value="Transfer BCA">Transfer BCA</option>
-                              <option value="Transfer BNI">Transfer BNI</option>
-                              <option value="Qris BCA">Qris BCA</option>
-                              <option value="Qris BNI">Qris BNI</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group form-inline">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Diskon:</label>
-                          <div class="col-md-12 p-0">
-                            <input type="text" class="form-control input-full" name="discount" id="discount" value="0" readonly>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group form-inline">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Total:</label>
-                          <div class="col-md-12 p-0">
-                            <input type="text" class="form-control input-full" name="total" id="total" value="0" readonly>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        -->
         <div class="row card-action">
-          <div class="col-md-9"></div>
-          <div class="col-md-3">
+          <div class="col-md-8"></div>
+          <div class="col-md-4">
             <div class="row">
               <div class="col-md-12">
                 <div class="card-body">
@@ -602,10 +592,9 @@ require DOC_ROOT_PATH . $this->config->item('header');
                           <div class="col-md-12 p-0">
                             <select class="form-control input-full js-example-basic-single" id="payment" name="payment">
                               <option value="">-- Pilih Pembayaran --</option>
-                              <option value="Transfer BCA">Transfer BCA</option>
-                              <option value="Transfer BNI">Transfer BNI</option>
-                              <option value="Qris BCA">Qris BCA</option>
-                              <option value="Qris BNI">Qris BNI</option>
+                              <?php foreach($data['payment_list'] as $row){ ?>
+                                <option value="<?php echo $row->payment_id; ?>"><?php echo $row->payment_name; ?></option>
+                              <?php } ?>
                             </select>
                           </div>
                         </div>
@@ -736,13 +725,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     digitGroupSeparator : '.',
   });
 
-  let discount = new AutoNumeric('#discount', {
-    currencySymbol : 'Rp. ',
-    decimalCharacter : ',',
-    decimalPlaces: 0,
-    decimalPlacesShownOnFocus: 0,
-    digitGroupSeparator : '.',
-  });
+  
 
   let total = new AutoNumeric('#total', {
     currencySymbol : 'Rp. ',
@@ -752,7 +735,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     digitGroupSeparator : '.',
   });
 
-  let discount_class = new AutoNumeric('#discount_class', {
+  let discount = new AutoNumeric('#discount', {
     suffixText: "%",
     decimalCharacter : ',',
     decimalPlaces: 0,
@@ -760,6 +743,31 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     digitGroupSeparator : '.',
   });
 
+  let class_discount = new AutoNumeric('#class_discount', {
+    suffixText: "%",
+    decimalCharacter : ',',
+    decimalPlaces: 0,
+    decimalPlacesShownOnFocus: 0,
+    digitGroupSeparator : '.',
+  });
+
+  let discount_gym = new AutoNumeric('#discount_gym', {
+    suffixText: "%",
+    decimalCharacter : ',',
+    decimalPlaces: 0,
+    decimalPlacesShownOnFocus: 0,
+    digitGroupSeparator : '.',
+  });
+
+  let pt_discount = new AutoNumeric('#pt_discount', {
+    suffixText: "%",
+    decimalCharacter : ',',
+    decimalPlaces: 0,
+    decimalPlacesShownOnFocus: 0,
+    digitGroupSeparator : '.',
+  });
+
+  
 
   function crfe_w_3_change(radio) {
     if(radio.value == 'Y'){
@@ -822,12 +830,20 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     if(this.value == 'Member'){
       $('#membergymdiv').show();
       $('#kelasdiv').hide();
+      $('#PTdiv').hide();
     }else if(this.value == 'Member (GYM) + Kelas'){
       $('#membergymdiv').show();
       $('#kelasdiv').show();
+      $('#PTdiv').hide();
+    }else if(this.value == 'Extend PT'){
+      $('#membergymdiv').hide();
+      $('#kelasdiv').hide();
+      $('#PTdiv').show();
+      $('#step2').show();
     }else{
       $('#kelasdiv').show();
       $('#membergymdiv').hide();
+      $('#PTdiv').hide();
     }
   });
 
@@ -836,9 +852,17 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     if(this.value == 'Ya'){
       $('#PTdiv').show();
       $('#step2').show();
+      $('#payment').val('');
+      $('#payment').trigger('change');
+      discount.set(0);
+      total.set(0);
     }else{
       $('#PTdiv').hide();
       $('#step2').hide();
+      $('#payment').val('');
+      $('#payment').trigger('change');
+      discount.set(0);
+      total.set(0);
     }
   });
 
@@ -846,60 +870,37 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     var id = this.value;
     $.ajax({
       type: "POST",
-      url: "<?php echo base_url(); ?>register/get_class_info",
+      url: "<?php echo base_url(); ?>register/get_package_class_info",
       dataType: "json",
       data: {id:id},
       success : function(data){
-        if (data.code == "200"){
-          let row = data.result.get_class_info[0];
-          class_price.set(row.class_price);
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Data Tidak Di Temukan',
-          })
-        }
-      }
-    });
-  });
 
-
-  $('#PT').on('change', function() {
-    var id = this.value;
-    $.ajax({
-      type: "POST",
-      url: "<?php echo base_url(); ?>register/get_pt_info",
-      dataType: "json",
-      data: {id:id},
-      success : function(data){
         if (data.code == "200"){
-          let row = data.result.get_pt_info[0];
-          pt_price.set(row.ms_pt_price_price);
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Data Tidak Di Temukan',
-          })
-        }
-      }
-    });
-  });
-
-  $('#pt_session_unit').on('change', function() {
-    let id = this.value;
-    let price = pt_price.get();
-    pt_total.set(id * price);
-    $.ajax({
-      type: "POST",
-      url: "<?php echo base_url(); ?>register/get_pt_info_month",
-      dataType: "json",
-      data: {id:id},
-      success : function(data){
-        if (data.code == "200"){
-          let row = data.result.get_pt_info_month[0];
-          $('#pt_session_month').val(row.ms_pt_package_month);
+          if(data.result.get_package_class_info.length != 0){
+            let row = data.result.get_package_class_info[0];
+            if(row.ms_class_package_type == 'Hari'){
+              class_price.set(row.ms_class_package_day_price);
+              $('#class_session_unit').val(row.ms_class_package_qty);
+              let class_discount_val  = row.ms_class_package_day_price * class_discount.get() / 100 ;
+              class_total.set(row.ms_class_package_day_price - class_discount_val);
+            }
+            if(row.ms_class_package_type == 'Bulan'){
+              class_price.set(row.ms_class_package_month_price);
+              $('#class_session_unit').val(row.ms_class_package_qty);
+              let class_discount_val  = row.ms_class_package_month_price * class_discount.get() / 100;
+              class_total.set(row.ms_class_package_month_price - class_discount_val);
+            }
+            if(row.ms_class_package_type == 'Tahun'){
+              class_price.set(row.ms_class_package_year_price);
+              $('#class_session_unit').val(row.ms_class_package_qty);
+              let class_discount_val  = row.ms_class_package_year_price * class_discount.get() / 100;
+              class_total.set(row.ms_class_package_year_price - class_discount_val);
+            }
+            $('#payment').val('');
+            $('#payment').trigger('change');
+            discount.set(0);
+            total.set(0);
+          }
         } else {
           Swal.fire({
             icon: 'error',
@@ -917,13 +918,110 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     class_total.set(id * price);
   });
 
-  $('#total_member_month').on('change', function() {
+  $('#gym_package').on('change', function() {
     let id = this.value;
-    let price = gym_price.get();
-    gym_total.set(id * price);
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>register/get_gym_package",
+      dataType: "json",
+      data: {id:id},
+      success : function(data){
+        if (data.code == "200"){
+          let row = data.result.get_gym_package[0];
+          if(row.ms_gym_package_type == 'Hari'){
+            gym_price.set(row.ms_gym_package_day_price);
+            let promo = row.ms_gym_package_day_price * discount_gym.get() / 100;
+            gym_total.set(row.ms_gym_package_day_price - promo );
+          }
+          if(row.ms_gym_package_type == 'Bulan'){
+            gym_price.set(row.ms_gym_package_month_price);
+            let promo = row.ms_gym_package_month_price * discount_gym.get() / 100;
+            gym_total.set(row.ms_gym_package_month_price - promo );
+          }
+          if(row.ms_gym_package_type == 'Tahun'){
+            gym_price.set(row.ms_gym_package_year_price);
+            let promo = row.ms_gym_package_year_price * discount_gym.get() / 100;
+            gym_total.set(row.ms_gym_package_year_price - promo );
+          }
+          $('#payment').val('');
+          $('#payment').trigger('change');
+          discount.set(0);
+          total.set(0);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: data.result,
+          })
+        }
+      }
+    });
   });
 
-  $('#class_package_promo').on('change', function() {
+
+  $('#pt_package_price').on('change', function() {
+    let id = this.value;
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>register/get_pt_package_price",
+      dataType: "json",
+      data: {id:id},
+      success : function(data){
+        if (data.code == "200"){
+          if(data.result.get_pt_package_price.lenght != 0 ){
+            let row = data.result.get_pt_package_price[0];
+            pt_price.set(row.ms_pt_package_price);
+            $('#pt_session_unit').val(row.ms_pt_package_session);
+            $('#pt_session_month').val(row.ms_pt_package_month);
+            $('#lvl_id').val(row.ms_pt_price_id);
+            pt_total.set(row.ms_pt_package_price);
+            $('#payment').val('');
+            $('#payment').trigger('change');
+            discount.set(0);
+            total.set(0);
+          }
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: data.result,
+          })
+        }
+      }
+    });
+  });
+
+  $('#PT').autocomplete({ 
+    minLength: 2,
+    source: function(req, add) {
+      $.ajax({
+        url: '<?php echo base_url(); ?>/register/ptselect?id='+$('#lvl_id').val(),
+        dataType: 'json',
+        type: 'GET',
+        data: req,
+        success: function(res) {
+          console.log(res);
+          if (res.success == true) {
+            add(res.data);
+          }else{
+            $('#PT').val('');
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: res.message,
+            })
+          }
+        },
+      });
+    },
+    select: function(event, ui) {
+      let id = ui.item.id;
+      $('#pt_id').val(id);
+    },
+  });
+
+
+  $('#all_promo_package').on('change', function() {
     var id = this.value;
     $.ajax({
       type: "POST",
@@ -933,38 +1031,63 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       success : function(data){
         if (data.code == "200"){
           let row = data.result.get_promo_info[0];
-          if(row.ms_promo_category == 'GYM'){
-            $('#class_member_type').val("Member");
+          if(row.ms_promo_active == 'Y' && row.ms_promo_class == 'Y'){
+            $('#class_member_type').val('Member (GYM) + Kelas');
             $('#class_member_type').trigger('change');
-          }else if(row.ms_promo_category == 'Kelas'){
-            $('#class_member_type').val("Kelas Only");
+          }
+          if(row.ms_promo_active == 'Y' && row.ms_promo_class == 'N'){
+            $('#class_member_type').val('Member');
             $('#class_member_type').trigger('change');
+          }
+          if(row.ms_promo_active == 'N' && row.ms_promo_class == 'Y'){
+            $('#class_member_type').val('Kelas Only');
+            $('#class_member_type').trigger('change');
+          }
+          if(row.ms_promo_active == 'Y'){
+            $('#membergymdiv').show();
+            $('#gym_package').val(row.ms_promo_member_month);
+            $('#gym_package').trigger('change');
+            discount_gym.set(row.ms_promo_member_promo);
           }else{
-            $('#class_member_type').val("Member (GYM) + Kelas");
-            $('#class_member_type').trigger('change');
+            $('#membergymdiv').hide();
+            $('#gym_package').val('');
+            $('#gym_package').trigger('change');
+            discount_gym.set(0);
           }
 
           if(row.ms_promo_pt == 'Y'){
+            $('#pt_package').val('Ya');
+            $('#pt_package').trigger('change');
             $('#PTdiv').show();
-            $('#step2').show();
-            $('#pt_package').val("Ya");
-            $('#pt_package').trigger('change');
-            
+            $('#pt_package_price').val(row.ms_promo_pt_sesi);
+            $('#pt_package_price').trigger('change');
+            pt_discount.set(row.ms_promo_pt_promo);
           }else{
-            $('#PTdiv').hide();
-            $('#step2').hide();
-            $('#pt_package').val("Tidak");
+            $('#pt_package').val('Tidak');
             $('#pt_package').trigger('change');
+            $('#PTdiv').hide();
+            ('#pt_package_price').val('');
+            $('#pt_package_price').trigger('change');
+            pt_discount.set(0);
           }
+
           if(row.ms_promo_class == 'Y'){
             $('#kelasdiv').show();
+            $('#class_package').val(row.ms_promo_class_month);
+            $('#class_package').trigger('change');
+            class_discount.set(row.ms_promo_class_promo);
           }else{
             $('#kelasdiv').hide();
+            $('#class_package').val('');
+            $('#class_package').trigger('change');
+            class_discount.set(0);
           }
-          $('#total_member_month').val(row.ms_promo_member_month);
-          $('#total_member_month').trigger('change');
-          gym_price.set(row.ms_gym_package_month_price);
 
+
+          $('#payment').val('');
+          $('#payment').trigger('change');
+          discount.set(0);
+          total.set(0);
         } else {
           Swal.fire({
             icon: 'error',
@@ -980,27 +1103,35 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     e.preventDefault();
     var member_id                 = $("#member_id").val();
     var class_member_type         = $("#class_member_type").val();
-    var class_package_promo       = $("#class_package_promo").val();
-    var gym_sessions_start        = $("#gym_sessions_start").val();
-    var total_member_month        = $("#total_member_month").val();
+    var all_promo_package         = $("#all_promo_package").val();
 
-    /*
-    var member_email              = $("#member_email").val();
-    var member_address            = $("#member_address").val();
-    var member_gender             = $("#member_gender").val();
-    var member_urgent_phone       = $("#member_urgent_phone").val();
-    var member_nik                = $("#member_nik").val();
-    var member_urgent_name        = $("#member_urgent_name").val();
-    var member_urgent_sibiling    = $("#member_urgent_sibiling").val();
-    var member_urgent_name        = $("#member_urgent_name").val();
-    var member_desc               = $("#member_desc").val();
-    var parq_q1                   = $('input[name="parq_q1"]:checked').val();
-    var parq_q2                   = $('input[name="parq_q2"]:checked').val();
-    var parq_q3                   = $('input[name="parq_q3"]:checked').val();
-    var parq_q4                   = $('input[name="parq_q4"]:checked').val();
-    var parq_q5                   = $('input[name="parq_q5"]:checked').val();
-    var parq_q6                   = $('input[name="parq_q6"]:checked').val();
-     var crfe_w_1                  = $("#crfe_w_1").val();
+    var gym_sessions_start        = $("#gym_sessions_start").val();
+    var gym_package               = $("#gym_package").val();
+    var gym_sessions_end          = $("#gym_sessions_end").val();
+    var gym_price_val             = gym_price.get();
+    var discount_gym_val          = discount_gym.get();
+    var gym_total_val             = gym_total.get();
+
+    var pt_package                = $("#pt_package").val();
+    var pt_package_price          = $("#pt_package_price").val();
+    var pt_id                     = $("#pt_id").val();
+    var pt_price_val              = pt_price.get();
+    var pt_session_month          = $("#pt_session_month").val();
+    var pt_discount_val           = pt_discount.get();
+    var pt_total_val              = pt_total.get();
+
+    var class_sessions_start      = $("#class_sessions_start").val();
+    var class_package             = $("#class_package").val();
+    var class_price_val           = class_price.get();
+    var class_session_unit        = $("#class_session_unit").val();
+    var class_discount_val        = class_discount.get();
+    var class_total_val           = class_total.get();
+
+    var payment                   = $("#payment").val();
+    var discount_val              = discount.get();
+    var total_val                 = total.get();
+
+    var crfe_w_1                  = $("#crfe_w_1").val();
     var crfe_w_2                  = $('input[name="crfe_w_2"]:checked').val();
     var crfe_w_3                  = $('input[name="crfe_w_3"]:checked').val();
     var crfe_w_3_desc             = $("#crfe_w_3").val();
@@ -1017,13 +1148,13 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     var crfe_m_3                  = $('input[name="crfe_m_3"]:checked').val();
     var crfe_m_3_desc             = $("#crfe_m_3_desc").val();
     var crfe_m_4                  = $('input[name="crfe_m_4"]:checked').val();
-    var crfe_m_4_desc             = $("#crfe_m_4_desc").val();*/
+    var crfe_m_4_desc             = $("#crfe_m_4_desc").val();
 
     $.ajax({
       type: "POST",
       url: "<?php echo base_url(); ?>register/save_register",
       dataType: "json",
-      data: {member_id:member_id, class_member_type:class_member_type, class_package_promo:class_package_promo, gym_sessions_start:gym_sessions_start, total_member_month:total_member_month},
+      data: {member_id:member_id, class_member_type:class_member_type, all_promo_package:all_promo_package, gym_sessions_start:gym_sessions_start, gym_package:gym_package, gym_sessions_end:gym_sessions_end, gym_price_val:gym_price_val, discount_gym_val:discount_gym_val, gym_total_val:gym_total_val, pt_package:pt_package, pt_package_price:pt_package_price, pt_id:pt_id, pt_price_val:pt_price_val, pt_session_month:pt_session_month, pt_discount_val:pt_discount_val, pt_total_val:pt_total_val, class_sessions_start:class_sessions_start, class_package:class_package, class_price_val:class_price_val, class_session_unit:class_session_unit, class_discount_val:class_discount_val, class_total_val:class_total_val, payment:payment, discount_val:discount_val, total_val:total_val, crfe_w_1:crfe_w_1, crfe_w_2:crfe_w_2, crfe_w_3:crfe_w_3, crfe_w_3_desc:crfe_w_3_desc, crfe_w_4:crfe_w_4, crfe_w_5:crfe_w_5, crfe_r_1:crfe_r_1, crfe_r_1_desc:crfe_r_1_desc, crfe_r_2:crfe_r_2, crfe_r_2_desc:crfe_r_2_desc, crfe_m_1:crfe_m_1, crfe_m_1_desc:crfe_m_1_desc, crfe_m_2:crfe_m_2, crfe_m_2_desc:crfe_m_2_desc, crfe_m_3:crfe_m_3, crfe_m_3_desc:crfe_m_3_desc, crfe_m_4:crfe_m_4, crfe_m_4_desc:crfe_m_4_desc},
       success : function(data){
         if (data.code == "200"){
           let title = 'Tambah Data';
@@ -1031,6 +1162,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
           let state = 'info';
           notif_success(title, message, state);
           $("#member_id").val(data.member);
+          window.location.href = "<?php echo base_url(); ?>Register/registerclass";
         } else {
           Swal.fire({
             icon: 'error',
@@ -1041,6 +1173,15 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       }
     });
   });
+
+$('#payment').on('change', function() {
+  var id = this.value;
+  let gym_total_val = gym_total.get();
+  let class_total_val = class_total.get();
+  let pt_total_val = pt_total.get();
+  let total_trx = Number(gym_total_val) + Number(class_total_val) + Number(pt_total_val);
+  total.set(total_trx);
+});
 
 
 

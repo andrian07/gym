@@ -7,6 +7,7 @@ class register_model extends CI_Model {
         $this->db->select('*');
         $this->db->from('transaction_register');
         $this->db->join('ms_member', 'transaction_register.member_id = ms_member.member_id');
+        $this->db->join('ms_payment', 'transaction_register.transaction_payment_id = ms_payment.payment_id');
         if($search != null){
             $this->db->where('transaction_register_inv like "%'.$search.'%"');
             $this->db->or_where('member_name like "%'.$search.'%"');
@@ -23,6 +24,7 @@ class register_model extends CI_Model {
         $this->db->select('count(*) as total_row');
         $this->db->from('transaction_register');
         $this->db->join('ms_member', 'transaction_register.member_id = ms_member.member_id');
+        $this->db->join('ms_payment', 'transaction_register.transaction_payment_id = ms_payment.payment_id');
         if($search != null){
             $this->db->where('transaction_register_inv like "%'.$search.'%"');
             $this->db->or_where('member_name like "%'.$search.'%"');
@@ -91,6 +93,15 @@ class register_model extends CI_Model {
         return  $insert_id;
     }
 
+    public function save_parq($data_insert_parq)
+    {
+        $this->db->trans_start();
+        $this->db->insert('ms_member_question2', $data_insert_parq);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return  $insert_id;
+    }
+
     public function last_register()
     {
         $query = $this->db->query("select transaction_register_inv from transaction_register order by transaction_register_id  desc limit 1");
@@ -121,6 +132,26 @@ class register_model extends CI_Model {
         return $query;
     }
 
+    public function get_gym_package($id)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_gym_package');
+        $this->db->where('ms_gym_package_id', $id);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function get_pt_package_price($pt_package_price_id)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_pt_package_price');
+        $this->db->join('ms_pt_package', 'ms_pt_package_price.ms_pt_package_id = ms_pt_package.ms_pt_package_id');
+        $this->db->join('ms_pt_price', 'ms_pt_package_price.ms_pt_price_id = ms_pt_price.ms_pt_price_id');
+        $this->db->where('ms_pt_package_price_id', $pt_package_price_id);
+        $query = $this->db->get();
+        return $query;
+    }
+
     public function get_member_info($member_id)
     {
         $this->db->select('*');
@@ -135,6 +166,15 @@ class register_model extends CI_Model {
         $this->db->select('*');
         $this->db->from('ms_class');
         $this->db->where('class_id', $class_id);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function get_package_class_info($ms_class_package_id)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_class_package');
+        $this->db->where('ms_class_package_id', $ms_class_package_id);
         $query = $this->db->get();
         return $query;
     }
@@ -162,7 +202,46 @@ class register_model extends CI_Model {
     {
         $this->db->select('*');
         $this->db->from('ms_pt_package');
-        $this->db->where('ms_pt_package_session ', $package_sesion);
+        $this->db->where('ms_pt_package_session', $package_sesion);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function check_transaction_id($transaction_id)
+    {
+        $this->db->select('*');
+        $this->db->from('transaction_register');
+        $this->db->where('transaction_register_id', $transaction_id);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function save_payment($data_insert)
+    {
+        $this->db->trans_start();
+        $this->db->insert('transaction_payment', $data_insert);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return  $insert_id;
+    }
+
+    public function update_transaction($transaction_id)
+    {
+        $this->db->set('transaction_payment_status', 'Lunas');
+        $this->db->where('transaction_register_id', $transaction_id);
+        $this->db->update('transaction_register');
+    }
+
+    public function get_transaction_by_id($id)
+    {
+        $this->db->select('*');
+        $this->db->from('transaction_register');
+        $this->db->join('ms_member', 'transaction_register.member_id = ms_member.member_id');
+        $this->db->join('ms_gym_package', 'transaction_register.transaction_gym_month = ms_gym_package.ms_gym_package_id', 'left');
+        $this->db->join('ms_class_package', 'transaction_register.transaction_gym_month = ms_class_package.ms_class_package_id', 'left');
+        $this->db->join('ms_user', 'transaction_register.transaction_user_id = ms_user.user_id');
+        $this->db->join('ms_payment', 'transaction_register.transaction_payment_id = ms_payment.payment_id');
+        $this->db->where('transaction_register_id', $id);
         $query = $this->db->get();
         return $query;
     }

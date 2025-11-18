@@ -112,7 +112,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times-circle"></i> Batal</button>
-                        <button type="button" id="save" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                        <button type="button" id="savetype" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
                       </div>
                     </div>
                   </div>
@@ -268,7 +268,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     pt_price_edit.set(price);
   }) 
 
-  $('#save').click(function(e){
+  $('#savetype').click(function(e){
     e.preventDefault();
     var pt_price_name   = $("#pt_price_name").val();
     var pt_price_val    = pt_price.get();

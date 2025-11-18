@@ -11,7 +11,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
     </div>
     <div class="row">
       <div class="col-md-12">
-        <h3 class="fw-bold mb-3" style="margin-left:1%;">Pendaftaran Member Baru</h3>
+        <h3 class="fw-bold mb-3" style="margin-left:1%;">Pendaftaran Member Bulanan</h3>
         <div class="card" id="step1">
           <div class="card-header">
             <div class="card-title" style="font-size: 17px;color: #1572e8!important;">Data Member</div>
@@ -22,14 +22,54 @@ require DOC_ROOT_PATH . $this->config->item('header');
                 <div class="form-group form-inline">
                   <label for="inlineinput" class="col-md-3 col-form-label">Kode Member</label>
                   <div class="col-md-12 p-0">
+                    <input type="hidden" class="form-control input-full" name="member_id" id="member_id" placeholder="Member ID" readonly>
                     <input type="text" class="form-control input-full" name="member_code" id="member_code" placeholder="Kode Member" value="AUTO" readonly>
                   </div>
                 </div>
 
                 <div class="form-group form-inline">
                   <label for="inlineinput" class="col-md-3 col-form-label">Nama</label>
-                  <div class="col-md-12 p-0">
-                    <input type="text" class="form-control input-full" name="member_name" id="member_name" placeholder="Nama Member">
+                  <div class="col-md-11 p-0">
+                    <div class="row">
+                      <div class="col-md-10">
+                        <input type="text" class="form-control input-full" name="member_name" id="member_name" placeholder="Nama Member">
+                      </div>
+                      <div class="col-md-1">
+                        <button id="select_member" class="btn btn-md btn-primary rounded-circle float-right btn-add-temp" style="margin-top:3px;" data-bs-toggle="modal" data-bs-target="#exampleModaledit"><i class="fas fa-plus"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="modal fade bd-example-modal-lg editmodal" id="exampleModaledit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" >
+                  <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModaledit">Member List</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <table id="member-list" class="display table table-striped table-hover">
+                          <thead>
+                            <tr>
+                              <th>Kode Member</th>
+                              <th>Nama Member</th>
+                              <th>Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php foreach($data['member_list'] as $row){ ?>
+                              <tr>
+                                <td><?php echo $row->member_code; ?></td>
+                                <td><?php echo $row->member_name; ?></td>
+                                <td><button class="btn btn-primary" onclick="selectmember(<?php echo $row->member_id; ?>)">Pilih</button></td>
+                              </tr>
+                            <?php } ?>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -175,7 +215,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                         <label class="form-check-label" for="flexRadioDefault1"> Ya </label>
                       </div>
                       <div class="form-check">
-                        <input class="form-check-input" type="radio" name="parq_q4" id="parq_q5_n" value="N">
+                        <input class="form-check-input" type="radio" name="parq_q4" id="parq_q4_n" value="N">
                         <label class="form-check-label" for="flexRadioDefault2"> Tidak </label>
                       </div>
                     </div>
@@ -240,8 +280,14 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
 <script>
 
+
+  new bootstrap.Modal(document.getElementById('exampleModaledit'), {backdrop: 'static', keyboard: false})  
+
+
+
   $('#btn_save').click(function(e){
     e.preventDefault();
+    var member_id                 = $("#member_id").val();
     var member_name               = $("#member_name").val();
     var member_phone              = $("#member_phone").val();
     var member_nik                = $("#member_nik").val();
@@ -262,11 +308,18 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     var parq_q5                   = $('input[name="parq_q5"]:checked').val();
     var parq_q6                   = $('input[name="parq_q6"]:checked').val();
 
-    $.ajax({
+    if(parq_q1 == 'Y' || parq_q2 == 'Y' || parq_q3 == 'Y' || parq_q4 == 'Y' || parq_q5 == 'Y' || parq_q6 == 'Y' ){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Jika Anda menjawab "ya" untuk satu atau lebih pertanyaan di atas, konsultasikan dengan dokter Anda sebelum melakukan aktivitas fisik.',
+      })
+    }else{
+     $.ajax({
       type: "POST",
       url: "<?php echo base_url(); ?>register/save_register",
       dataType: "json",
-      data: {member_name:member_name, member_phone:member_phone, member_nik:member_nik, member_dob:member_dob, member_email:member_email, member_address:member_address, member_gender:member_gender, member_urgent_phone:member_urgent_phone, member_nik:member_nik,member_urgent_name:member_urgent_name, member_urgent_sibiling:member_urgent_sibiling, member_desc:member_desc, parq_q1:parq_q1, parq_q2:parq_q2, parq_q3:parq_q3, parq_q4:parq_q4, parq_q5:parq_q5, parq_q6:parq_q6},
+      data: {member_id:member_id, member_name:member_name, member_phone:member_phone, member_nik:member_nik, member_dob:member_dob, member_email:member_email, member_address:member_address, member_gender:member_gender, member_urgent_phone:member_urgent_phone, member_nik:member_nik,member_urgent_name:member_urgent_name, member_urgent_sibiling:member_urgent_sibiling, member_desc:member_desc, parq_q1:parq_q1, parq_q2:parq_q2, parq_q3:parq_q3, parq_q4:parq_q4, parq_q5:parq_q5, parq_q6:parq_q6},
       success : function(data){
         if (data.code == "200"){
           let member_id = data.member;
@@ -280,8 +333,75 @@ require DOC_ROOT_PATH . $this->config->item('footer');
         }
       }
     });
-  });
+   }
+ });
 
+
+
+  function selectmember(id)
+  {
+    $.ajax({
+      type: "POST",
+      url: "<?php echo base_url(); ?>transaction/search_member_by_id",
+      dataType: "json",
+      data: {id:id},
+      success : function(data){
+        let row = data.result[0];
+        if (data.code == "200"){
+          $('#member_id').val(row.member_id);
+          $('#member_code').val(row.member_code);
+          $('#member_phone').val(row.member_phone);
+          $('#member_name').val(row.member_name);
+          $('#member_gender').val(row.member_gender);
+          $('#member_email').val(row.member_email);
+          $('#member_address').val(row.member_address);
+          $('#member_nik').val(row.member_nik);
+          $('#member_dob').val(row.member_dob);
+          $('#member_urgent_phone').val(row.member_urgent_phone);
+          $('#member_urgent_name').val(row.member_urgent_name);
+          $('#member_urgent_sibiling').val(row.member_urgent_sibiling);
+          $('#member_desc').val(row.member_desc);
+          $("#exampleModaledit").modal('hide');
+
+          if(row.parq_q1 == 'N'){
+            $("#parq_q1_n").prop("checked", true);
+          }else{
+            $("#parq_q1_y").prop("checked", true);
+          }
+
+          if(row.parq_q2 == 'N'){
+            $("#parq_q2_n").prop("checked", true);
+          }else{
+            $("#parq_q2_y").prop("checked", true);
+          }
+
+          if(row.parq_q3 == 'N'){
+            $("#parq_q3_n").prop("checked", true);
+          }else{
+            $("#parq_q3_y").prop("checked", true);
+          }
+
+          if(row.parq_q4 == 'N'){
+            $("#parq_q4_n").prop("checked", true);
+          }else{
+            $("#parq_q4_y").prop("checked", true);
+          }
+
+          if(row.parq_q5 == 'N'){
+            $("#parq_q5_n").prop("checked", true);
+          }else{
+            $("#parq_q5_y").prop("checked", true);
+          }
+
+          if(row.parq_q6 == 'N'){
+            $("#parq_q6_n").prop("checked", true);
+          }else{
+            $("#parq_q6_y").prop("checked", true);
+          }
+        }
+      }
+    });
+  }
 
 
 

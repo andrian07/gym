@@ -85,6 +85,6 @@ defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 
-define('company', 'PIONIR');
+define('company', 'Elluna Gym');
 define('company_address', 'Jalan Sungai Raya Dalam 1. Ruko Ceria No. A2 - A4');
 define('company_phone', '0561-2345-2345');

@@ -168,15 +168,15 @@ class Transaction extends CI_Controller {
 			$maxCode  = $this->register_model->last_register();
 			$inv_code = 'TRX/'.date("d/m/Y").'/';
 			if ($maxCode == NULL) {
-				$last_code = $inv_code.'000001';
+				$last_code_trx = $inv_code.'000001';
 			} else {
 				$maxCode   = $maxCode[0]->transaction_register_inv;
 				$last_code = substr($maxCode, -6);
-				$last_code = $inv_code.substr('000000' . strval(floatval($last_code) + 1), -6);
+				$last_code_trx = $inv_code.substr('000000' . strval(floatval($last_code) + 1), -6);
 			}
 
 			$data_insert_register = array(
-				'transaction_register_inv'	    => $last_code,
+				'transaction_register_inv'	    => $last_code_trx,
 				'transaction_register_date'		=> date('Y/m/d'),
 				'member_id'	       				=> $insert_member,
 				'transaction_type_member'	   	=> 'Kelas Only',
@@ -235,12 +235,19 @@ class Transaction extends CI_Controller {
 			foreach ($find as $row) {
 				$diplay_text = $row['member_name'].' - '.$row['member_phone'];
 				$find_result[] = [
-					'id'                  => $row['member_id'],
-					'value'               => $diplay_text,
-					'member_code'		  => $row['member_code'],
-					'member_phone'        => $row['member_phone'],
-					'member_gender'       => $row['member_gender'],
-					'member_address'      => $row['member_address'],
+					'id'                  	 => $row['member_id'],
+					'value'               	 => $diplay_text,
+					'member_code'		  	 => $row['member_code'],
+					'member_phone'        	 => $row['member_phone'],
+					'member_gender'       	 => $row['member_gender'],
+					'member_address'      	 => $row['member_address'],
+					'member_nik'      	  	 => $row['member_nik'],
+					'member_dob'      	  	 => $row['member_dob'],
+					'member_email'        	 => $row['member_email'],
+					'member_urgent_phone'	 => $row['member_urgent_phone'],
+					'member_urgent_name'  	 => $row['member_urgent_name'],
+					'member_urgent_sibiling' => $row['member_urgent_sibiling'],
+					'member_desc'      	  	 => $row['member_desc']
 				];
 			}
 			$result = ['success' => TRUE, 'num_product' => count($find_result), 'data' => $find_result, 'message' => ''];
@@ -285,6 +292,13 @@ class Transaction extends CI_Controller {
 		}
 	}
 
+	public function search_member_by_id()
+	{
+		$id = $this->input->post('id');
+		
+		$search_member_by_id = $this->global_model->search_member_by_id($id)->result_array();
+		echo json_encode(['code'=>200, 'result'=>$search_member_by_id]);
+	}
 
 
 }

@@ -272,6 +272,98 @@ class masterdata_model extends CI_Model {
 
     //end class
 
+    // class paket 
+
+    public function class_package_list($search, $length, $start)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_class_package');
+        $this->db->where('ms_class_package_active', 'Y');
+        if($search != null){
+            $this->db->where('ms_class_package_name like "%'.$search.'%"');
+        }
+        $this->db->limit($length);
+        $this->db->offset($start);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function class_package_list_count($search)
+    {
+        $this->db->select('count(*) as total_row');
+        $this->db->from('ms_class_package');
+        $this->db->where('ms_class_package_active', 'Y');
+        if($search != null){
+            $this->db->where('ms_class_package_name like "%'.$search.'%"');
+        }
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function get_package_class_temp()
+    {
+        $this->db->select('*');
+        $this->db->from('temp_class_package_class');
+        $this->db->join('ms_class', 'temp_class_package_class.class_id = ms_class.class_id');
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function check_class_package_input($add_class_package)
+    {
+        $this->db->select('*');
+        $this->db->from('temp_class_package_class');
+        $this->db->join('ms_class', 'temp_class_package_class.class_id = ms_class.class_id');
+        $this->db->where('temp_class_package_class.class_id', $add_class_package);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function save_class_package_temp($data_insert)
+    {
+        $this->db->insert('temp_class_package_class', $data_insert);
+    }
+
+    public function delete_class_package($id)
+    {
+        $this->db->where('ms_class_package_id', $id);
+        $this->db->delete('ms_class_package');
+    }
+
+    public function delete_class_package_temp($id)
+    {
+        $this->db->where('temp_class_package_class_id ', $id);
+        $this->db->delete('temp_class_package_class');
+    }
+
+    public function save_class_package($data_insert)
+    {
+        $this->db->trans_start();
+        $this->db->insert('ms_class_package', $data_insert);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return  $insert_id;
+    }
+
+    public function get_temp_class_package()
+    {
+        $this->db->select('*');
+        $this->db->from('temp_class_package_class');
+        $this->db->join('ms_class', 'temp_class_package_class.class_id = ms_class.class_id');
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function save_class_package_detail($data_insert_detail)
+    {
+        $this->db->insert('ms_class_package_detail', $data_insert_detail);
+    }
+
+    public function clear_temp_class_package()
+    {
+        $this->db->truncate('temp_class_package_class');
+    }
+    // end class paket 
 
     //gym paket
 
@@ -327,6 +419,66 @@ class masterdata_model extends CI_Model {
         $this->db->update('ms_gym_package');
     }
     //end gym paket
+
+
+     //pt paket
+
+    public function pt_package_list($search, $length, $start)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_pt_package_price');
+        $this->db->join('ms_pt_price', 'ms_pt_package_price.ms_pt_price_id = ms_pt_price.ms_pt_price_id');
+        $this->db->join('ms_pt_package', 'ms_pt_package_price.ms_pt_package_id = ms_pt_package.ms_pt_package_id');
+        $this->db->where('ms_pt_package_price_active', 'Y');
+        if($search != null){
+            $this->db->where('ms_pt_package_price_name like "%'.$search.'%"');
+        }
+        $this->db->limit($length);
+        $this->db->offset($start);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function pt_package_list_count($search)
+    {
+        $this->db->select('count(*) as total_row');
+        $this->db->from('ms_pt_package_price');
+        $this->db->join('ms_pt_price', 'ms_pt_package_price.ms_pt_price_id = ms_pt_price.ms_pt_price_id');
+        $this->db->join('ms_pt_package', 'ms_pt_package_price.ms_pt_package_id = ms_pt_package.ms_pt_package_id');
+        $this->db->where('ms_pt_package_price_active', 'Y');
+        if($search != null){
+            $this->db->where('ms_pt_package_price_name like "%'.$search.'%"');
+        }
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function save_pt_package($data_insert)
+    {
+        $this->db->insert('ms_pt_package_price', $data_insert);
+    }
+
+    public function get_edit_pt_package($id)
+    {
+        $query = $this->db->query("select * from ms_pt_package_price where ms_pt_package_price_id ='".$id."'");
+        $result = $query->result();
+        return $result;
+    }
+
+    public function edit_pt_package($data_edit, $paket_id)
+    {
+        $this->db->set($data_edit);
+        $this->db->where('ms_pt_package_price_id', $paket_id);
+        $this->db->update('ms_pt_package_price');
+    }
+
+    public function delete_pt_package($paket_id)
+    {
+        $this->db->set('ms_pt_package_price_active', 'N');
+        $this->db->where('ms_pt_package_price_id', $paket_id);
+        $this->db->update('ms_pt_package_price');
+    }
+    //end pt paket
 
     //coach
 
@@ -440,11 +592,14 @@ class masterdata_model extends CI_Model {
     {
         $this->db->select('*');
         $this->db->from('ms_promo');
-        $this->db->join('ms_gym_package', 'ms_promo.ms_promo_member_month = ms_gym_package.ms_gym_package_id', 'left');
+        $this->db->join('ms_gym_package', 'ms_promo.ms_promo_member_month = ms_gym_package.ms_gym_package_id', 'INNER');
+        $this->db->from('ms_class_package', 'ms_promo.ms_promo_class_month = ms_class_package.ms_class_package_id', 'INNER');
+        $this->db->from('ms_pt_package_price', 'ms_promo.ms_promo_pt_sesi = ms_pt_package_price.ms_pt_package_price_id', 'INNER');
         $this->db->where('ms_promo_active', 'Y');
         if($search != null){
             $this->db->where('ms_pormo_name like "%'.$search.'%"');
         }
+        $this->db->group_by('ms_promo_id');
         $this->db->limit($length);
         $this->db->offset($start);
         $query = $this->db->get();
@@ -455,11 +610,14 @@ class masterdata_model extends CI_Model {
     {
         $this->db->select('count(*) as total_row');
         $this->db->from('ms_promo');
-        $this->db->join('ms_gym_package', 'ms_promo.ms_promo_member_month = ms_gym_package.ms_gym_package_id', 'left');
+        $this->db->join('ms_gym_package', 'ms_promo.ms_promo_member_month = ms_gym_package.ms_gym_package_id', 'INNER');
+        $this->db->from('ms_class_package', 'ms_promo.ms_promo_class_month = ms_class_package.ms_class_package_id', 'INNER');
+        $this->db->from('ms_pt_package_price', 'ms_promo.ms_promo_pt_sesi = ms_pt_package_price.ms_pt_package_price_id', 'INNER');
         $this->db->where('ms_promo_active', 'Y');
         if($search != null){
             $this->db->where('ms_pormo_name like "%'.$search.'%"');
         }
+        $this->db->group_by('ms_promo_id');
         $query = $this->db->get();
         return $query;
     }
