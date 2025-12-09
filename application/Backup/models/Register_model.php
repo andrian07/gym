@@ -92,15 +92,6 @@ class register_model extends CI_Model {
         $this->db->trans_complete();
         return  $insert_id;
     }
-    
-    public function save_question($data_insert_question)
-    {
-        $this->db->trans_start();
-        $this->db->insert('ms_member_question', $data_insert_question);
-        $insert_id = $this->db->insert_id();
-        $this->db->trans_complete();
-        return  $insert_id;
-    }
 
     public function save_parq($data_insert_parq)
     {

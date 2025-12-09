@@ -125,15 +125,6 @@ class global_model extends CI_Model {
         return $result;
     }
 
-    public function role_list()
-    {
-        $this->db->select('*');
-        $this->db->from('ms_role');
-        $this->db->where('is_active', 'Y');
-        $query = $this->db->get();
-        return $query;
-    }
-
     public function get_absence($title)
     {
         $this->db->select('*');
@@ -193,7 +184,7 @@ class global_model extends CI_Model {
     {
         $this->db->select('*');
         $this->db->from('ms_member');
-        $this->db->join('ms_member_question', 'ms_member.member_id = ms_member_question.member_id', 'left');
+        $this->db->join('ms_member_question', 'ms_member.member_id = ms_member_question.member_id');
         $this->db->where('ms_member.member_id', $id);
         $this->db->where('member_active', 'Y');
         $query = $this->db->get();

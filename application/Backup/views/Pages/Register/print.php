@@ -6,28 +6,62 @@ require DOC_ROOT_PATH . $this->config->item('header');
 <style type="text/css">
   @page {
     margin: 0;
-    width: 210mm;
-    height: 297mm;
+    size: A4;
   }
-
   .card .card-invoice{
-    width: 210mm;
-    height: 297mm;
+    size: A4;
+  }
+  .card-invoice .card-header {
+    padding: 10px 10px;
+    border: 0 !important;
+    width: 90%;
+    margin: auto;
+  }
+  .card-invoice .invoice-header .invoice-title {
+    font-size: 22px;
+    font-weight: 400;
+  }
+  .card-invoice .card-body {
+    padding: 0;
+    border: 0 !important;
+    width: 90%;
+    margin: auto;
+  }
+  .card-invoice .card-footer {
+    padding: 5px 0 50px;
+    border: 0 !important;
+    width: 90%;
+    margin: auto;
   }
   @media print {
+    .card-invoice .invoice-header .invoice-title {
+      font-size: 17px;
+      font-weight: 400;
+    }
+    .card-invoice .transfer-total .price {
+      font-size: 22px;
+    }
     body {
       margin: 0;
       padding: 0;
       visibility: hidden;
-      width: 210mm;
-      height: 297mm;
+      size: A4;
+      zoom: 95%;
+      font-size: 1em;
     }
     #section-to-print {
       visibility: visible;
       position: absolute;
-      margin-left: -250px;
-      width: 210mm;
-      height: 297mm;
+      margin-top: -150px;
+      margin-left: -300px;
+      width:150%;
+      height: 800px;
+      border: none;
+    }
+    * {
+      page-break-before: avoid;
+      page-break-after: avoid;
+      page-break-inside: avoid;
     }
   }
 </style>
@@ -42,7 +76,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
             </h6>
           </div>
           <div class="col-auto">
-            <a href="<?php echo base_url(); ?>Register/print_pdf" class="btn btn-light btn-border">
+            <a onclick="print_page()" class="btn btn-light btn-border">
               Download / Cetak
             </a>
           </div>
@@ -71,7 +105,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                 <div class="separator-solid"></div>
                 <?php foreach($get_transaction_by_id as $row){ ?>
                   <div class="row">
-                    <div class="col-md-4 info-invoice">
+                    <div class="col-4 info-invoice">
                       <h5 class="sub">Member</h5>
                       <p>
                         <?php echo $row['member_name']; ?> <br />
@@ -79,11 +113,10 @@ require DOC_ROOT_PATH . $this->config->item('header');
                         <?php echo $row['member_phone']; ?>
                       </p>
                     </div>
-                    <div class="col-md-4 info-invoice">
-                      <h5 class="sub">Invoice ID</h5>
-                      <p><?php echo $row['transaction_register_inv']; ?></p>
+                    <div class="col-4 info-invoice">
+
                     </div>
-                    <div class="col-md-4 info-invoice">
+                    <div class="col-4 info-invoice">
                       <h5 class="sub">Tanggal</h5>
                       <?php $date = date_create($row['transaction_register_date']);  ?>
                       <p><?php echo date_format($date,"d-m-Y"); ?></p>
@@ -125,7 +158,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                               <?php if($row['transaction_class'] == 'Y'){  ?>
                                 <tr>
                                   <td><?php echo $row['ms_class_package_name']; ?></td>
-                                  <td><?php echo $row['transaction_class_total_discount']; ?> %</td>
+                                  <td><?php echo $row['transaction_class_discount']; ?> %</td>
                                   <td><?php echo 'Rp. '.number_format($row['transaction_class_total_price']) ?></td>
                                 </tr>
                               <?php } ?>
@@ -167,4 +200,9 @@ require DOC_ROOT_PATH . $this->config->item('header');
 <?php 
 require DOC_ROOT_PATH . $this->config->item('footer');
 ?>
-
+<script type="text/javascript">
+  function print_page()
+  {
+    window.print();
+  }
+</script>

@@ -104,10 +104,6 @@ require DOC_ROOT_PATH . $this->config->item('header');
 
                           </div>
                         </div>
-                          <div class="modal-footer">
-                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times-circle"></i> Batal</button>
-                          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
-                        </div>
                       </form>
                     </div>
                   </div>

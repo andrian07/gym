@@ -586,23 +586,6 @@ require DOC_ROOT_PATH . $this->config->item('header');
                     <div class="form-group form-inline">
                       <div class="row">
                         <div class="col-md-4">
-                          <label for="inlineinput" class="col-md-3 col-form-label">Sales:</label>
-                        </div>
-                        <div class="col-md-8">
-                          <div class="col-md-12 p-0">
-                            <select class="form-control input-full js-example-basic-single" id="payment" name="payment">
-                              <option value="">-- Pilih Pembayaran --</option>
-                              <?php foreach($data['payment_list'] as $row){ ?>
-                                <option value="<?php echo $row->payment_id; ?>"><?php echo $row->payment_name; ?></option>
-                              <?php } ?>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group form-inline">
-                      <div class="row">
-                        <div class="col-md-4">
                           <label for="inlineinput" class="col-md-3 col-form-label">Pembayaran:</label>
                         </div>
                         <div class="col-md-8">

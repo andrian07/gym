@@ -595,6 +595,10 @@ class Masterdata extends CI_Controller {
 				$msg = "Alamat Harus Di isi";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
+			if($coach_lvl == null){
+				$msg = "LVL Harus Di isi";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
 			if($coach_salary == null){
 				$msg = "Gaji Pokok Harus Di isi";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
@@ -712,10 +716,10 @@ class Masterdata extends CI_Controller {
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
 			}
 
-			/*if($coach_lvl == null){
+			if($coach_lvl == null){
 				$msg = "LVL Harus Di isi";
 				echo json_encode(['code'=>0, 'result'=>$msg]);die();
-			}*/
+			}
 
 			if($coach_salary == null){
 				$msg = "Gaji Pokok Harus Di isi";
@@ -2031,11 +2035,7 @@ class Masterdata extends CI_Controller {
 
 			$list = $this->masterdata_model->promo_list($search, $length, $start)->result_array();
 			$count_list = $this->masterdata_model->promo_list_count($search)->result_array();
-			if($count_list != null){
-			    $total_row = $count_list[0]['total_row'];
-			}else{
-			    $total_row = 0;
-			}
+			$total_row = $count_list[0]['total_row'];
 			$data = array();
 			$no = $_POST['start'];
 			foreach ($list as $field) {

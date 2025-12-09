@@ -317,7 +317,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     }else{
      $.ajax({
       type: "POST",
-      url: "<?php echo base_url(); ?>register/save_register_member",
+      url: "<?php echo base_url(); ?>register/save_register",
       dataType: "json",
       data: {member_id:member_id, member_name:member_name, member_phone:member_phone, member_nik:member_nik, member_dob:member_dob, member_email:member_email, member_address:member_address, member_gender:member_gender, member_urgent_phone:member_urgent_phone, member_nik:member_nik,member_urgent_name:member_urgent_name, member_urgent_sibiling:member_urgent_sibiling, member_desc:member_desc, parq_q1:parq_q1, parq_q2:parq_q2, parq_q3:parq_q3, parq_q4:parq_q4, parq_q5:parq_q5, parq_q6:parq_q6},
       success : function(data){
