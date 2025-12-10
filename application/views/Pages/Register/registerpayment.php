@@ -590,10 +590,10 @@ require DOC_ROOT_PATH . $this->config->item('header');
                         </div>
                         <div class="col-md-8">
                           <div class="col-md-12 p-0">
-                            <select class="form-control input-full js-example-basic-single" id="payment" name="payment">
-                              <option value="">-- Pilih Pembayaran --</option>
-                              <?php foreach($data['payment_list'] as $row){ ?>
-                                <option value="<?php echo $row->payment_id; ?>"><?php echo $row->payment_name; ?></option>
+                            <select class="form-control input-full js-example-basic-single" id="sales_id" name="sales_id">
+                              <option value="">-- Pilih Sales --</option>
+                              <?php foreach($data['sales_list'] as $row){ ?>
+                                <option value="<?php echo $row->user_id; ?>"><?php echo $row->user_name; ?></option>
                               <?php } ?>
                             </select>
                           </div>
@@ -848,19 +848,42 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       $('#membergymdiv').show();
       $('#kelasdiv').hide();
       $('#PTdiv').hide();
+      $('#class_package').val('');
+      $('#class_package').trigger('change');
+      class_total.set(0);
+
+      $('#payment').val('');
+      $('#payment').trigger('change');
+      total.set(0);
     }else if(this.value == 'Member (GYM) + Kelas'){
       $('#membergymdiv').show();
       $('#kelasdiv').show();
       $('#PTdiv').hide();
+      $('#payment').val('');
+      $('#payment').trigger('change');
+      total.set(0);
     }else if(this.value == 'Extend PT'){
       $('#membergymdiv').hide();
       $('#kelasdiv').hide();
       $('#PTdiv').show();
       $('#step2').show();
+      $('#class_package').val('');
+      $('#class_package').trigger('change');
+      class_total.set(0);
+      $('#payment').val('');
+      $('#payment').trigger('change');
+      total.set(0);
     }else{
       $('#kelasdiv').show();
       $('#membergymdiv').hide();
       $('#PTdiv').hide();
+      $('#gym_package').val('');
+      $('#gym_package').trigger('change');
+      gym_total.set(0);
+      pt_total.set(0);
+      $('#payment').val('');
+      $('#payment').trigger('change');
+      total.set(0);
     }
   });
 
@@ -880,6 +903,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       $('#payment').trigger('change');
       discount.set(0);
       total.set(0);
+      pt_total.set(0);
     }
   });
 
@@ -1144,6 +1168,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
     var class_discount_val        = class_discount.get();
     var class_total_val           = class_total.get();
 
+    var sales_id                  = $("#sales_id").val();
     var payment                   = $("#payment").val();
     var discount_val              = discount.get();
     var total_val                 = total.get();
@@ -1171,7 +1196,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       type: "POST",
       url: "<?php echo base_url(); ?>register/save_register",
       dataType: "json",
-      data: {member_id:member_id, class_member_type:class_member_type, all_promo_package:all_promo_package, gym_sessions_start:gym_sessions_start, gym_package:gym_package, gym_sessions_end:gym_sessions_end, gym_price_val:gym_price_val, discount_gym_val:discount_gym_val, gym_total_val:gym_total_val, pt_package:pt_package, pt_package_price:pt_package_price, pt_id:pt_id, pt_price_val:pt_price_val, pt_session_month:pt_session_month, pt_discount_val:pt_discount_val, pt_total_val:pt_total_val, class_sessions_start:class_sessions_start, class_package:class_package, class_price_val:class_price_val, class_session_unit:class_session_unit, class_discount_val:class_discount_val, class_total_val:class_total_val, payment:payment, discount_val:discount_val, total_val:total_val, crfe_w_1:crfe_w_1, crfe_w_2:crfe_w_2, crfe_w_3:crfe_w_3, crfe_w_3_desc:crfe_w_3_desc, crfe_w_4:crfe_w_4, crfe_w_5:crfe_w_5, crfe_r_1:crfe_r_1, crfe_r_1_desc:crfe_r_1_desc, crfe_r_2:crfe_r_2, crfe_r_2_desc:crfe_r_2_desc, crfe_m_1:crfe_m_1, crfe_m_1_desc:crfe_m_1_desc, crfe_m_2:crfe_m_2, crfe_m_2_desc:crfe_m_2_desc, crfe_m_3:crfe_m_3, crfe_m_3_desc:crfe_m_3_desc, crfe_m_4:crfe_m_4, crfe_m_4_desc:crfe_m_4_desc},
+      data: {member_id:member_id, class_member_type:class_member_type, all_promo_package:all_promo_package, gym_sessions_start:gym_sessions_start, gym_package:gym_package, gym_sessions_end:gym_sessions_end, gym_price_val:gym_price_val, discount_gym_val:discount_gym_val, gym_total_val:gym_total_val, pt_package:pt_package, pt_package_price:pt_package_price, pt_id:pt_id, pt_price_val:pt_price_val, pt_session_month:pt_session_month, pt_discount_val:pt_discount_val, pt_total_val:pt_total_val, class_sessions_start:class_sessions_start, class_package:class_package, class_price_val:class_price_val, class_session_unit:class_session_unit, class_discount_val:class_discount_val, class_total_val:class_total_val, sales_id:sales_id, payment:payment, discount_val:discount_val, total_val:total_val, crfe_w_1:crfe_w_1, crfe_w_2:crfe_w_2, crfe_w_3:crfe_w_3, crfe_w_3_desc:crfe_w_3_desc, crfe_w_4:crfe_w_4, crfe_w_5:crfe_w_5, crfe_r_1:crfe_r_1, crfe_r_1_desc:crfe_r_1_desc, crfe_r_2:crfe_r_2, crfe_r_2_desc:crfe_r_2_desc, crfe_m_1:crfe_m_1, crfe_m_1_desc:crfe_m_1_desc, crfe_m_2:crfe_m_2, crfe_m_2_desc:crfe_m_2_desc, crfe_m_3:crfe_m_3, crfe_m_3_desc:crfe_m_3_desc, crfe_m_4:crfe_m_4, crfe_m_4_desc:crfe_m_4_desc},
       success : function(data){
         if (data.code == "200"){
           let title = 'Tambah Data';

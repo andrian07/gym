@@ -94,8 +94,9 @@ class Register extends CI_Controller {
 			$class_package['class_package'] = $this->global_model->class_package();
 			$pt_package_price['pt_package_price'] = $this->global_model->pt_package_price();
 			$payment_list['payment_list'] = $this->global_model->payment_list();
+			$sales_list['sales_list'] = $this->global_model->sales_list();
 			$check_auth['check_auth'] = $check_auth;
-			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list, $pt_list, $pt_package, $gym_package, $class_package, $pt_package_price, $payment_list);
+			$data['data'] = array_merge($check_auth, $coach_list, $class_list, $promo_list, $pt_list, $pt_package, $gym_package, $class_package, $pt_package_price, $payment_list, $sales_list);
 			$this->load->view('Pages/Register/registerpayment', $data);
 		}else{
 			$msg = "No Access";
@@ -221,6 +222,7 @@ class Register extends CI_Controller {
 			$class_discount_val        = $this->input->post('class_discount_val');
 			$class_total_val           = $this->input->post('class_total_val');
 
+			$sales_id 				   = $this->input->post('sales_id');
 			$payment                   = $this->input->post('payment');
 			$discount_val              = $this->input->post('discount_val');
 			$total_val                 = $this->input->post('total_val');
@@ -307,6 +309,7 @@ class Register extends CI_Controller {
 				'member_id'	   					=> $member_id,
 				'transaction_type_member'	   	=> $class_member_type,
 				'transaction_paket_promo'	    => $all_promo_package,
+				'transaction_sales_id'			=> $sales_id,
 				'transaction_payment_id'		=> $payment,
 				'transaction_payment_discount'	=> $discount_val,
 				'transaction_payment_total'		=> $total_val,

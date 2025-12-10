@@ -125,6 +125,13 @@ class global_model extends CI_Model {
         return $result;
     }
 
+    public function sales_list()
+    {
+        $query = $this->db->query("select * from ms_user a, ms_role b where a.user_role = b.role_id and b.role_name = 'Sales'");
+        $result = $query->result();
+        return $result;
+    }
+
     public function role_list()
     {
         $this->db->select('*');

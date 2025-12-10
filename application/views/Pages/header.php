@@ -22,10 +22,10 @@
       google: { families: ["Public Sans:300,400,500,600,700"] },
       custom: {
         families: [
-        "Font Awesome 5 Solid",
-        "Font Awesome 5 Regular",
-        "Font Awesome 5 Brands",
-        "simple-line-icons",
+          "Font Awesome 5 Solid",
+          "Font Awesome 5 Regular",
+          "Font Awesome 5 Brands",
+          "simple-line-icons",
         ],
         urls: ["<?php echo base_url(); ?>dist/css/fonts.min.css"],
       },
@@ -192,7 +192,7 @@
           </li>
 
 
-
+          <!-- 
           <li class="nav-item">
             <a href="<?php echo base_url(); ?>Purchase">
               <i class="fas fa-shopping-cart"></i>
@@ -200,13 +200,14 @@
             </a>
           </li>
 
-
+    
           <li class="nav-item">
             <a href="<?php echo base_url(); ?>Opname">
               <i class="fas fa-box"></i>
               <p>Stock Opname</p>
             </a>
           </li>
+          -->
 
           <li class="nav-item">
             <a data-bs-toggle="collapse" href="#user">
@@ -233,6 +234,13 @@
                 </li>
               </ul>
             </div>
+          </li>
+
+          <li class="nav-item">
+            <a data-bs-toggle="collapse" href="#user">
+              <i class="fas fa-user"></i>
+              <p>Laporan</p>
+            </a>
           </li>
         </ul>
       </div>
