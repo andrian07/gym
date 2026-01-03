@@ -22,10 +22,10 @@
       google: { families: ["Public Sans:300,400,500,600,700"] },
       custom: {
         families: [
-          "Font Awesome 5 Solid",
-          "Font Awesome 5 Regular",
-          "Font Awesome 5 Brands",
-          "simple-line-icons",
+        "Font Awesome 5 Solid",
+        "Font Awesome 5 Regular",
+        "Font Awesome 5 Brands",
+        "simple-line-icons",
         ],
         urls: ["<?php echo base_url(); ?>dist/css/fonts.min.css"],
       },
@@ -191,24 +191,6 @@
             </a>
           </li>
 
-
-          <!-- 
-          <li class="nav-item">
-            <a href="<?php echo base_url(); ?>Purchase">
-              <i class="fas fa-shopping-cart"></i>
-              <p>Pembelian Stock</p>
-            </a>
-          </li>
-
-    
-          <li class="nav-item">
-            <a href="<?php echo base_url(); ?>Opname">
-              <i class="fas fa-box"></i>
-              <p>Stock Opname</p>
-            </a>
-          </li>
-          -->
-
           <li class="nav-item">
             <a data-bs-toggle="collapse" href="#user">
               <i class="fas fa-user"></i>
@@ -217,6 +199,11 @@
             </a>
             <div class="collapse show" id="user">
               <ul class="nav nav-collapse">
+                <li>
+                  <a href="<?php echo base_url(); ?>Setting/banner">
+                    <span class="sub-item">Banner</span>
+                  </a>
+                </li>
                 <li>
                   <a href="<?php echo base_url(); ?>Setting/payment">
                     <span class="sub-item">Pembayaran</span>

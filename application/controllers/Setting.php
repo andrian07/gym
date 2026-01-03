@@ -734,6 +734,73 @@
 			}	
 		}
 		// end account
+
+		// banner
+		public function banner()
+		{
+			$modul = 'Banner';
+			$check_auth = $this->check_auth($modul);
+			if($check_auth[0]->view == 'Y'){
+				$check_auth['check_auth'] = $check_auth;
+				$this->load->view('Pages/Setting/banner', $check_auth);
+			}else{
+				$msg = "No Access";
+				echo json_encode(['code'=>0, 'result'=>$msg]);
+			}
+		}
+
+		public function banner_list()
+		{
+			$modul = 'Banner';
+			$check_auth = $this->check_auth($modul);
+			if($check_auth[0]->view == 'Y'){
+				$search 			= $this->input->post('search');
+				$length 			= $this->input->post('length');
+				$start 			  	= $this->input->post('start');
+
+				if($search != null){
+					$search = $search['value'];
+				}
+				$list = $this->setting_model->account_list($search, $length, $start)->result_array();
+				$count_list = $this->setting_model->account_list_count($search)->result_array();
+				$total_row = $count_list[0]['total_row'];
+				$data = array();
+				$no = $_POST['start'];
+				foreach ($list as $field) {
+
+					if($check_auth[0]->edit == 'Y'){
+						$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['user_id'].'" data-name="'.$field['user_name'].'" data-role="'.$field['user_role'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
+					}else{
+						$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
+					}
+					if($check_auth[0]->delete == 'Y'){
+						$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" onclick="delete_account('.$field['user_id'].')"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+					}else{
+						$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" disabled="disabled"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+					}
+
+					$no++;
+					$row = array();
+					$row[] = $field['user_name'];
+					$row[] = $field['role_name'];
+					$row[] = $edit.$delete;
+					$data[] = $row;
+				}
+
+				$output = array(
+					"draw" => $_POST['draw'],
+					"recordsTotal" => $total_row,
+					"recordsFiltered" => $total_row,
+					"data" => $data,
+				);
+				echo json_encode($output);
+			}else{
+				$msg = "No Access";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+		}
+
+		// end banner
 	}
 
 ?>
