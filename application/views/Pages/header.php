@@ -237,7 +237,7 @@
           </li>
 
           <li class="nav-item">
-            <a data-bs-toggle="collapse" href="#user">
+            <a href="<?php echo base_url(); ?>Report">
               <i class="fas fa-user"></i>
               <p>Laporan</p>
             </a>

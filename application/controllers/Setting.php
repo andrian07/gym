@@ -146,10 +146,14 @@
 				$this->masterdata_model->save_role($insert);
 				$role_id = $this->db->insert_id();
 
-				$data_insert_permision = array(
-					'role_id'	       => $role_id
-				);
-				$this->masterdata_model->save_permision($data_insert_permision);
+				for($i = 1; $i<=17; $i++){
+					$data_insert_permision = array(
+						'role_id'	       => $role_id,
+						'module_id'        => $i
+					);
+
+					$this->masterdata_model->save_permision($data_insert_permision);
+				}
 
 				$data_insert_act = array(
 					'activity_table_desc'	       => 'Tambah Group Baru '. $role_name,
