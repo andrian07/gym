@@ -2,6 +2,50 @@
 
 class setting_model extends CI_Model {
 
+    //banner
+    public function banner_list($search, $length, $start)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_banner');
+        if($search != null){
+            $this->db->where('banner_name like "%'.$search.'%"');
+        }
+        $this->db->where('banner_active', 'Y');
+        $this->db->limit($length);
+        $this->db->offset($start);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function banner_list_count($search)
+    {
+        $this->db->select('count(*) as total_row');
+        $this->db->from('ms_banner');
+        if($search != null){
+            $this->db->where('banner_name like "%'.$search.'%"');
+        }
+        $this->db->where('banner_active', 'Y');
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function get_edit_banner_by_id($id)
+    {
+        $this->db->select('*');
+        $this->db->from('ms_banner');
+        $this->db->where('banner_id', $id);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function delete_banner($banner_id)
+    {
+        $this->db->set('banner_active', 'N');
+        $this->db->where('banner_id', $banner_id);
+        $this->db->update('ms_banner');
+    }
+    //end banner
+
     //payment
     public function payment_list($search, $length, $start)
     {

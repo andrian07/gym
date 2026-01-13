@@ -146,10 +146,12 @@
 				$this->masterdata_model->save_role($insert);
 				$role_id = $this->db->insert_id();
 
-				for($i = 1; $i<=17; $i++){
+				$get_module_id = $this->masterdata_model->get_module_id()->result_array();
+
+				foreach($get_module_id as $row){
 					$data_insert_permision = array(
 						'role_id'	       => $role_id,
-						'module_id'        => $i
+						'module_id'        => $row['module_id']
 					);
 
 					$this->masterdata_model->save_permision($data_insert_permision);
@@ -765,28 +767,28 @@
 				if($search != null){
 					$search = $search['value'];
 				}
-				$list = $this->setting_model->account_list($search, $length, $start)->result_array();
-				$count_list = $this->setting_model->account_list_count($search)->result_array();
+				$list = $this->setting_model->banner_list($search, $length, $start)->result_array();
+				$count_list = $this->setting_model->banner_list_count($search)->result_array();
 				$total_row = $count_list[0]['total_row'];
 				$data = array();
 				$no = $_POST['start'];
 				foreach ($list as $field) {
 
 					if($check_auth[0]->edit == 'Y'){
-						$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['user_id'].'" data-name="'.$field['user_name'].'" data-role="'.$field['user_role'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
+						$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['banner_id'].'" data-name="'.$field['banner_name'].'"><i class="fas fa-edit sizing-fa"></i></button> ';
 					}else{
 						$edit = '<button type="button" class="btn btn-icon btn-warning btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-edit sizing-fa"></i></button> <button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" disabled="disabled"><i class="fas fa-cog sizing-fa"></i></button> ';
 					}
 					if($check_auth[0]->delete == 'Y'){
-						$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" onclick="delete_account('.$field['user_id'].')"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
+						$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" onclick="delete_banner('.$field['banner_id'].')"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
 					}else{
 						$delete = '<button type="button" class="btn btn-icon btn-danger btn-sm mb-2-btn delete" disabled="disabled"><i class="fas fa-trash-alt sizing-fa"></i></button> ';
 					}
 
 					$no++;
 					$row = array();
-					$row[] = $field['user_name'];
-					$row[] = $field['role_name'];
+					$row[] = $field['banner_name'];
+					$row[] = '<img src="'.base_url().'/assets/banner/'.$field['banner_image'].'" width="20%" />';
 					$row[] = $edit.$delete;
 					$data[] = $row;
 				}
@@ -804,6 +806,114 @@
 			}
 		}
 
+		public function save_banner()
+		{
+			$modul = 'Member';
+			$check_auth = $this->check_auth($modul);
+			if($check_auth[0]->view == 'Y'){
+				$name = $this->input->post('banner_name');
+				if(empty($_FILES['image']['name'])){
+					echo json_encode(['code'=>400,'msg'=>'Image wajib diupload']);
+					return;
+				}
+				$config['upload_path']   = './assets/banner/';
+				$config['allowed_types'] = 'jpg|jpeg|png|PNG|webp';
+				$config['max_size']      = 2048;
+				$config['encrypt_name'] = TRUE;
+				$this->load->library('upload', $config);
+				if(!$this->upload->do_upload('image')){
+					echo json_encode(['code'=>400,'msg'=>$this->upload->display_errors()]);
+					return;
+				}
+				$upload = $this->upload->data();
+
+				$this->db->insert('ms_banner',[
+					'banner_name'  => $name,
+					'banner_image' => $upload['file_name']
+				]);
+				echo json_encode(['code'=>200]);
+			}else{
+				$msg = "No Access";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+		}
+
+		public function get_edit_banner()
+		{
+			$modul = 'Member';
+			$check_auth = $this->check_auth($modul);
+			if($check_auth[0]->view == 'Y'){
+				$id = $this->input->post('id');
+				$detail_edit_banner = $this->setting_model->get_edit_banner_by_id($id)->result_array();
+				echo json_encode(['code'=>200, 'result'=>$detail_edit_banner]);die();
+			}else{
+				$msg = "No Access";
+				echo json_encode(['code'=>0, 'result'=>$msg]);die();
+			}
+		}
+
+		public function edit_banner()
+		{
+			$banner_id   = $this->input->post('banner_id');
+			$banner_name = $this->input->post('banner_name');
+
+			$data = [
+				'banner_name' => $banner_name
+			];
+
+			if (!empty($_FILES['image']['name'])) {
+
+				$config['upload_path']   = './assets/banner/';
+				$config['allowed_types'] = 'jpg|jpeg|png|webp';
+				$config['max_size']      = 2048;
+				$config['file_name']     = 'banner_' . time();
+
+				$this->load->library('upload', $config);
+
+				if (!$this->upload->do_upload('image')) {
+					echo json_encode([
+						'code' => 500,
+						'msg'  => $this->upload->display_errors()
+					]);
+					return;
+				}
+
+				$uploadData = $this->upload->data();
+				$data['banner_image'] = $uploadData['file_name'];
+			}
+
+			$this->db->where('banner_id', $banner_id);
+			$update = $this->db->update('ms_banner', $data);
+
+			if ($update) {
+				echo json_encode([
+					'code' => 200,
+					'msg'  => 'Banner berhasil diupdate'
+				]);
+			} else {
+				echo json_encode([
+					'code' => 500,
+					'msg'  => 'Gagal update banner'
+				]);
+			}
+		}
+
+
+		public function delete_banner()
+		{
+			$banner_id 	= $this->input->post('id');
+			$user_id   	= $_SESSION['user_id'];
+
+			$this->setting_model->delete_banner($banner_id);
+			$msg = "Succes Delete";
+			$data_insert_act = array(
+				'activity_table_desc'	       => 'Delete Banner '. $banner_id,
+				'activity_table_user'	       => $user_id,
+			);
+			$this->global_model->save($data_insert_act);
+			echo json_encode(['code'=>200, 'result'=>$msg]);
+			die();
+		}
 		// end banner
 	}
 

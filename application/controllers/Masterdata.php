@@ -950,9 +950,9 @@ class Masterdata extends CI_Controller {
 			if($_FILES['screenshoot']['name'] == null){
 				$new_image_name = 'default.png';
 			}else{
-				$new_image_name = $last_code.$this->generateRandomString().'.png';
+				$new_image_name = $class_name.$this->generateRandomString().'.png';
 				$config['upload_path'] = './assets/class/';
-				$config['allowed_types'] = 'gif|jpg|png|jpeg|PNG';
+				$config['allowed_types'] = 'jpg|jpeg|png';
 				$config['file_name'] = $new_image_name;
 				$this->load->library('upload', $config);
 				if (!$this->upload->do_upload('screenshoot')) 
@@ -1005,8 +1005,6 @@ class Masterdata extends CI_Controller {
 			$class_price	 			= $this->input->post('class_price_edit');
 			$class_attend_type 			= $this->input->post('class_attend_type_edit');
 			$user_id 		   			= $_SESSION['user_id'];
-
-
 			$class_price_day_replace = str_replace('Rp. ', '', $class_price_day);
 			$class_price_day = str_replace('.', '', $class_price_day_replace);
 
@@ -1032,9 +1030,9 @@ class Masterdata extends CI_Controller {
 				$new_image_name = $get_class_by_id[0]->class_image;
 			}else{
 				if($check_image_name != $_FILES['screenshoot_edit']['name']){
-					$new_image_name = $member_code.$this->generateRandomString().'.png';
-					$config['upload_path'] = './assets/member/';
-					$config['allowed_types'] = 'gif|jpg|png|jpeg|PNG';
+					$new_image_name = $class_name.$this->generateRandomString().'.png';
+					$config['upload_path'] = './assets/class/';
+					$config['allowed_types'] = 'jpg|jpeg|png';
 					$config['file_name'] = $new_image_name;
 					$this->load->library('upload', $config);
 					if (!$this->upload->do_upload('screenshoot_edit')) 

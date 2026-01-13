@@ -46,6 +46,14 @@ class masterdata_model extends CI_Model {
         $result = $query->result();
         return $result;
     }
+
+    public function get_module_id()
+    {
+        $this->db->select('*');
+        $this->db->from('ms_module');
+        $query = $this->db->get();
+        return $query;
+    }
     //end group
     
 

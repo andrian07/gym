@@ -851,11 +851,10 @@ class Register extends CI_Controller {
 
 				$print = '<a href="'.base_url().'Register/print_nota?id='.$field['transaction_register_id'].'"><button type="button" class="btn btn-icon btn-info btn-sm mb-2-btn" data-id="'.$field['transaction_register_id'].'" title="Print"><i class="fas fa-copy sizing-fa"></i></button></a> ';
 
-
 				if($field['transaction_payment_status'] == 'Lunas'){
 					$status = '<span class="badge badge-success">Lunas</span>';
 				}else{
-					$status = '<span class="badge badge-danger">Belum Lunas</span>';
+					$status = '<a href="" data-bs-toggle="modal" data-bs-target="#exampleModaledit" data-id="'.$field['transaction_register_id'].'" data-inv="'.$field['transaction_register_inv'].'" data-total="'.$field['transaction_payment_total'].'"><span class="badge badge-danger">Belum Lunas</span></a>';
 				}
 
 				$date = date_create($field['transaction_register_date']); 

@@ -81,6 +81,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
                 </div>
               </div>
               <!-- end popup edit member -->
+
             </div>
           </div>
           <div class="card-body">
@@ -116,7 +117,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
 <script>
 
-  new bootstrap.Modal(document.getElementById('exampleModaledit'), {backdrop: 'static', keyboard: false})  
+  //new bootstrap.Modal(document.getElementById('exampleModaledit'), {backdrop: 'static', keyboard: false})  
   let transaction_payment_total = new AutoNumeric('#transaction_payment_total', {
     currencySymbol : 'Rp. ',
     decimalCharacter : ',',
@@ -157,8 +158,8 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
   $('#exampleModaledit').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
-    var id   = button.data('id')
-    var inv = button.data('inv')
+    var id     = button.data('id')
+    var inv    = button.data('inv')
     var total = button.data('total')
     var modal = $(this)
     modal.find('#transaction_id').val(id)
